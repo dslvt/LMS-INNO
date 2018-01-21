@@ -1,4 +1,7 @@
+import javax.print.Doc;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Database {
 
@@ -11,32 +14,69 @@ public class Database {
     private static ResultSet resultSet;
     private static PreparedStatement preparedStatement;
 
-    public static void main(String[] args) {
-        String query = "select * from users";
-
+    public Database(){
         preparedStatement = null;
         try {
             Class.forName("com.mysql.jdbc.Driver");
-            System.out.println("Драйвер подключен");
             connection = DriverManager.getConnection(url, user, password);
-
-            statement = connection.createStatement();
-
-            resultSet = statement.executeQuery(query);
-            while(resultSet.next()){
-                int id = resultSet.getInt(1);
-                String name = resultSet.getString(2);
-                int age = resultSet.getInt(3);
-                String email = resultSet.getString(4);
-                System.out.printf("id: %d, name: %s, age: %d, email: %s %n", id, name, age, email);
-            }
-
-            preparedStatement = connection.prepareStatement("insert into booking(user_id, book_id) values (?, ?)");
-            preparedStatement.setInt(1, 4);
-            preparedStatement.setInt(2, 10);
-            preparedStatement.executeUpdate();
         }catch (Exception ex){
             System.out.println("error: " + ex.toString());
         }
+    }
+
+    public boolean CreateDocument(Document document){
+        return true;
+    }
+
+    public boolean CreateUser(User user){
+        return true;
+    }
+
+    public boolean UpdateUser(User user){
+        return true;
+    }
+
+    public boolean UpdateDocument(Document document){
+        return true;
+    }
+
+    public boolean DeleteUser(User user){
+        return true;
+    }
+
+    public boolean DeleteDocument(Document document){
+        return true;
+    }
+
+    public boolean hasDocument(Document document){
+        return true;
+    }
+
+    public boolean hasUser(User user){
+        return true;
+    }
+
+    public boolean CheckOutDocument(User user, Document document){
+        return true;
+    }
+
+    public boolean ReturnDocument(User user, Document document){
+        return true;
+    }
+
+    public ArrayList<Document> CheckOverdueDocuments(){
+        return new ArrayList<>();
+    }
+
+    public int getUserDebt(User user){
+        return -1;
+    }
+
+    public boolean isCorrectAuthorization(String username, String pass){
+        return true;
+    }
+
+    public User GetUserByLogin(String username){
+        return new Patron();
     }
 }
