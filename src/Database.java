@@ -28,24 +28,34 @@ public class Database {
         return true;
     }
 
-    public boolean CreateUser(User user){
-        return true;
+    public static void CreateUser(User user){
+        try {
+            preparedStatement = connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember) values(?, ?, ?, ?, ?)");
+            preparedStatement.setString(1, user.name);
+            preparedStatement.setString(2, user.phoneNumber);
+            preparedStatement.setString(3, user.address);
+            preparedStatement.setInt(4, 10);
+            preparedStatement.setBoolean(5, true);
+            preparedStatement.executeUpdate();
+        }catch (Exception ex){
+            System.out.println("error: " + ex.toString());
+        }
     }
 
-    public boolean UpdateUser(User user){
-        return true;
+    public void UpdateUser(User user){
+
     }
 
-    public boolean UpdateDocument(Document document){
-        return true;
+    public void UpdateDocument(Document document){
+
     }
 
-    public boolean DeleteUser(User user){
-        return true;
+    public void DeleteUser(User user){
+
     }
 
-    public boolean DeleteDocument(Document document){
-        return true;
+    public void DeleteDocument(Document document){
+
     }
 
     public boolean hasDocument(Document document){
@@ -60,8 +70,8 @@ public class Database {
         return true;
     }
 
-    public boolean ReturnDocument(User user, Document document){
-        return true;
+    public void ReturnDocument(User user, Document document){
+
     }
 
     public ArrayList<Document> CheckOverdueDocuments(){

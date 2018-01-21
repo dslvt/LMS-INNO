@@ -9,9 +9,10 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-        Authorization();
+        //Authorization();
+        Patron patron = new Patron("Ilgiz", "9991697006", "address", true, 10);
 
-
+        Database.CreateUser(patron);
     }
 
     private static void Authorization(){
