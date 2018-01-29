@@ -1,3 +1,4 @@
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public abstract class Document {
@@ -8,4 +9,10 @@ public abstract class Document {
     public ArrayList<String> authors;
     public DocumentType type;
     public boolean isReference;
+
+
+    public void CreateDocumentInDB() throws SQLException {
+
+
+    }
 }

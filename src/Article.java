@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.sql.SQLException;
 
 public class Article extends Document {
     public Journal journal;
@@ -9,5 +10,12 @@ public class Article extends Document {
         this.journal = journal;
 
         type = DocumentType.article;
+    }
+
+    @Override
+    public void CreateDocumentInDB() throws SQLException{
+        super.CreateDocumentInDB();
+
+
     }
 }

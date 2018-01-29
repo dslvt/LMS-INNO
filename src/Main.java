@@ -12,15 +12,18 @@ public class Main {
 
 //        Authorization();
 //
-//        ArrayList<String> authors = new ArrayList<String>();
-//        authors.add("Daryl Hall"); authors.add("John Oates");
-//        ArrayList<String> keywords = new ArrayList<String>();
-//        keywords.add("Music"); keywords.add("80e");
-//        AVmaterial mat = new AVmaterial("You Make My Dreams", authors, 10, keywords, false);
+        ArrayList<String> authors = new ArrayList<String>();
+        authors.add("Pup");
+        ArrayList<String> keywords = new ArrayList<String>();
+        keywords.add("Music"); keywords.add("Rock");
+        AVmaterial mat = new AVmaterial("Sleep In The Heat", authors, 100, keywords, false);
+        mat.CreateDocumentInDB();
 //
 //        //db.CreateAVMaterial(mat);
 
 //        Booking booking = new Booking();
+
+
     }
 
     private static void Authorization(){
