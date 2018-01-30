@@ -11,7 +11,7 @@ public abstract class Document {
     public boolean isReference;
 
 
-    public void CreateDocumentInDB() throws SQLException {
+    public void CreateDocumentInDB(){
 
 
     }
