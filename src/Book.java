@@ -17,6 +17,7 @@ public class Book extends Document{
         this.publisher = publisher;
         this.edition = edition;
         this.publishYear = publishYear;
+        this.location = location;
 
         type = DocumentType.book;
     }

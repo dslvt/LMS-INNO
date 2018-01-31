@@ -10,7 +10,7 @@ public class Journal extends Document {
     public String editor;
 
     public Journal(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords,
-                   boolean isReference, String publicationDate, String issue, String editor, String location){
+                   boolean isReference, String publicationDate, String issue, String editor){
         this.name = name;
         this.authors = authors;
         this.price = cost;

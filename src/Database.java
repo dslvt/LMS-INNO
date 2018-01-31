@@ -161,11 +161,29 @@ public class Database {
     public ArrayList<Journal> getAllJournals() throws SQLException{
         ArrayList<Journal> journals = new ArrayList<>();
 
+        String query = "select * from journals";
+        statement = connection.createStatement();
+        resultSet = statement.executeQuery(query);
+        while (resultSet.next()){
+            journals.add(new Journal(resultSet.getString(2), new ArrayList<String>(Arrays.asList(resultSet.getString(3).split(", "))),
+                    resultSet.getInt(6), new ArrayList<String>(Arrays.asList(resultSet.getString(7).split(", "))),
+                    resultSet.getBoolean(9), "didnt found", resultSet.getString(4), resultSet.getString(5)));
+        }
+
         return journals;
     }
 
     public ArrayList<AVmaterial> getAllAVmaterials() throws SQLException{
         ArrayList<AVmaterial> avmaterials = new ArrayList<>();
+
+        String query = "select * from av_materials";
+        statement = connection.createStatement();
+        resultSet = statement.executeQuery(query);
+        while (resultSet.next()){//String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference
+            avmaterials.add(new AVmaterial(resultSet.getString(2), new ArrayList<String>(Arrays.asList(resultSet.getString(3).split(", "))),
+                    resultSet.getInt(4), new ArrayList<String>(Arrays.asList(resultSet.getString(5).split(", "))),
+                    resultSet.getBoolean(7)));
+        }
 
         return avmaterials;
     }
