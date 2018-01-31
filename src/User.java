@@ -1,4 +1,3 @@
-import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 
 public abstract class User {

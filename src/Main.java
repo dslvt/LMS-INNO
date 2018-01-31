@@ -29,6 +29,9 @@ public class Main {
         }catch (Exception e){
             System.out.println(e.toString() + " main file");
         }
+
+        FirstWindow window = new FirstWindow();
+        window.setVisible(true);
     }
 
     private static void Authorization(){
