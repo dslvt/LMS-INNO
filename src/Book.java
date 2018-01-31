@@ -22,7 +22,7 @@ public class Book extends Document{
     }
 
     @Override
-    public void CreateDocumentInDB(String location) {
+    public void CreateDocumentInDB() {
         Database db = new Database();
         Statement statement;
         ResultSet resultSet;

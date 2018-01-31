@@ -9,10 +9,8 @@ public abstract class Document {
     public ArrayList<String> authors;
     public DocumentType type;
     public boolean isReference;
+    public String location;
 
 
-    public void CreateDocumentInDB(){
-
-
-    }
+    public void CreateDocumentInDB(){}
 }

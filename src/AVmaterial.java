@@ -7,9 +7,7 @@ import java.util.ArrayList;
 
 public class AVmaterial extends Document {
 
-    public AVmaterial(){
-
-    }
+    public AVmaterial(){}
 
     public AVmaterial(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference){
         this.name = name;
@@ -22,8 +20,7 @@ public class AVmaterial extends Document {
     }
 
     @Override
-    public void CreateDocumentInDB(String location) {
-        super.CreateDocumentInDB();
+    public void CreateDocumentInDB() {
         Database db = new Database();
         Statement statement;
         ResultSet resultSet;

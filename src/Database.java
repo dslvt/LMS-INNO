@@ -1,6 +1,8 @@
 import javax.print.Doc;
+import javax.print.attribute.standard.DocumentName;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Database {
@@ -56,6 +58,26 @@ public class Database {
             return isDocExist;
         }catch (Exception ex){
             System.out.println("error isDocExist: " + ex.toString());
+            return -1;
+        }
+    }
+
+    public static int isDocumentExistByType(String type, Document document) throws SQLException{
+        //title, author, issue, editor, cost, keywords, reference)
+        Journal journal = (Journal) document;
+
+        String query = "select title, author, issue, editor, keywords, reference, id from " + type;
+
+        statement = connection.createStatement();
+        resultSet = statement.executeQuery(query);
+
+        resultSet.next();
+        if(resultSet.getString(1).equals(journal.name) && resultSet.getString(2).equals(journal.authors.toString())
+                && resultSet.getString(3).equals(journal.issue) && resultSet.getString(4).equals(journal.editor)
+                && resultSet.getInt(5) == journal.price && resultSet.getString(6).equals(journal.keywords.toString())
+                && resultSet.getBoolean(7) == journal.isReference){
+            return resultSet.getInt(8);
+        }else{
             return -1;
         }
     }
@@ -118,5 +140,33 @@ public class Database {
 
     public User GetUserByLogin(String username){
         return new Patron();
+    }
+
+
+    public ArrayList<Book> getAllBooks() throws SQLException {
+        ArrayList<Book> books = new ArrayList<>();
+
+        String query = "select * from books";
+        statement = connection.createStatement();
+        resultSet = statement.executeQuery(query);
+        while (resultSet.next()){
+            books.add(new Book(resultSet.getString(2), new ArrayList<String>(Arrays.asList(resultSet.getString(3).split(", "))), resultSet.getInt(7),
+                    new ArrayList<String>(Arrays.asList(resultSet.getString(8).split(", "))), resultSet.getBoolean(10), resultSet.getString(4),
+                    resultSet.getString(5), resultSet.getInt(6)));
+        }
+
+        return books;
+    }
+
+    public ArrayList<Journal> getAllJournals() throws SQLException{
+        ArrayList<Journal> journals = new ArrayList<>();
+
+        return journals;
+    }
+
+    public ArrayList<AVmaterial> getAllAVmaterials() throws SQLException{
+        ArrayList<AVmaterial> avmaterials = new ArrayList<>();
+
+        return avmaterials;
     }
 }
