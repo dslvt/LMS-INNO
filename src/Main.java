@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Main {
@@ -9,10 +10,25 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-        //Authorization();
-        Patron patron = new Patron("Ilgiz", "9991697006", "address", true, 10);
+//        Authorization();
+//
+//        ArrayList<String> authors = new ArrayList<String>();
+//        authors.add("Pup");
+//        ArrayList<String> keywords = new ArrayList<String>();
+//        keywords.add("Music"); keywords.add("Rock");
+//        AVmaterial mat = new AVmaterial("Sleep In The Heat", authors, 100, keywords, false);
+//        mat.CreateDocumentInDB();
+//
+//        //db.CreateAVMaterial(mat);
 
-        Database.CreateUser(patron);
+//        Booking booking = new Booking();
+
+        try{
+            ArrayList<Book> books = db.getAllBooks();
+            System.out.println(books.get(0).name + " " + books.get(0).authors.toString());
+        }catch (Exception e){
+            System.out.println(e.toString() + " main file");
+        }
     }
 
     private static void Authorization(){
@@ -24,8 +40,8 @@ public class Main {
 
             if(db.isCorrectAuthorization(tUsername, tPass)){
                 isAuthorizated = true;
-
-                user = db.GetUserByLogin(tUsername);
+                System.out.println("Correct authorization");
+                //user = db.GetUserByLogin(tUsername);
             }else{
                 System.out.println("Incorrect login/pass");
             }

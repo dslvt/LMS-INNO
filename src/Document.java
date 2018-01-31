@@ -1,4 +1,4 @@
-import java.time.Period;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public abstract class Document {
@@ -8,6 +8,9 @@ public abstract class Document {
     public ArrayList<String> keywords;
     public ArrayList<String> authors;
     public DocumentType type;
-    public Period checkOutTime;
     public boolean isReference;
+    public String location;
+
+
+    public void CreateDocumentInDB(){}
 }
