@@ -7,7 +7,18 @@ public class Booking {
     Statement statement;
     String userName = "root";
     String password = "enaca2225";
-    String connectionUrl = "jdbc:mysql://localhost:3306/db?useSSL=false";
+    String connectionUrl = "jdbc:mysql://localhost:3306/project?useSSL=false";
+
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+        Booking booking = new Booking();
+        Document document = new AVmaterial();
+        document.id = 15;
+        User user = new Patron();
+        user.id = 5;
+        //booking.checkOut(document,user);
+        //booking.renewBook(document);
+        //booking.returnBook(document, user);
+    }
 
     public Booking() throws ClassNotFoundException, SQLException {
         Class.forName("com.mysql.jdbc.Driver");
@@ -19,7 +30,7 @@ public class Booking {
         //Crete new line in Booking
         java.util.Date date = new java.util.Date();
         java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
-        statement.executeUpdate("INSERT into booking set user_id = '" + user.id + "', book_id = '" + document.id + "', times = '" + timestamp + "' ");
+        statement.executeUpdate("INSERT into booking set user_id = '" + user.id + "', document_id = '" + document.id + "', time = '" + timestamp + "' ");
 
         //Get line from Documents
         String type = getType(document);
@@ -92,6 +103,7 @@ public class Booking {
         //Check overdue
         if (!date.before(bookingDate)) {
             int overdue = countOverdue(bookingDate, date, document);
+            statement.executeUpdate("UPDATE users set debt = '"+overdue+"' WHERE id = '"+user.id+"'");
         }
 
         //Delete record from Booking
@@ -119,7 +131,7 @@ public class Booking {
 
         //Renew document
         if(!isRenew){
-            statement.executeUpdate("UPDATE booking set time = '"+timestamp+"' is_renew = '"+true+"' WHERE document_id = '"+document.id+"'");
+            statement.executeUpdate("UPDATE booking set time = '"+timestamp+"', is_renew = '"+1+"' WHERE document_id = '"+document.id+"'");
         }
 
     }
@@ -137,9 +149,35 @@ public class Booking {
     private int countOverdue(Date bookingDate, Date currentDate, Document document) throws SQLException {
         int days = (int) (bookingDate.getTime() - currentDate.getTime()/(1000 * 60 * 60 * 24));
         int overdue = days * 100;
-
-        statement.executeQuery("SELECT*FROM documents WHERE id = '" + document.id + "'");
         ResultSet line = statement.getResultSet();
+        String type = getType(document);
+        if (type.equals("book")) {
+            line = statement.getResultSet();
+            int id = 0;
+            if (line.next()) {
+                id = line.getInt("id_books");
+            }
+            statement.executeQuery("SELECT*FROM books WHERE id = '" + id + "'");
+            line = statement.getResultSet();
+        }
+        if (type.equals("journal")){
+            line = statement.getResultSet();
+            int id = 0;
+            if (line.next()) {
+                id = line.getInt("id_journals");
+            }
+            statement.executeQuery("SELECT*FROM journals WHERE id = '" + id + "'");
+            line = statement.getResultSet();
+        }
+        if(type.equals("av_material")){
+            line = statement.getResultSet();
+            int id = 0;
+            if (line.next()) {
+                id = line.getInt("id_av_materials");
+            }
+            statement.executeQuery("SELECT*FROM av_materials WHERE id = '" + id + "'");
+            line = statement.getResultSet();
+        }
         int cost = 0;
         if (line.next()) {
             cost = line.getInt("cost");
