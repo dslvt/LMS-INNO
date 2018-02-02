@@ -5,10 +5,11 @@ import java.util.Date;
 public class Booking {
 
     Statement statement;
-    String userName = "root";
-    String password = "enaca2225";
-    String connectionUrl = "jdbc:mysql://localhost:3306/project?useSSL=false";
+    //String userName = "root";
+    //String password = "enaca2225";
+    //String connectionUrl = "jdbc:mysql://localhost:3306/project?useSSL=false";
 
+    /*
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         Booking booking = new Booking();
         Document document = new AVmaterial();
@@ -19,11 +20,13 @@ public class Booking {
         //booking.renewBook(document);
         //booking.returnBook(document, user);
     }
+    */
 
     public Booking() throws ClassNotFoundException, SQLException {
-        Class.forName("com.mysql.jdbc.Driver");
-        Connection connection = DriverManager.getConnection(connectionUrl, userName, password);
-        statement = connection.createStatement();
+        //Class.forName("com.mysql.jdbc.Driver");
+        //Connection connection = DriverManager.getConnection(connectionUrl, userName, password);
+        Database database = new Database();
+        statement = database.connection.createStatement();
     }
 
     public void checkOut(Document document, User user) throws SQLException {
