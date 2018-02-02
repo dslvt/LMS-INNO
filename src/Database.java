@@ -63,22 +63,87 @@ public class Database {
     }
 
     public static int isDocumentExistByType(String type, Document document) throws SQLException{
-        //title, author, issue, editor, cost, keywords, reference)
-        Journal journal = (Journal) document;
 
-        String query = "select title, author, issue, editor, keywords, reference, id from " + type;
+        if(type.equals("journal")) {
+            Journal journal = (Journal) document;
 
-        statement = connection.createStatement();
-        resultSet = statement.executeQuery(query);
+            String query = "select title, author, issue, editor, keywords, reference, id from " + type;
 
-        resultSet.next();
-        if(resultSet.getString(1).equals(journal.name) && resultSet.getString(2).equals(journal.authors.toString())
-                && resultSet.getString(3).equals(journal.issue) && resultSet.getString(4).equals(journal.editor)
-                && resultSet.getInt(5) == journal.price && resultSet.getString(6).equals(journal.keywords.toString())
-                && resultSet.getBoolean(7) == journal.isReference){
-            return resultSet.getInt(8);
-        }else{
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+
+            resultSet.next();
+            if (resultSet.getString(1).equals(journal.name) && resultSet.getString(2).equals(journal.authors.toString())
+                    && resultSet.getString(3).equals(journal.issue) && resultSet.getString(4).equals(journal.editor)
+                    && resultSet.getInt(5) == journal.price && resultSet.getString(6).equals(journal.keywords.toString())
+                    && resultSet.getBoolean(7) == journal.isReference) {
+                return resultSet.getInt(8);
+            } else {
+                return -1;
+            }
+        }else if(type.equals("book")){
+            Book book = (Book) document;
+
+            String query = "select * from " + type;
+
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+
+            while(resultSet.next()) {
+                if (resultSet.getString(2).equals(book.name) && resultSet.getString(3).equals(book.authors.toString())
+                        && resultSet.getString(4).equals(book.publisher) && resultSet.getString(5).equals(book.edition)
+                        && resultSet.getInt(6) == book.publishYear && resultSet.getInt(7) == book.price
+                        && resultSet.getString(8).equals(book.keywords.toString()) && resultSet.getBoolean(10) == book.isReference) {
+                    return resultSet.getInt(1);
+                } else {
+                    return -1;
+                }
+            }
+        }else if(type.equals("avmaterial")) {
             return -1;
+        }
+
+        return -1;
+    }
+
+    public static boolean isDocumentActive(String type, Document document){
+        try {
+            String query = "select * from documents ";
+            boolean isExist;
+            resultSet = statement.executeQuery(query);
+
+            if(type.equals("book")){
+                query += "where id_books=" + Integer.toString(document.id);
+            }else if (type.equals("journal")){
+                query += "where id_books=" + Integer.toString(document.id);
+            }else if(type.equals("avmaterial")){
+                query += "where id_books=" + Integer.toString(document.id);
+            }
+
+            if (resultSet.next()){
+                return resultSet.getBoolean(7);
+            }else{
+                return false;
+            }
+
+
+        }catch (Exception e){
+            System.out.println("Error in checking active doc " + e.toString());
+            return false;
+        }
+    }
+
+    public static boolean isDocumentActiveById(int id, String type){
+        try {
+            String query = "select * from documents where " + type + "=" + Integer.toString(id);
+            resultSet = statement.executeQuery(query);
+            resultSet.next();
+
+            return false;
+
+        }catch (Exception e){
+            System.out.println("Error isDocumentActiveById " + e.toString());
+            return false;
         }
     }
 
@@ -150,9 +215,10 @@ public class Database {
         statement = connection.createStatement();
         resultSet = statement.executeQuery(query);
         while (resultSet.next()){
-            books.add(new Book(resultSet.getString(2), new ArrayList<String>(Arrays.asList(resultSet.getString(3).split(", "))), resultSet.getInt(7),
+
+            books.add(new Book(resultSet.getInt(1), resultSet.getString(2), new ArrayList<String>(Arrays.asList(resultSet.getString(3).split(", "))), resultSet.getInt(7),
                     new ArrayList<String>(Arrays.asList(resultSet.getString(8).split(", "))), resultSet.getBoolean(10), resultSet.getString(4),
-                    resultSet.getString(5), resultSet.getInt(6)));
+                    resultSet.getString(5), resultSet.getInt(6), true));
         }
 
         return books;
@@ -179,7 +245,7 @@ public class Database {
         String query = "select * from av_materials";
         statement = connection.createStatement();
         resultSet = statement.executeQuery(query);
-        while (resultSet.next()){//String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference
+        while (resultSet.next()){
             avmaterials.add(new AVmaterial(resultSet.getString(2), new ArrayList<String>(Arrays.asList(resultSet.getString(3).split(", "))),
                     resultSet.getInt(4), new ArrayList<String>(Arrays.asList(resultSet.getString(5).split(", "))),
                     resultSet.getBoolean(7)));

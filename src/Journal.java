@@ -53,10 +53,11 @@ public class Journal extends Document {
                 }
             }
 
-            preparedStatement = Database.connection.prepareStatement("insert into documents(id_journals, location, type) values(?, ?, ?)");
+            preparedStatement = Database.connection.prepareStatement("insert into documents(id_journals, location, type, isActive) values(?, ?, ?, ?)");
             preparedStatement.setInt(1, lastId);
             preparedStatement.setString(2, location);
             preparedStatement.setString(3, "journals");
+            preparedStatement.setBoolean(4, isActive);
             preparedStatement.executeUpdate();
         }catch (Exception e){
             System.out.println("Error create journal: " + e.toString());

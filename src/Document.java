@@ -10,7 +10,7 @@ public abstract class Document {
     public DocumentType type;
     public boolean isReference;
     public String location;
-
+    public boolean isActive;
 
     public void CreateDocumentInDB(){}
 }

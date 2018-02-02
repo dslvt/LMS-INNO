@@ -8,7 +8,8 @@ public class Book extends Document{
     public String publisher, edition;
     public int publishYear;
 
-    public Book (String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String publisher, String edition, int publishYear){
+    public Book (int id, String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String publisher, String edition, int publishYear,
+                 boolean isActive){
         this.name = name;
         this.authors = authors;
         this.price = cost;
@@ -18,6 +19,7 @@ public class Book extends Document{
         this.edition = edition;
         this.publishYear = publishYear;
         this.location = location;
+        this.isActive = isActive;
 
         type = DocumentType.book;
     }
@@ -35,7 +37,7 @@ public class Book extends Document{
                 preparedStatement = Database.connection.prepareStatement("update books set number = number + 1 where id = " + lastId.toString());
                 preparedStatement.executeUpdate();
             }else {
-                preparedStatement = Database.connection.prepareStatement("insert into books(title, author, publisher, edition, publish_year, cost, keywords, reference) values(?, ?, ?, ?, ?, ?, ?, ?)");
+                preparedStatement = Database.connection.prepareStatement("insert into books(title, author, publisher, edition, publish_year, cost, keywords, reference, number) values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
                 preparedStatement.setString(1, this.name);
                 preparedStatement.setString(2, this.authors.toString());
                 preparedStatement.setString(3, publisher);
@@ -44,6 +46,7 @@ public class Book extends Document{
                 preparedStatement.setInt(6, price);
                 preparedStatement.setString(7, keywords.toString());
                 preparedStatement.setBoolean(8, isReference);
+                preparedStatement.setInt(9, 1);
                 preparedStatement.executeUpdate();
 
                 statement = Database.connection.createStatement();
@@ -53,10 +56,11 @@ public class Book extends Document{
                 }
             }
 
-            preparedStatement = Database.connection.prepareStatement("insert into documents(id_books, location, type) values(?, ?, ?)");
+            preparedStatement = Database.connection.prepareStatement("insert into documents(id_books, location, type, isActive) values(?, ?, ?, ?)");
             preparedStatement.setInt(1, lastId);
             preparedStatement.setString(2, location);
             preparedStatement.setString(3, "books");
+            preparedStatement.setBoolean(4, isActive);
             preparedStatement.executeUpdate();
         }catch (Exception e){
             System.out.println("Error create book: " + e.toString());

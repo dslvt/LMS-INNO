@@ -29,7 +29,8 @@ public class FirstWindow extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 Database database = new Database();
                 if(database.isCorrectAuthorization(textFieldPhoneNumber.getText(), fieldPassword.getText())){
-                // New window
+                    closeFirstWindow();
+                    MenuWindow menuWindow = new MenuWindow();
                 }
                 else {
                 String message = "User does not exist\n" + "You need to Sign Up";
@@ -41,4 +42,5 @@ public class FirstWindow extends JFrame{
         buttonSignUp.addActionListener(new RegisterWindow());
         container.add(buttonSignUp);
     }
+    public void closeFirstWindow() {this.setVisible(false);}
 }

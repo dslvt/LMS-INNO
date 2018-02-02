@@ -13,22 +13,15 @@ public class Main {
 //        Authorization();
 //
 //        ArrayList<String> authors = new ArrayList<String>();
-//        authors.add("Pup");
+//        authors.add("Dan Jones");
 //        ArrayList<String> keywords = new ArrayList<String>();
-//        keywords.add("Music"); keywords.add("Rock");
-//        AVmaterial mat = new AVmaterial("Sleep In The Heat", authors, 100, keywords, false);
+//        keywords.add("History"); keywords.add("Secretive");
+//        Book mat = new Book(1, "The Templars", authors, 10, keywords, false, "amazon", "first", 2017, true);
 //        mat.CreateDocumentInDB();
 //
 //        //db.CreateAVMaterial(mat);
 
 //        Booking booking = new Booking();
-
-        try{
-            ArrayList<Book> books = db.getAllBooks();
-            System.out.println(books.get(0).name + " " + books.get(0).authors.toString());
-        }catch (Exception e){
-            System.out.println(e.toString() + " main file");
-        }
 
         FirstWindow window = new FirstWindow();
         window.setVisible(true);
