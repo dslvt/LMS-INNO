@@ -25,6 +25,7 @@ public class Booking {
     public Booking() throws ClassNotFoundException, SQLException {
         //Class.forName("com.mysql.jdbc.Driver");
         //Connection connection = DriverManager.getConnection(connectionUrl, userName, password);
+        //statement = connection.createStatement();
         Database database = new Database();
         statement = database.connection.createStatement();
     }
@@ -39,8 +40,9 @@ public class Booking {
         String type = getType(document);
 
         //Change number of available documents
-        ResultSet rec = statement.getResultSet();
-        changeNumber(false, type, rec);
+        //statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
+        //ResultSet rec = statement.getResultSet();
+        changeNumber(false, type, document);
     }
 
     public void returnBook(Document document, User user) throws SQLException {
@@ -113,7 +115,7 @@ public class Booking {
         statement.executeUpdate("DELETE FROM booking WHERE document_id = '" + document.id + "'");
 
         //Change number of available documents
-        changeNumber(true, type, rec);
+        changeNumber(true, type, document);
 
     }
 
@@ -152,10 +154,13 @@ public class Booking {
     private int countOverdue(Date bookingDate, Date currentDate, Document document) throws SQLException {
         int days = (int) (bookingDate.getTime() - currentDate.getTime()/(1000 * 60 * 60 * 24));
         int overdue = days * 100;
+
+        statement.executeQuery("SELECT*FROM documents WHERE id = '" + document.id + "'");
         ResultSet line = statement.getResultSet();
+
         String type = getType(document);
+
         if (type.equals("book")) {
-            line = statement.getResultSet();
             int id = 0;
             if (line.next()) {
                 id = line.getInt("id_books");
@@ -164,7 +169,6 @@ public class Booking {
             line = statement.getResultSet();
         }
         if (type.equals("journal")){
-            line = statement.getResultSet();
             int id = 0;
             if (line.next()) {
                 id = line.getInt("id_journals");
@@ -172,8 +176,7 @@ public class Booking {
             statement.executeQuery("SELECT*FROM journals WHERE id = '" + id + "'");
             line = statement.getResultSet();
         }
-        if(type.equals("av_material")){
-            line = statement.getResultSet();
+        if(type.equals("av_materials")){
             int id = 0;
             if (line.next()) {
                 id = line.getInt("id_av_materials");
@@ -193,44 +196,59 @@ public class Booking {
         return overdue;
     }
 
-    private void changeNumber(boolean add, String type, ResultSet rec) throws SQLException {
+    private void changeNumber(boolean add, String type, Document document) throws SQLException {
         int one;
         if (add) {
             one = 1;
         } else {
             one = -1;
         }
-
+        statement.executeQuery("SELECT*FROM documents WHERE id = '" + document.id + "'");
+        ResultSet rec = statement.getResultSet();
         //Change number of available documents
         if (type.equals("book")) {//If it's book
-            rec = statement.getResultSet();
             int counter = 0;
             int id = 0;
             if (rec.next()) {
                 id = rec.getInt("id_books");
                 counter = rec.getInt("number") + one;
             }
+            statement.executeQuery("SELECT*FROM books WHERE id = '" + id + "'");
+            rec = statement.getResultSet();
+            if (rec.next()) {
+                counter = rec.getInt("number");
+            }
+            counter+=one;
             statement.executeUpdate("UPDATE books set numb = '" + counter + "' WHERE id ='" + id + "'");
         }
         if (type.equals("journal")) {//If it's journal
-            rec = statement.getResultSet();
             int counter = 0;
             int id = 0;
             if (rec.next()) {
                 id = rec.getInt("id_journals");
                 counter = rec.getInt("number") + one;
             }
+            statement.executeQuery("SELECT*FROM journals WHERE id = '" + id + "'");
+            rec = statement.getResultSet();
+            if (rec.next()) {
+                counter = rec.getInt("number");
+            }
+            counter+=one;
             statement.executeUpdate("UPDATE journals set numb = '" + counter + "' WHERE id ='" + id + "'");
         }
-        if (type.equals("av_material")) {//If it's av material
-            rec = statement.getResultSet();
+        if (type.equals("av_materials")) {//If it's av material
             int counter = 0;
             int id = 0;
             if (rec.next()) {
                 id = rec.getInt("id_av_materials");
-                counter = rec.getInt("number") + one;
             }
-            statement.executeUpdate("UPDATE av_materials set numb = '" + counter + "' WHERE id ='" + id + "'");
+            statement.executeQuery("SELECT*FROM av_materials WHERE id = '" + id + "'");
+            rec = statement.getResultSet();
+            if (rec.next()) {
+                counter = rec.getInt("number");
+            }
+            counter+=one;
+            statement.executeUpdate("UPDATE av_materials set number = '" + counter + "' WHERE id ='" + id + "'");
         }
     }
 }
