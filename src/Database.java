@@ -147,46 +147,6 @@ public class Database {
         }
     }
 
-    public void UpdateUser(User user){
-
-    }
-
-    public void UpdateDocument(Document document){
-
-    }
-
-    public void DeleteUser(User user){
-
-    }
-
-    public void DeleteDocument(Document document){
-
-    }
-
-    public boolean hasDocument(Document document){
-        return true;
-    }
-
-    public boolean hasUser(User user){
-        return true;
-    }
-
-    public boolean CheckOutDocument(User user, Document document){
-        return true;
-    }
-
-    public void ReturnDocument(User user, Document document){
-
-    }
-
-    public ArrayList<Document> CheckOverdueDocuments(){
-        return new ArrayList<>();
-    }
-
-    public int getUserDebt(User user){
-        return -1;
-    }
-
     public boolean isCorrectAuthorization(String username, String pass){
         try{
             statement = connection.createStatement();
@@ -201,6 +161,24 @@ public class Database {
             System.out.println("error: " + e.toString());
         }
         return false;
+    }
+
+    public Patron getPatronByNumber(String login){
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select * from users where phoneNumber=" + login);
+            resultSet.next();
+
+            Patron patron = new Patron(resultSet.getString(2), resultSet.getString(7),
+                    resultSet.getString(3), resultSet.getString(4), resultSet.getBoolean(6), resultSet.getInt(5));
+
+            patron.id = resultSet.getInt(1);
+
+            return patron;
+        }catch (Exception e){
+            System.out.println("Error in getting user by login " + e.toString());
+            return new Patron();
+        }
     }
 
     public User GetUserByLogin(String username){
@@ -252,5 +230,42 @@ public class Database {
         }
 
         return avmaterials;
+    }
+
+    public ArrayList<Document> getAllDocuments(){
+        ArrayList<Document> users = new ArrayList<>();
+
+        try {
+            String query = "select * from documents";
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+
+
+            while (resultSet.next()){
+                String findInCurrentDBQuery = "select title from ";
+                if(resultSet.getInt(2) != 0){
+                    findInCurrentDBQuery += "av_materials";
+
+                }else if(resultSet.getInt(3) != 0){
+                    findInCurrentDBQuery += "books";
+
+                }else if(resultSet.getInt(4) != 0){
+                    findInCurrentDBQuery += "journals";
+
+                }
+
+                ResultSet someResultSet = statement.executeQuery(findInCurrentDBQuery);
+
+
+
+                someResultSet.next();
+                users.add();
+            }
+
+        }catch (Exception e){
+            System.out.println("Error in getAllDocuments " + e.toString());
+        }
+
+        return users;
     }
 }

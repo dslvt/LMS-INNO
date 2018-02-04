@@ -30,19 +30,24 @@ public class Booking {
         statement = database.connection.createStatement();
     }
 
-    public void checkOut(Document document, User user) throws SQLException {
-        //Crete new line in Booking
-        java.util.Date date = new java.util.Date();
-        java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
-        statement.executeUpdate("INSERT into booking set user_id = '" + user.id + "', document_id = '" + document.id + "', time = '" + timestamp + "' ");
+    public void checkOut(Document document, User user) {
+        try {
 
-        //Get line from Documents
-        String type = getType(document);
+            //Crete new line in Booking
+            java.util.Date date = new java.util.Date();
+            java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
+            statement.executeUpdate("INSERT into booking set user_id = '" + user.id + "', document_id = '" + document.id + "', time = '" + timestamp + "' ");
 
-        //Change number of available documents
-        //statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
-        //ResultSet rec = statement.getResultSet();
-        changeNumber(false, type, document);
+            //Get line from Documents
+            String type = getType(document);
+
+            //Change number of available documents
+            //statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
+            //ResultSet rec = statement.getResultSet();
+            changeNumber(false, type, document);
+        }catch (Exception e){
+            System.out.println("Error in checkOut booking " + e.toString());
+        }
     }
 
     public void returnBook(Document document, User user) throws SQLException {

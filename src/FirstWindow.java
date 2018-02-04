@@ -29,6 +29,7 @@ public class FirstWindow extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 Database database = new Database();
                 if(database.isCorrectAuthorization(textFieldPhoneNumber.getText(), fieldPassword.getText())){
+                    CurrentSession.user = database.GetUserByLogin(textFieldPhoneNumber.getText());
                     closeFirstWindow();
                     MenuWindow menuWindow = new MenuWindow();
                 }

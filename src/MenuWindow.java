@@ -16,7 +16,7 @@ public class MenuWindow extends JFrame {
         menuWindow.setTitle("Sign Up");
         menuWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container containerM = menuWindow.getContentPane();
-        containerM.setLayout(new GridLayout(6, 2, 2, 2));
+        containerM.setLayout(new GridLayout(3, 1, 2, 2));
         containerM.add(takeBook);
         containerM.add(myBooks);
         containerM.add(returnBook);

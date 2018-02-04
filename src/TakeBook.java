@@ -4,14 +4,15 @@ import javax.print.DocFlavor;
 import javax.swing.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Vector;
 
 public class TakeBook extends JFrame{
     private JList<String> allBooks;
-    private Vector<String> vector = new Vector<String>();;
+    private Vector<Document> vector;
     private JButton takingBook = new JButton("Take Book");
 
-    private ArrayList<Book> books;
     private Database db = new Database();
 
     public TakeBook() {
@@ -19,31 +20,39 @@ public class TakeBook extends JFrame{
         try {
 
             JFrame takeBook = new JFrame();
-            takeBook.setBounds(100, 100, 250, 150);
+            takeBook.setBounds(100, 100, 250, 200);
             takeBook.setLocationRelativeTo(null);
             takeBook.setResizable(false);
             takeBook.setTitle("Take Book");
             takeBook.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             Container containerTB = takeBook.getContentPane();
-            containerTB.setLayout(new GridLayout(6, 2, 2, 2));
+            containerTB.setLayout(new BorderLayout());
 
-            books = db.getAllBooks();
-            for (int i = 0; i < books.size(); i++) {
-                vector.add(books.get(i).name);
+            vector = new Vector(db.getAllDocuments());
+            Vector <String> documentNames = new Vector<>();
+            for (int i = 0; i < vector.size(); i++){
+                documentNames.add(vector.get(i).name);
             }
 
-            // for(int i=0; i<numberOfBooks; i++)
-            // vector.add(takeBookWithID(i));
-            allBooks = new JList<String>(vector);
+            allBooks = new JList<String>(documentNames);
             allBooks.setPreferredSize(new Dimension(150, 200));
+            allBooks.setLayoutOrientation(JList.VERTICAL);
+            allBooks.setVisibleRowCount(0);
             allBooks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            containerTB.add(new JScrollPane(allBooks));
+            JScrollPane listScroller = new JScrollPane(allBooks);
+            listScroller.setPreferredSize(new Dimension(100,100));
+            containerTB.add(listScroller, BorderLayout.CENTER);
+
+            Booking booking = new Booking();
+
             takingBook.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int index = allBooks.getSelectedIndex();
                     if(index != -1){
-                        
+
+                        booking.checkOut(vector.get(index) , CurrentSession.user);
+
                         takeBook.setVisible(false);
                     } else{
                         String message = "Select a book!\n";
@@ -51,7 +60,8 @@ public class TakeBook extends JFrame{
                     }
                 }
             });
-            containerTB.add(takingBook);
+            takingBook.setPreferredSize(new Dimension(250, 40));
+            containerTB.add(takingBook, BorderLayout.SOUTH);
             takeBook.setVisible(true);
         }catch (Exception e){
             System.out.println("Error in takebook " + e.toString());
