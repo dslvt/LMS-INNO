@@ -15,6 +15,9 @@ public class TakeBook extends JFrame{
 
     private Database db = new Database();
 
+    /**
+     * creating take book menu GUI
+     */
     public TakeBook() {
 
         try {
@@ -45,13 +48,15 @@ public class TakeBook extends JFrame{
 
             Booking booking = new Booking();
 
+            ArrayList<Integer> documentIds = db.getAllDocumentsIDs();
+
             takingBook.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int index = allBooks.getSelectedIndex();
                     if(index != -1){
 
-                        booking.checkOut(vector.get(index) , CurrentSession.user);
+                        booking.checkOut(new AVmaterial(documentIds.get(index)) , CurrentSession.user);
 
                         takeBook.setVisible(false);
                     } else{

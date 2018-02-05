@@ -10,6 +10,9 @@ public class FirstWindow extends JFrame{
     private JLabel labelPassword =  new JLabel("Password");
     private JPasswordField fieldPassword = new JPasswordField();
 
+    /**
+     * creating first window GUI
+     */
     public FirstWindow(){
         super("Simple Example");
         this.setBounds(100, 100, 250, 150);
@@ -29,7 +32,7 @@ public class FirstWindow extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 Database database = new Database();
                 if(database.isCorrectAuthorization(textFieldPhoneNumber.getText(), fieldPassword.getText())){
-                    CurrentSession.user = database.GetUserByLogin(textFieldPhoneNumber.getText());
+                    CurrentSession.user = database.getPatronByNumber(textFieldPhoneNumber.getText());
                     closeFirstWindow();
                     MenuWindow menuWindow = new MenuWindow();
                 }

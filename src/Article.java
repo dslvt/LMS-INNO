@@ -7,6 +7,9 @@ import java.sql.SQLException;
 public class Article extends Document {
     public Journal journal;
 
+    /**
+     * it's constructor
+     */
     public Article(String name, ArrayList<String> authors, Journal journal){
         this.name = name;
         this.authors = authors;
@@ -15,6 +18,9 @@ public class Article extends Document {
         type = DocumentType.article;
     }
 
+    /**
+     * creating document in database
+     */
     @Override
     public void CreateDocumentInDB() {
         Statement statement;

@@ -8,8 +8,10 @@ public class Book extends Document{
     public String publisher, edition;
     public int publishYear;
 
-    public Book (int id, String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String publisher, String edition, int publishYear,
-                 boolean isActive){
+    /**
+     *common constructor
+     */
+    public Book (String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String publisher, String edition, int publishYear){
         this.name = name;
         this.authors = authors;
         this.price = cost;
@@ -19,11 +21,13 @@ public class Book extends Document{
         this.edition = edition;
         this.publishYear = publishYear;
         this.location = location;
-        this.isActive = isActive;
 
         type = DocumentType.book;
     }
 
+    /**
+     * creating book in database
+     */
     @Override
     public void CreateDocumentInDB() {
         Database db = new Database();

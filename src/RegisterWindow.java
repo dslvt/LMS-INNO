@@ -15,6 +15,10 @@ class RegisterWindow extends JFrame implements ActionListener {
     private JRadioButton radioFacultyMember = new JRadioButton("Faculty Member");
     private JButton submit = new JButton("Submit");
 
+    /**
+     * creating register GUI
+     * @param e
+     */
     public void actionPerformed(ActionEvent e) {
         JFrame signUp = new JFrame("Sign Up");
         signUp.setBounds(100, 100, 250, 300);
