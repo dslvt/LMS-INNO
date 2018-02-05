@@ -5,46 +5,51 @@ import java.util.Date;
 public class Booking {
 
     Statement statement;
-    //String userName = "root";
-    //String password = "enaca2225";
-    //String connectionUrl = "jdbc:mysql://localhost:3306/project?useSSL=false";
+    String userName = "root";
+    String password = "enaca2225";
+    String connectionUrl = "jdbc:mysql://localhost:3306/project?useSSL=false";
 
-    /*
+
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         Booking booking = new Booking();
         Document document = new AVmaterial();
-        document.id = 15;
+        document.id = 19;
         User user = new Patron();
         user.id = 5;
         //booking.checkOut(document,user);
         //booking.renewBook(document);
         //booking.returnBook(document, user);
     }
-    */
+
 
     public Booking() throws ClassNotFoundException, SQLException {
-        //Class.forName("com.mysql.jdbc.Driver");
-        //Connection connection = DriverManager.getConnection(connectionUrl, userName, password);
-        //statement = connection.createStatement();
-        Database database = new Database();
-        statement = database.connection.createStatement();
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection connection = DriverManager.getConnection(connectionUrl, userName, password);
+        statement = connection.createStatement();
+        //Database database = new Database();
+        //statement = database.connection.createStatement();
     }
 
     public void checkOut(Document document, User user) {
         try {
 
-            //Crete new line in Booking
-            java.util.Date date = new java.util.Date();
-            java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
-            statement.executeUpdate("INSERT into booking set user_id = '" + user.id + "', document_id = '" + document.id + "', time = '" + timestamp + "' ");
+            if(takeCopy(document,user)) {
+                //Crete new line in Booking
+                java.util.Date date = new java.util.Date();
+                java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
+                statement.executeUpdate("INSERT into booking set user_id = '" + user.id + "', document_id = '" + document.id + "', time = '" + timestamp + "' ");
 
-            //Get line from Documents
-            String type = getType(document);
+                //Get line from Documents
+                String type = getType(document);
 
-            //Change number of available documents
-            //statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
-            //ResultSet rec = statement.getResultSet();
-            changeNumber(false, type, document);
+                //Change number of available documents
+                changeNumber(false, type, document);
+
+                //Term of booking
+                int term = bookingTerm(document, user);
+                System.out.println(term);
+            }
+
         }catch (Exception e){
             System.out.println("Error in checkOut booking " + e.toString());
         }
@@ -64,45 +69,8 @@ public class Booking {
             bookingDate = rec.getDate("time");
         }
 
-        //Get type of document
-        String type = getType(document);
-
-        //Is user faculty member
-        statement.executeQuery("SELECT*FROM users WHERE id = '" + user.id + "'");
-        rec = statement.getResultSet();
-        boolean isFaculty = false;
-        if (rec.next()) {
-            isFaculty = rec.getBoolean("isFacultyMember");
-        }
-
         //Count the term of booking
-        int term;
-        if (type.equals("book")) {
-            if (isFaculty) {
-                term = 28;
-            } else {
-                statement.executeQuery("SELECT*FROM documents WHERE id = '" + document.id + "'");
-                rec = statement.getResultSet();
-                int id_books = 0;
-                if (rec.next()) {
-                    id_books = rec.getInt("id_books");
-                }
-                statement.executeQuery("SELECT*FROM books WHERE id = '" + id_books + "'");
-                rec = statement.getResultSet();
-                boolean isBestSeller = false;
-                if (rec.next()) {
-                    isBestSeller = rec.getBoolean("isBestSeller");
-                }
-
-                if (isBestSeller) {
-                    term = 14;
-                } else {
-                    term = 21;
-                }
-            }
-        } else {
-            term = 14;
-        }
+        int term = bookingTerm(document, user);
 
         //Add term to date of booking
         Calendar c = Calendar.getInstance();
@@ -117,10 +85,10 @@ public class Booking {
         }
 
         //Delete record from Booking
-        statement.executeUpdate("DELETE FROM booking WHERE document_id = '" + document.id + "'");
+        statement.executeUpdate("DELETE FROM booking WHERE document_id = '" + document.id + "' AND user_id = '"+user.id+"'");
 
         //Change number of available documents
-        changeNumber(true, type, document);
+        changeNumber(true, getType(document), document);
 
     }
 
@@ -216,7 +184,6 @@ public class Booking {
             int id = 0;
             if (rec.next()) {
                 id = rec.getInt("id_books");
-                counter = rec.getInt("number") + one;
             }
             statement.executeQuery("SELECT*FROM books WHERE id = '" + id + "'");
             rec = statement.getResultSet();
@@ -224,14 +191,13 @@ public class Booking {
                 counter = rec.getInt("number");
             }
             counter+=one;
-            statement.executeUpdate("UPDATE books set numb = '" + counter + "' WHERE id ='" + id + "'");
+            statement.executeUpdate("UPDATE books set number = '" + counter + "' WHERE id ='" + id + "'");
         }
         if (type.equals("journal")) {//If it's journal
             int counter = 0;
             int id = 0;
             if (rec.next()) {
                 id = rec.getInt("id_journals");
-                counter = rec.getInt("number") + one;
             }
             statement.executeQuery("SELECT*FROM journals WHERE id = '" + id + "'");
             rec = statement.getResultSet();
@@ -239,7 +205,7 @@ public class Booking {
                 counter = rec.getInt("number");
             }
             counter+=one;
-            statement.executeUpdate("UPDATE journals set numb = '" + counter + "' WHERE id ='" + id + "'");
+            statement.executeUpdate("UPDATE journals set number = '" + counter + "' WHERE id ='" + id + "'");
         }
         if (type.equals("av_materials")) {//If it's av material
             int counter = 0;
@@ -255,6 +221,62 @@ public class Booking {
             counter+=one;
             statement.executeUpdate("UPDATE av_materials set number = '" + counter + "' WHERE id ='" + id + "'");
         }
+    }
+
+    private int bookingTerm (Document document, User user) throws SQLException {
+        ResultSet rec = statement.getResultSet();
+        //Get type of document
+        String type = getType(document);
+
+        //Is user faculty member
+        statement.executeQuery("SELECT*FROM users WHERE id = '" + user.id + "'");
+        rec = statement.getResultSet();
+        boolean isFaculty = false;
+        if (rec.next()) {
+            isFaculty = rec.getBoolean("isFacultyMember");
+        }
+
+        int term;
+        if (type.equals("book")) {
+            statement.executeQuery("SELECT*FROM documents WHERE id = '" + document.id + "'");
+            rec = statement.getResultSet();
+            int id_books = 0;
+            if (rec.next()) {
+                id_books = rec.getInt("id_books");
+            }
+            statement.executeQuery("SELECT*FROM books WHERE id = '" + id_books + "'");
+            rec = statement.getResultSet();
+            boolean isBestSeller = false;
+            if (rec.next()) {
+                isBestSeller = rec.getBoolean("isBestSeller");
+            }
+            if (isBestSeller) {
+                term = 14;
+            } else {
+                if(isFaculty){
+                    term = 28;
+                }
+                else {
+                    term = 21;
+                }
+            }
+        } else {
+            term = 14;
+        }
+        return term;
+    }
+
+    private boolean takeCopy(Document document, User user) throws SQLException {
+        statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "' AND user_id = '"+user.id+"'");
+        ResultSet rec = statement.getResultSet();
+        int id = 0;
+        if(rec.next()){
+            id = rec.getInt("id");
+        }
+        if (id == 0){
+            return true;
+        }
+        return false;
     }
 }
 
