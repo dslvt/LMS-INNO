@@ -8,6 +8,9 @@ public class MenuWindow extends JFrame {
     private JButton myBooks = new JButton("My Books");
     private JButton returnBook = new JButton("Return Book");
 
+    /**
+     * creating menu window GUI
+     */
     public MenuWindow(){
         JFrame menuWindow = new JFrame();
         menuWindow.setBounds(100, 100, 250, 150);

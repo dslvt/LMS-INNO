@@ -7,8 +7,22 @@ import java.util.ArrayList;
 
 public class AVmaterial extends Document {
 
+    /**
+     * empty constructor with id
+     * @param id
+     */
+    public AVmaterial(int id){
+        this.id = id;
+    }
+
+    /**
+     * empty constructor
+     */
     public AVmaterial(){}
 
+    /**
+     * common constructor
+     */
     public AVmaterial(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference){
         this.name = name;
         this.authors = authors;
@@ -19,6 +33,9 @@ public class AVmaterial extends Document {
         type = DocumentType.avmaterial;
     }
 
+    /**
+     * creating avmaterial in database
+     */
     @Override
     public void CreateDocumentInDB() {
         Database db = new Database();

@@ -12,5 +12,8 @@ public abstract class Document {
     public String location;
     public boolean isActive;
 
+    /**
+     * common feature
+     */
     public void CreateDocumentInDB(){}
 }

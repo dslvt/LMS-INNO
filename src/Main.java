@@ -27,6 +27,9 @@ public class Main {
         window.setVisible(true);
     }
 
+    /**
+     * testing feature
+     */
     private static void Authorization(){
         boolean isAuthorizated = false;
 

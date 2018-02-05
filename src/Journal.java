@@ -9,6 +9,9 @@ public class Journal extends Document {
     public String issue;
     public String editor;
 
+    /**
+     * common constructor
+     */
     public Journal(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords,
                    boolean isReference, String publicationDate, String issue, String editor){
         this.name = name;
@@ -23,6 +26,9 @@ public class Journal extends Document {
         type = DocumentType.journal;
     }
 
+    /**
+     * creating new row in database
+     */
     @Override
     public void CreateDocumentInDB() {
         Database db = new Database();

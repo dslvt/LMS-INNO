@@ -16,6 +16,9 @@ public class Database {
     private static ResultSet resultSet;
     private static PreparedStatement preparedStatement;
 
+    /**
+     * common constructor
+     */
     public Database(){
         preparedStatement = null;
         try {
@@ -26,6 +29,10 @@ public class Database {
         }
     }
 
+    /**
+     * search document in database and return its existing
+     * @return boolean
+     */
     public static int isDocumentExist(Document document){
         try {
             int isDocExist = -1;
@@ -62,6 +69,11 @@ public class Database {
         }
     }
 
+    /**
+     * check document's existing
+     * @return id document
+     * @throws SQLException
+     */
     public static int isDocumentExistByType(String type, Document document) throws SQLException{
 
         if(type.equals("journal")) {
@@ -106,6 +118,10 @@ public class Database {
         return -1;
     }
 
+    /**
+     * our document took or not
+     * @return boolean
+     */
     public static boolean isDocumentActive(String type, Document document){
         try {
             String query = "select * from documents ";
@@ -133,6 +149,10 @@ public class Database {
         }
     }
 
+    /**
+     * another implementation of isDocumentActive
+     * @return boolean
+     */
     public static boolean isDocumentActiveById(int id, String type){
         try {
             String query = "select * from documents where " + type + "=" + Integer.toString(id);
@@ -147,6 +167,12 @@ public class Database {
         }
     }
 
+    /**
+     * check correct authorization
+     * @param username phoneNumber
+     * @param pass password
+     * @return if is correct or nor
+     */
     public boolean isCorrectAuthorization(String username, String pass){
         try{
             statement = connection.createStatement();
@@ -163,6 +189,11 @@ public class Database {
         return false;
     }
 
+    /**
+     * find patron by phone number
+     * @param login
+     * @return correct patron
+     */
     public Patron getPatronByNumber(String login){
         try {
             statement = connection.createStatement();
@@ -181,11 +212,10 @@ public class Database {
         }
     }
 
-    public User GetUserByLogin(String username){
-        return new Patron();
-    }
-
-
+    /**
+     * @return all books
+     * @throws SQLException
+     */
     public ArrayList<Book> getAllBooks() throws SQLException {
         ArrayList<Book> books = new ArrayList<>();
 
@@ -194,14 +224,18 @@ public class Database {
         resultSet = statement.executeQuery(query);
         while (resultSet.next()){
 
-            books.add(new Book(resultSet.getInt(1), resultSet.getString(2), new ArrayList<String>(Arrays.asList(resultSet.getString(3).split(", "))), resultSet.getInt(7),
+            books.add(new Book(resultSet.getString(2), new ArrayList<String>(Arrays.asList(resultSet.getString(3).split(", "))), resultSet.getInt(7),
                     new ArrayList<String>(Arrays.asList(resultSet.getString(8).split(", "))), resultSet.getBoolean(10), resultSet.getString(4),
-                    resultSet.getString(5), resultSet.getInt(6), true));
+                    resultSet.getString(5), resultSet.getInt(6)));
         }
 
         return books;
     }
 
+    /**
+     * @return all journals in database
+     * @throws SQLException
+     */
     public ArrayList<Journal> getAllJournals() throws SQLException{
         ArrayList<Journal> journals = new ArrayList<>();
 
@@ -217,6 +251,10 @@ public class Database {
         return journals;
     }
 
+    /**
+     * @return all av materials
+     * @throws SQLException
+     */
     public ArrayList<AVmaterial> getAllAVmaterials() throws SQLException{
         ArrayList<AVmaterial> avmaterials = new ArrayList<>();
 
@@ -232,6 +270,9 @@ public class Database {
         return avmaterials;
     }
 
+    /**
+     * @return all documents
+     */
     public ArrayList<Document> getAllDocuments(){
         ArrayList<Document> users = new ArrayList<>();
 
@@ -242,24 +283,37 @@ public class Database {
 
 
             while (resultSet.next()){
-                String findInCurrentDBQuery = "select title from ";
+                Document currentDoc = new AVmaterial();
+                String findInCurrentDBQuery = "select * from ";
+                Statement tconnection = connection.createStatement();
+
                 if(resultSet.getInt(2) != 0){
-                    findInCurrentDBQuery += "av_materials";
-
+                    findInCurrentDBQuery += "av_materials where id=" + Integer.toString(resultSet.getInt(2));
+                    ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
+                    res.next();
+                    currentDoc = new AVmaterial(res.getString("title"), new ArrayList<String>(Arrays.asList(res.getString("author").split(", "))),
+                            res.getInt("cost"), new ArrayList<String>(Arrays.asList(res.getString("keywords").split(", "))),
+                            res.getBoolean("reference"));
+                    currentDoc.id = res.getInt(1);
                 }else if(resultSet.getInt(3) != 0){
-                    findInCurrentDBQuery += "books";
-
+                    findInCurrentDBQuery += "books where id="+Integer.toString(resultSet.getInt(3));
+                    ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
+                    res.next();
+                    currentDoc = new Book(res.getString("title"), new ArrayList<String>(Arrays.asList(res.getString("author").split(", "))),
+                            res.getInt("cost"), new ArrayList<String>(Arrays.asList(res.getString("keywords").split(", "))),
+                            res.getBoolean("reference"), res.getString("publisher"), res.getString("edition"),
+                            res.getInt("publish_year"));
+                    currentDoc.id = res.getInt(1);
                 }else if(resultSet.getInt(4) != 0){
-                    findInCurrentDBQuery += "journals";
-
+                    findInCurrentDBQuery += "journals where id="+Integer.toString(resultSet.getInt(4));
+                    ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
+                    res.next();
+                    currentDoc = new Journal(res.getString("title"), new ArrayList<String>(Arrays.asList(res.getString("author").split(", "))),
+                            res.getInt("cost"), new ArrayList<String>(Arrays.asList(res.getString("keywords").split(", "))),
+                            res.getBoolean("reference"), "-1", res.getString("issue"), res.getString("editor"));
+                    currentDoc.id = res.getInt(1);
                 }
-
-                ResultSet someResultSet = statement.executeQuery(findInCurrentDBQuery);
-
-
-
-                someResultSet.next();
-                users.add();
+                users.add(currentDoc);
             }
 
         }catch (Exception e){
@@ -267,5 +321,23 @@ public class Database {
         }
 
         return users;
+    }
+
+    /**
+     * @return documents' id to correct finding document
+     */
+    public ArrayList<Integer> getAllDocumentsIDs(){
+        ArrayList<Integer> ids = new ArrayList<>();
+
+        try {
+            resultSet = statement.executeQuery("select id from documents");
+            while (resultSet.next()){
+                ids.add(resultSet.getInt(1));
+            }
+        }catch (Exception e){
+            System.out.println("Error getAllDocumentsIDs " + e.toString());
+        }
+
+        return ids;
     }
 }

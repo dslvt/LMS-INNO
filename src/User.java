@@ -7,6 +7,9 @@ public abstract class User {
     public int id;
     public String password;
 
+    /**
+     * add new user in database
+     */
     public void CreateUserDB(){
         try {
             PreparedStatement preparedStatement;

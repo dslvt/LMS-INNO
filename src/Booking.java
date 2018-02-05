@@ -22,6 +22,11 @@ public class Booking {
     }
     */
 
+    /**
+     * constructor
+     * @throws ClassNotFoundException
+     * @throws SQLException
+     */
     public Booking() throws ClassNotFoundException, SQLException {
         //Class.forName("com.mysql.jdbc.Driver");
         //Connection connection = DriverManager.getConnection(connectionUrl, userName, password);
@@ -30,13 +35,19 @@ public class Booking {
         statement = database.connection.createStatement();
     }
 
+    /**
+     * checkOut document in database
+     * @param user which check out doc
+     */
     public void checkOut(Document document, User user) {
         try {
 
             //Crete new line in Booking
             java.util.Date date = new java.util.Date();
             java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
+            System.out.println(document.id);
             statement.executeUpdate("INSERT into booking set user_id = '" + user.id + "', document_id = '" + document.id + "', time = '" + timestamp + "' ");
+
 
             //Get line from Documents
             String type = getType(document);
@@ -50,6 +61,12 @@ public class Booking {
         }
     }
 
+    /**
+     * returning doc and delete row in booking table
+     * @param document which we will return
+     * @param user
+     * @throws SQLException
+     */
     public void returnBook(Document document, User user) throws SQLException {
         //Get line from Booking
         statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
@@ -124,6 +141,11 @@ public class Booking {
 
     }
 
+    /**
+     * return document and add it back. Also we update time
+     * @param document
+     * @throws SQLException
+     */
     public void renewBook(Document document) throws SQLException {
         //Get line from Booking
         statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
@@ -146,6 +168,10 @@ public class Booking {
 
     }
 
+    /**
+     * @return type of document
+     * @throws SQLException
+     */
     private String getType(Document document) throws SQLException {
         statement.executeQuery("SELECT*FROM documents WHERE id = '" + document.id + "'");
         ResultSet line = statement.getResultSet();
@@ -156,6 +182,11 @@ public class Booking {
         return type;
     }
 
+    /**
+     * calculate how much user overdue to lib
+     * @return debt
+     * @throws SQLException
+     */
     private int countOverdue(Date bookingDate, Date currentDate, Document document) throws SQLException {
         int days = (int) (bookingDate.getTime() - currentDate.getTime()/(1000 * 60 * 60 * 24));
         int overdue = days * 100;
@@ -201,6 +232,10 @@ public class Booking {
         return overdue;
     }
 
+    /**
+     * change amount of current item
+     * @throws SQLException
+     */
     private void changeNumber(boolean add, String type, Document document) throws SQLException {
         int one;
         if (add) {
