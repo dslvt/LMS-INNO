@@ -55,9 +55,16 @@ public class TakeBook extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     int index = allBooks.getSelectedIndex();
                     if(index != -1){
+                        int amountOfDays = -1;
 
-                        booking.checkOut(new AVmaterial(documentIds.get(index)) , CurrentSession.user);
                         String time = "";
+                        amountOfDays = booking.checkOut(new AVmaterial(documentIds.get(index)) , CurrentSession.user);
+                        if(amountOfDays == -1){
+                            time = "Sorry, but you cant take this book";
+                        }else{
+                            time = "You have been taken book on " + Integer.toString(amountOfDays) + " days.";
+                        }
+
                         JOptionPane.showMessageDialog(null, time, "", JOptionPane.PLAIN_MESSAGE);
 
                         takeBook.setVisible(false);

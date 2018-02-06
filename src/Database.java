@@ -330,6 +330,7 @@ public class Database {
             aVmaterial = new AVmaterial(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
                     rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
                     rs.getBoolean("reference"));
+            aVmaterial.id = rs.getInt("id");
         }catch (Exception e){
             System.out.println("Error in createAVMaterialByResultSet: " + e.toString());
         }
@@ -343,7 +344,8 @@ public class Database {
             book = new Book(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
                     rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
                     rs.getBoolean("reference"), rs.getString("publisher"), rs.getString("edition"),
-                    rs.getInt("publish_year"), rs.getBoolean("isBestseller"));
+                    rs.getInt("publish_year"), rs.getBoolean("isBestSeller"));
+            book.id = rs.getInt("id");
         }catch (Exception e){
             System.out.println("Error in createBookByResultSet: " + e.toString());
         }
@@ -357,6 +359,7 @@ public class Database {
             journal = new Journal(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
                     rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
                     rs.getBoolean("reference"), "-1", rs.getString("issue"), rs.getString("editor"));
+            journal.id = rs.getInt("id");
         }catch (Exception e){
             System.out.println("Error in createBookByResultSet: " + e.toString());
         }
@@ -368,7 +371,7 @@ public class Database {
         int ans = -1;
         try {
             statement = connection.createStatement();
-            String query = "select number from books where id ="+Integer.toString(book.id);
+            String query = "select number from books where id ="+Integer.toString(getCorrectIdInLocalDatabase(book.id));
             resultSet = statement.executeQuery(query);
             resultSet.next();
 
@@ -385,7 +388,7 @@ public class Database {
         int ans = -1;
         try {
             statement = connection.createStatement();
-            String query = "select number from journals where id ="+Integer.toString(journal.id);
+            String query = "select number from journals where id ="+Integer.toString(getCorrectIdInLocalDatabase(journal.id));
             resultSet = statement.executeQuery(query);
             resultSet.next();
 
@@ -402,16 +405,40 @@ public class Database {
         int ansv = -1;
         try {
             statement = connection.createStatement();
-            String query = "select number from av_materials where id ="+Integer.toString(aVmaterial.id);
+            String query = "select number from av_materials where id ="+Integer.toString(getCorrectIdInLocalDatabase(aVmaterial.id));
             resultSet = statement.executeQuery(query);
             resultSet.next();
 
             ansv =  resultSet.getInt("number");
 
         }catch (Exception e){
-            System.out.println("Error in getAmountOfCurrentJournal: " + e.toString());
+            System.out.println("Error in getAmountOfCurrentAvmaterial: " + e.toString());
         }
 
         return ansv;
+    }
+
+    private static int getCorrectIdInLocalDatabase(int documentId){
+        int id = -1;
+
+        try{
+            statement = connection.createStatement();
+            String query = "select * from documents where id=" + Integer.toString(documentId);
+            resultSet = statement.executeQuery(query);
+            resultSet.next();
+
+            if(resultSet.getInt("id_av_materials")!=0){
+                id = resultSet.getInt("id_av_materials");
+            }else if(resultSet.getInt("id_books")!= 0){
+                id = resultSet.getInt("id_books");
+            }else if(resultSet.getInt("id_journals") != 0){
+                id = resultSet.getInt("id_journals");
+            }
+
+        }catch (Exception e){
+            System.out.println("Error in getCorrectIdInLocalDatabase: " + e.toString());
+        }
+
+        return id;
     }
 }
