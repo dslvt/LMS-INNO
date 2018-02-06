@@ -49,4 +49,9 @@ public class Article extends Document {
             System.out.println("Error create journal article: " + e.toString());
         }
     }
+
+    @Override
+    public boolean isCanBeTaken() {
+        return false;
+    }
 }

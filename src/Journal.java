@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -68,5 +69,10 @@ public class Journal extends Document {
         }catch (Exception e){
             System.out.println("Error create journal: " + e.toString());
         }
+    }
+
+    @Override
+    public boolean isCanBeTaken() {
+        return !isReference && Database.getAmountOfCurrentJournal(this) > 0;
     }
 }

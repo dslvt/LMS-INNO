@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -7,11 +8,12 @@ public class Book extends Document{
 
     public String publisher, edition;
     public int publishYear;
+    public boolean isBestseller;
 
     /**
      *common constructor
      */
-    public Book (String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String publisher, String edition, int publishYear){
+    public Book (String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String publisher, String edition, int publishYear, boolean isBestseller){
         this.name = name;
         this.authors = authors;
         this.price = cost;
@@ -21,6 +23,7 @@ public class Book extends Document{
         this.edition = edition;
         this.publishYear = publishYear;
         this.location = location;
+        this.isBestseller = isBestseller;
 
         type = DocumentType.book;
     }
@@ -71,4 +74,9 @@ public class Book extends Document{
         }
     }
 
+
+    @Override
+    public boolean isCanBeTaken() {
+        return Database.getAmountOfCurrentBook(this) > 0 && !isReference;
+    }
 }

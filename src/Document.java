@@ -17,5 +17,5 @@ public abstract class Document {
      */
     public void CreateDocumentInDB(){}
 
-    public abstract boolean isCanBeTaken(Document document);
+    public abstract boolean isCanBeTaken();
 }
