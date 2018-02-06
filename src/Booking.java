@@ -5,31 +5,32 @@ import java.util.Date;
 public class Booking {
 
     Statement statement;
-    //String userName = "root";
-    //String password = "enaca2225";
-    //String connectionUrl = "jdbc:mysql://localhost:3306/project?useSSL=false";
+    String userName = "root";
+    String password = "enaca2225";
+    String connectionUrl = "jdbc:mysql://localhost:3306/project?useSSL=false";
 
-    /*
+
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         Booking booking = new Booking();
-        Document document = new AVmaterial();
+        Document document = new Book();
         document.id = 19;
+        document.localId = 1;
         User user = new Patron();
         user.id = 5;
-        //booking.checkOut(document,user);
+        //booking.checkOut(document, user);
         //booking.renewBook(document);
         //booking.returnBook(document, user);
     }
-    */
+
 
     public Booking() throws ClassNotFoundException, SQLException {
-        /*
+
         Class.forName("com.mysql.jdbc.Driver");
         Connection connection = DriverManager.getConnection(connectionUrl, userName, password);
         statement = connection.createStatement();
-        */
+
         Database database = new Database();
-        statement = database.connection.createStatement();
+        //statement = database.connection.createStatement();
     }
 
     public int checkOut(Document document, User user) {
@@ -179,50 +180,18 @@ public class Booking {
         } else {
             one = -1;
         }
-        statement.executeQuery("SELECT*FROM documents WHERE id = '" + document.id + "'");
-        ResultSet rec = statement.getResultSet();
         //Change number of available documents
         if (type.equals("book")) {//If it's book
-            int counter = 0;
-            int id = 0;
-            if (rec.next()) {
-                id = rec.getInt("id_books");
-            }
-            statement.executeQuery("SELECT*FROM books WHERE id = '" + id + "'");
-            rec = statement.getResultSet();
-            if (rec.next()) {
-                counter = rec.getInt("number");
-            }
-            counter += one;
-            statement.executeUpdate("UPDATE books set number = '" + counter + "' WHERE id ='" + id + "'");
+            int counter = Database.getAmountOfCurrentBook((Book)document)+ one;
+            statement.executeUpdate("UPDATE books set number = '" + counter + "' WHERE id ='" + document.localId + "'");
         }
         if (type.equals("journal")) {//If it's journal
-            int counter = 0;
-            int id = 0;
-            if (rec.next()) {
-                id = rec.getInt("id_journals");
-            }
-            statement.executeQuery("SELECT*FROM journals WHERE id = '" + id + "'");
-            rec = statement.getResultSet();
-            if (rec.next()) {
-                counter = rec.getInt("number");
-            }
-            counter += one;
-            statement.executeUpdate("UPDATE journals set number = '" + counter + "' WHERE id ='" + id + "'");
+            int counter = Database.getAmountOfCurrentJournal((Journal)document)+ one;
+            statement.executeUpdate("UPDATE journals set number = '" + counter + "' WHERE id ='" + document.localId + "'");
         }
         if (type.equals("av_materials")) {//If it's av material
-            int counter = 0;
-            int id = 0;
-            if (rec.next()) {
-                id = rec.getInt("id_av_materials");
-            }
-            statement.executeQuery("SELECT*FROM av_materials WHERE id = '" + id + "'");
-            rec = statement.getResultSet();
-            if (rec.next()) {
-                counter = rec.getInt("number");
-            }
-            counter += one;
-            statement.executeUpdate("UPDATE av_materials set number = '" + counter + "' WHERE id ='" + id + "'");
+            int counter = Database.getAmountOfCurrentAvmaterial((AVmaterial)document)+ one;
+            statement.executeUpdate("UPDATE av_materials set number = '" + counter + "' WHERE id ='" + document.localId + "'");
         }
     }
 
@@ -269,16 +238,20 @@ public class Booking {
     }
 
     private boolean takeCopy(Document document, User user) throws SQLException {
-        statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "' AND user_id = '" + user.id + "'");
+        statement.executeQuery("SELECT*FROM booking WHERE user_id = '" + user.id + "'");
         ResultSet rec = statement.getResultSet();
         int id = 0;
-        if (rec.next()) {
-            id = rec.getInt("id");
+        int localId = 0;
+
+        while (rec.next()) {
+            id = rec.getInt("document_id");
+            localId = Database.getCorrectIdInLocalDatabase(id);
+            if (localId == document.localId) {
+                return false;
+            }
         }
-        if (id == 0) {
-            return true;
-        }
-        return false;
+        return true;
+
     }
 }
 

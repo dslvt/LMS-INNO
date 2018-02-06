@@ -7,9 +7,12 @@ import java.util.List;
 
 public class Database {
 
-    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
-    private static final String user = "admin";
-    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+//    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
+//    private static final String user = "admin";
+//    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+    String user = "root";
+    String password = "enaca2225";
+    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
 
     public static Connection connection;
     private static Statement statement;
@@ -421,7 +424,7 @@ public class Database {
         return ansv;
     }
 
-    private static int getCorrectIdInLocalDatabase(int documentId){
+    public static int getCorrectIdInLocalDatabase(int documentId){
         int id = -1;
 
         try{

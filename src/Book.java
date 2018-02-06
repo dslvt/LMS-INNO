@@ -28,6 +28,7 @@ public class Book extends Document{
         type = DocumentType.book;
     }
 
+    public Book(){}
     /**
      * creating book in database
      */
