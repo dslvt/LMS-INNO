@@ -399,19 +399,19 @@ public class Database {
     }
 
     public static int getAmountOfCurrentAvmaterial(AVmaterial aVmaterial){
-        int ans = -1;
+        int ansv = -1;
         try {
             statement = connection.createStatement();
             String query = "select number from av_materials where id ="+Integer.toString(aVmaterial.id);
             resultSet = statement.executeQuery(query);
             resultSet.next();
 
-            ans =  resultSet.getInt("number");
+            ansv =  resultSet.getInt("number");
 
         }catch (Exception e){
             System.out.println("Error in getAmountOfCurrentJournal: " + e.toString());
         }
 
-        return ans;
+        return ansv;
     }
 }
