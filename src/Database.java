@@ -136,12 +136,7 @@ public class Database {
                 query += "where id_books=" + Integer.toString(document.id);
             }
 
-            if (resultSet.next()){
-                return resultSet.getBoolean(7);
-            }else{
-                return false;
-            }
-
+            return resultSet.next() && resultSet.getBoolean(7);
 
         }catch (Exception e){
             System.out.println("Error in checking active doc " + e.toString());
@@ -277,13 +272,13 @@ public class Database {
         ArrayList<Document> users = new ArrayList<>();
 
         try {
-            String query = "select * from documents";
+            String query = "select * from documents order by id";
             statement = connection.createStatement();
             resultSet = statement.executeQuery(query);
 
 
             while (resultSet.next()){
-                Document currentDoc = new AVmaterial();
+                Document currentDoc = null;
                 String findInCurrentDBQuery = "select * from ";
                 Statement tconnection = connection.createStatement();
 
@@ -291,26 +286,19 @@ public class Database {
                     findInCurrentDBQuery += "av_materials where id=" + Integer.toString(resultSet.getInt(2));
                     ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
                     res.next();
-                    currentDoc = new AVmaterial(res.getString("title"), new ArrayList<String>(Arrays.asList(res.getString("author").split(", "))),
-                            res.getInt("cost"), new ArrayList<String>(Arrays.asList(res.getString("keywords").split(", "))),
-                            res.getBoolean("reference"));
+                    currentDoc = createAVMaterialByResultSet(res);
                     currentDoc.id = res.getInt(1);
                 }else if(resultSet.getInt(3) != 0){
                     findInCurrentDBQuery += "books where id="+Integer.toString(resultSet.getInt(3));
                     ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
                     res.next();
-                    currentDoc = new Book(res.getString("title"), new ArrayList<String>(Arrays.asList(res.getString("author").split(", "))),
-                            res.getInt("cost"), new ArrayList<String>(Arrays.asList(res.getString("keywords").split(", "))),
-                            res.getBoolean("reference"), res.getString("publisher"), res.getString("edition"),
-                            res.getInt("publish_year"));
+                    currentDoc = createBookByResultSet(res);
                     currentDoc.id = res.getInt(1);
                 }else if(resultSet.getInt(4) != 0){
                     findInCurrentDBQuery += "journals where id="+Integer.toString(resultSet.getInt(4));
                     ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
                     res.next();
-                    currentDoc = new Journal(res.getString("title"), new ArrayList<String>(Arrays.asList(res.getString("author").split(", "))),
-                            res.getInt("cost"), new ArrayList<String>(Arrays.asList(res.getString("keywords").split(", "))),
-                            res.getBoolean("reference"), "-1", res.getString("issue"), res.getString("editor"));
+                    currentDoc = createJournalByResultSet(res);
                     currentDoc.id = res.getInt(1);
                 }
                 users.add(currentDoc);
@@ -330,7 +318,8 @@ public class Database {
         ArrayList<Integer> ids = new ArrayList<>();
 
         try {
-            resultSet = statement.executeQuery("select id from documents");
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select id from documents order by id");
             while (resultSet.next()){
                 ids.add(resultSet.getInt(1));
             }
@@ -339,5 +328,97 @@ public class Database {
         }
 
         return ids;
+    }
+
+    public ArrayList<Document> getUserDocuments(Patron patron){
+        ArrayList<Document> documents = new ArrayList<>();
+
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("select * from booking order by id");
+
+            while (resultSet.next()){
+                if(resultSet.getInt("user_id") == patron.id){
+                    Document document = null;
+
+                    Statement st = connection.createStatement();
+                    ResultSet rs = st.executeQuery("select * from documents where id=" + resultSet.getInt("document_id"));
+                    rs.next();
+
+                    String query = "select * from ";
+                    if(rs.getInt("id_av_materials") != 0){
+                        query += "av_materials where id=" + Integer.toString(rs.getInt("id_av_materials"));
+
+                        Statement tst = connection.createStatement();
+                        ResultSet trs = tst.executeQuery(query);
+                        trs.next();
+
+                        document = createAVMaterialByResultSet(trs);
+                    }else if (rs.getInt("id_books") != 0){
+                        query += "books where id=" + Integer.toString(rs.getInt("id_books"));
+
+                        Statement tst = connection.createStatement();
+                        ResultSet trs = tst.executeQuery(query);
+                        trs.next();
+
+                        document = createBookByResultSet(trs);
+                    }else if(rs.getInt("id_journals") != 0){
+                        query += "journals where id=" + Integer.toString(rs.getInt("id_journals"));
+
+                        Statement tst = connection.createStatement();
+                        ResultSet trs = tst.executeQuery(query);
+                        trs.next();
+
+                        document = createJournalByResultSet(trs);
+                    }
+
+                    documents.add(document);
+                }
+            }
+        }catch (Exception e){
+            System.out.println("Error in getAllUserDocuments: " + e.toString());
+        }
+
+        return documents;
+    }
+
+    private static AVmaterial createAVMaterialByResultSet(ResultSet rs){
+        AVmaterial aVmaterial = null;
+        try {
+            aVmaterial = new AVmaterial(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
+                    rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
+                    rs.getBoolean("reference"));
+        }catch (Exception e){
+            System.out.println("Error in createAVMaterialByResultSet: " + e.toString());
+        }
+
+        return aVmaterial;
+    }
+
+    private static Book createBookByResultSet(ResultSet rs){
+        Book book = null;
+        try {
+            book = new Book(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
+                    rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
+                    rs.getBoolean("reference"), rs.getString("publisher"), rs.getString("edition"),
+                    rs.getInt("publish_year"));
+        }catch (Exception e){
+            System.out.println("Error in createBookByResultSet: " + e.toString());
+        }
+
+        return book;
+    }
+
+    private static Journal createJournalByResultSet(ResultSet rs){
+        Journal journal = null;
+        try {
+            journal = new Journal(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
+                    rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
+                    rs.getBoolean("reference"), "-1", rs.getString("issue"), rs.getString("editor"));
+        }catch (Exception e){
+            System.out.println("Error in createBookByResultSet: " + e.toString());
+        }
+
+        return journal;
     }
 }

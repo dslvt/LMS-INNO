@@ -6,7 +6,6 @@ import javax.swing.*;
 public class MenuWindow extends JFrame {
     private JButton takeBook = new JButton("Take Book");
     private JButton myBooks = new JButton("My Books");
-    private JButton returnBook = new JButton("Return Book");
 
     /**
      * creating menu window GUI
@@ -19,14 +18,19 @@ public class MenuWindow extends JFrame {
         menuWindow.setTitle("Sign Up");
         menuWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container containerM = menuWindow.getContentPane();
-        containerM.setLayout(new GridLayout(3, 1, 2, 2));
+        containerM.setLayout(new GridLayout(2, 1, 2, 2));
         containerM.add(takeBook);
         containerM.add(myBooks);
-        containerM.add(returnBook);
         takeBook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
                 TakeBook books = new TakeBook();
+            }
+        });
+        myBooks.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){
+                MyBooksGUI myBooksGUI = new MyBooksGUI();
             }
         });
         menuWindow.setVisible(true);

@@ -25,6 +25,12 @@ public class Main {
 
         FirstWindow window = new FirstWindow();
         window.setVisible(true);
+
+        ArrayList<Document> documents = db.getUserDocuments(db.getPatronByNumber("1"));
+
+        for (int i = 0; i < documents.size(); i++) {
+            System.out.println(documents.get(i).name);
+        }
     }
 
     /**

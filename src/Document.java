@@ -16,4 +16,6 @@ public abstract class Document {
      * common feature
      */
     public void CreateDocumentInDB(){}
+
+    public abstract boolean isCanBeTaken(Document document);
 }

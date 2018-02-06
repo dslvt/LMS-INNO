@@ -8,17 +8,17 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Vector;
 
-public class TakeBook extends JFrame{
+public class MyBooksGUI extends JFrame{
     private JList<String> allBooks;
     private Vector<Document> vector;
-    private JButton takingBook = new JButton("Take Book");
+    private JButton takingBook = new JButton("Return book");
 
     private Database db = new Database();
 
     /**
      * creating take book menu GUI
      */
-    public TakeBook() {
+    public MyBooksGUI() {
 
         try {
 
@@ -26,12 +26,13 @@ public class TakeBook extends JFrame{
             takeBook.setBounds(100, 100, 250, 200);
             takeBook.setLocationRelativeTo(null);
             takeBook.setResizable(false);
-            takeBook.setTitle("Take Book");
+            takeBook.setTitle("My books");
             takeBook.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             Container containerTB = takeBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
-            vector = new Vector(db.getAllDocuments());
+            //spisk books
+            vector = new Vector(db.getUserDocuments((Patron) CurrentSession.user));
             Vector <String> documentNames = new Vector<>();
             for (int i = 0; i < vector.size(); i++){
                 documentNames.add(vector.get(i).name);
@@ -56,7 +57,7 @@ public class TakeBook extends JFrame{
                     int index = allBooks.getSelectedIndex();
                     if(index != -1){
 
-                        booking.checkOut(new AVmaterial(documentIds.get(index)) , CurrentSession.user);
+
                         String time = "";
                         JOptionPane.showMessageDialog(null, time, "", JOptionPane.PLAIN_MESSAGE);
 
