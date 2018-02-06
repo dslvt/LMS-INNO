@@ -31,10 +31,12 @@ public class TakeBook extends JFrame{
             Container containerTB = takeBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
+            ArrayList<Integer> documentIds = db.getAllDocumentsIDs();
             vector = new Vector(db.getAllDocuments());
             Vector <String> documentNames = new Vector<>();
             for (int i = 0; i < vector.size(); i++){
-                documentNames.add(vector.get(i).name);
+                if(vector.get(i).isCanBeTaken())
+                    documentNames.add(vector.get(i).name);
             }
 
             allBooks = new JList<String>(documentNames);
@@ -47,8 +49,6 @@ public class TakeBook extends JFrame{
             containerTB.add(listScroller, BorderLayout.CENTER);
 
             Booking booking = new Booking();
-
-            ArrayList<Integer> documentIds = db.getAllDocumentsIDs();
 
             takingBook.addActionListener(new ActionListener() {
                 @Override

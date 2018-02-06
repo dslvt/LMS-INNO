@@ -228,20 +228,20 @@ public class Database {
                     findInCurrentDBQuery += "av_materials where id=" + Integer.toString(resultSet.getInt(2));
                     ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
                     res.next();
-                    currentDoc = createAVMaterialByResultSet(res);
-                    currentDoc.id = res.getInt(1);
+                    currentDoc = createAVMaterialByResultSet(res, resultSet.getInt("id"), resultSet.getString("location"));
+                    currentDoc.localId = res.getInt("id");
                 }else if(resultSet.getInt(3) != 0){
                     findInCurrentDBQuery += "books where id="+Integer.toString(resultSet.getInt(3));
                     ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
                     res.next();
-                    currentDoc = createBookByResultSet(res);
-                    currentDoc.id = res.getInt(1);
+                    currentDoc = createBookByResultSet(res, resultSet.getInt("id"), resultSet.getString("location"));
+                    currentDoc.localId = res.getInt("id");
                 }else if(resultSet.getInt(4) != 0){
                     findInCurrentDBQuery += "journals where id="+Integer.toString(resultSet.getInt(4));
                     ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
                     res.next();
-                    currentDoc = createJournalByResultSet(res);
-                    currentDoc.id = res.getInt(1);
+                    currentDoc = createJournalByResultSet(res, resultSet.getInt("id"), resultSet.getString("location"));
+                    currentDoc.localId = res.getInt("id");
                 }
                 users.add(currentDoc);
             }
@@ -295,7 +295,7 @@ public class Database {
                         ResultSet trs = tst.executeQuery(query);
                         trs.next();
 
-                        document = createAVMaterialByResultSet(trs);
+                        document = createAVMaterialByResultSet(trs, rs.getInt("id"), rs.getString("location"));
                     }else if (rs.getInt("id_books") != 0){
                         query += "books where id=" + Integer.toString(rs.getInt("id_books"));
 
@@ -303,7 +303,7 @@ public class Database {
                         ResultSet trs = tst.executeQuery(query);
                         trs.next();
 
-                        document = createBookByResultSet(trs);
+                        document = createBookByResultSet(trs, rs.getInt("id"), rs.getString("location"));
                     }else if(rs.getInt("id_journals") != 0){
                         query += "journals where id=" + Integer.toString(rs.getInt("id_journals"));
 
@@ -311,7 +311,7 @@ public class Database {
                         ResultSet trs = tst.executeQuery(query);
                         trs.next();
 
-                        document = createJournalByResultSet(trs);
+                        document = createJournalByResultSet(trs, rs.getInt("id"), rs.getString("location"));
                     }
 
                     documents.add(document);
@@ -324,13 +324,14 @@ public class Database {
         return documents;
     }
 
-    private static AVmaterial createAVMaterialByResultSet(ResultSet rs){
+    private static AVmaterial createAVMaterialByResultSet(ResultSet rs, int id, String location){
         AVmaterial aVmaterial = null;
         try {
             aVmaterial = new AVmaterial(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
                     rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
                     rs.getBoolean("reference"));
-            aVmaterial.id = rs.getInt("id");
+            aVmaterial.id = id;
+            aVmaterial.location = location;
         }catch (Exception e){
             System.out.println("Error in createAVMaterialByResultSet: " + e.toString());
         }
@@ -338,14 +339,15 @@ public class Database {
         return aVmaterial;
     }
 
-    private static Book createBookByResultSet(ResultSet rs){
+    private static Book createBookByResultSet(ResultSet rs, int id, String location){
         Book book = null;
         try {
             book = new Book(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
                     rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
                     rs.getBoolean("reference"), rs.getString("publisher"), rs.getString("edition"),
                     rs.getInt("publish_year"), rs.getBoolean("isBestSeller"));
-            book.id = rs.getInt("id");
+            book.id = id;
+            book.location = location;
         }catch (Exception e){
             System.out.println("Error in createBookByResultSet: " + e.toString());
         }
@@ -353,13 +355,14 @@ public class Database {
         return book;
     }
 
-    private static Journal createJournalByResultSet(ResultSet rs){
+    private static Journal createJournalByResultSet(ResultSet rs, int id, String location){
         Journal journal = null;
         try {
             journal = new Journal(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
                     rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
                     rs.getBoolean("reference"), "-1", rs.getString("issue"), rs.getString("editor"));
-            journal.id = rs.getInt("id");
+            journal.id = id;
+            journal.location = location;
         }catch (Exception e){
             System.out.println("Error in createBookByResultSet: " + e.toString());
         }

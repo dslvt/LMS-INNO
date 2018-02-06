@@ -25,10 +25,6 @@ public class Main {
 
         FirstWindow window = new FirstWindow();
         window.setVisible(true);
-
-        AVmaterial aVmaterial = new AVmaterial(1);
-
-        System.out.println(aVmaterial.isCanBeTaken());
     }
 
     /**

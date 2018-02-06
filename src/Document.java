@@ -11,6 +11,7 @@ public abstract class Document {
     public boolean isReference;
     public String location;
     public boolean isActive;
+    public int localId;
 
     /**
      * common feature
