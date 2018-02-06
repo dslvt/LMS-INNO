@@ -32,10 +32,10 @@ public class Booking {
         statement = database.connection.createStatement();
     }
 
-    public void checkOut(Document document, User user) {
+    public int checkOut(Document document, User user) {
         try {
 
-            if(takeCopy(document,user)&&document.isCanBeTaken()) {
+            if (takeCopy(document, user) && document.isCanBeTaken()) {
                 //Crete new line in Booking
                 java.util.Date date = new java.util.Date();
                 java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
@@ -49,12 +49,13 @@ public class Booking {
 
                 //Term of booking
                 int term = bookingTerm(document, user);
-                System.out.println(term);
-            }
 
-        }catch (Exception e){
+                return term;
+            }
+        } catch (Exception e) {
             System.out.println("Error in checkOut booking " + e.toString());
         }
+        return -1;
     }
 
     public void returnBook(Document document, User user) throws SQLException {
@@ -83,11 +84,11 @@ public class Booking {
         //Check overdue
         if (!date.before(bookingDate)) {
             int overdue = countOverdue(bookingDate, date, document);
-            statement.executeUpdate("UPDATE users set debt = '"+overdue+"' WHERE id = '"+user.id+"'");
+            statement.executeUpdate("UPDATE users set debt = '" + overdue + "' WHERE id = '" + user.id + "'");
         }
 
         //Delete record from Booking
-        statement.executeUpdate("DELETE FROM booking WHERE document_id = '" + document.id + "' AND user_id = '"+user.id+"'");
+        statement.executeUpdate("DELETE FROM booking WHERE document_id = '" + document.id + "' AND user_id = '" + user.id + "'");
 
         //Change number of available documents
         changeNumber(true, getType(document), document);
@@ -110,8 +111,8 @@ public class Booking {
         java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 
         //Renew document
-        if(!isRenew){
-            statement.executeUpdate("UPDATE booking set time = '"+timestamp+"', is_renew = '"+1+"' WHERE document_id = '"+document.id+"'");
+        if (!isRenew) {
+            statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "' WHERE document_id = '" + document.id + "'");
         }
 
     }
@@ -127,7 +128,7 @@ public class Booking {
     }
 
     private int countOverdue(Date bookingDate, Date currentDate, Document document) throws SQLException {
-        int days = (int) (bookingDate.getTime() - currentDate.getTime()/(1000 * 60 * 60 * 24));
+        int days = (int) (bookingDate.getTime() - currentDate.getTime() / (1000 * 60 * 60 * 24));
         int overdue = days * 100;
 
         statement.executeQuery("SELECT*FROM documents WHERE id = '" + document.id + "'");
@@ -143,7 +144,7 @@ public class Booking {
             statement.executeQuery("SELECT*FROM books WHERE id = '" + id + "'");
             line = statement.getResultSet();
         }
-        if (type.equals("journal")){
+        if (type.equals("journal")) {
             int id = 0;
             if (line.next()) {
                 id = line.getInt("id_journals");
@@ -151,7 +152,7 @@ public class Booking {
             statement.executeQuery("SELECT*FROM journals WHERE id = '" + id + "'");
             line = statement.getResultSet();
         }
-        if(type.equals("av_materials")){
+        if (type.equals("av_materials")) {
             int id = 0;
             if (line.next()) {
                 id = line.getInt("id_av_materials");
@@ -164,7 +165,7 @@ public class Booking {
             cost = line.getInt("cost");
         }
 
-        if(overdue > cost){
+        if (overdue > cost) {
             overdue = cost;
         }
 
@@ -192,7 +193,7 @@ public class Booking {
             if (rec.next()) {
                 counter = rec.getInt("number");
             }
-            counter+=one;
+            counter += one;
             statement.executeUpdate("UPDATE books set number = '" + counter + "' WHERE id ='" + id + "'");
         }
         if (type.equals("journal")) {//If it's journal
@@ -206,7 +207,7 @@ public class Booking {
             if (rec.next()) {
                 counter = rec.getInt("number");
             }
-            counter+=one;
+            counter += one;
             statement.executeUpdate("UPDATE journals set number = '" + counter + "' WHERE id ='" + id + "'");
         }
         if (type.equals("av_materials")) {//If it's av material
@@ -220,12 +221,12 @@ public class Booking {
             if (rec.next()) {
                 counter = rec.getInt("number");
             }
-            counter+=one;
+            counter += one;
             statement.executeUpdate("UPDATE av_materials set number = '" + counter + "' WHERE id ='" + id + "'");
         }
     }
 
-    private int bookingTerm (Document document, User user) throws SQLException {
+    private int bookingTerm(Document document, User user) throws SQLException {
         ResultSet rec = statement.getResultSet();
         //Get type of document
         String type = getType(document);
@@ -255,10 +256,9 @@ public class Booking {
             if (isBestSeller) {
                 term = 14;
             } else {
-                if(isFaculty){
+                if (isFaculty) {
                     term = 28;
-                }
-                else {
+                } else {
                     term = 21;
                 }
             }
@@ -269,13 +269,13 @@ public class Booking {
     }
 
     private boolean takeCopy(Document document, User user) throws SQLException {
-        statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "' AND user_id = '"+user.id+"'");
+        statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "' AND user_id = '" + user.id + "'");
         ResultSet rec = statement.getResultSet();
         int id = 0;
-        if(rec.next()){
+        if (rec.next()) {
             id = rec.getInt("id");
         }
-        if (id == 0){
+        if (id == 0) {
             return true;
         }
         return false;
