@@ -31,10 +31,12 @@ public class TakeBook extends JFrame{
             Container containerTB = takeBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
+            ArrayList<Integer> documentIds = db.getAllDocumentsIDs();
             vector = new Vector(db.getAllDocuments());
             Vector <String> documentNames = new Vector<>();
             for (int i = 0; i < vector.size(); i++){
-                documentNames.add(vector.get(i).name);
+                if(vector.get(i).isCanBeTaken())
+                    documentNames.add(vector.get(i).name);
             }
 
             allBooks = new JList<String>(documentNames);
@@ -48,16 +50,21 @@ public class TakeBook extends JFrame{
 
             Booking booking = new Booking();
 
-            ArrayList<Integer> documentIds = db.getAllDocumentsIDs();
-
             takingBook.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int index = allBooks.getSelectedIndex();
                     if(index != -1){
+                        int amountOfDays = -1;
 
-                        booking.checkOut(new AVmaterial(documentIds.get(index)) , CurrentSession.user);
                         String time = "";
+                        amountOfDays = booking.checkOut(new AVmaterial(documentIds.get(index)) , CurrentSession.user);
+                        if(amountOfDays == -1){
+                            time = "Sorry, but you cant take this book";
+                        }else{
+                            time = "You have been taken book on " + Integer.toString(amountOfDays) + " days.";
+                        }
+
                         JOptionPane.showMessageDialog(null, time, "", JOptionPane.PLAIN_MESSAGE);
 
                         takeBook.setVisible(false);

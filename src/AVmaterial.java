@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -74,5 +75,11 @@ public class AVmaterial extends Document {
         }catch (Exception e){
             System.out.println("Error create av_material: " + e.toString());
         }
+    }
+
+    @Override
+    public boolean isCanBeTaken() {
+
+        return !isReference && Database.getAmountOfCurrentAvmaterial(this) > 0;
     }
 }

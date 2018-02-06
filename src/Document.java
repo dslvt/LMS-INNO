@@ -11,11 +11,12 @@ public abstract class Document {
     public boolean isReference;
     public String location;
     public boolean isActive;
+    public int localId;
 
     /**
      * common feature
      */
     public void CreateDocumentInDB(){}
 
-    public abstract boolean isCanBeTaken(Document document);
+    public abstract boolean isCanBeTaken();
 }
