@@ -64,11 +64,10 @@ public class Book extends Document{
                 }
             }
 
-            preparedStatement = Database.connection.prepareStatement("insert into documents(id_books, location, type, isActive) values(?, ?, ?, ?)");
+            preparedStatement = Database.connection.prepareStatement("insert into documents(id_books, location, type) values(?, ?, ?)");
             preparedStatement.setInt(1, lastId);
             preparedStatement.setString(2, location);
             preparedStatement.setString(3, "books");
-            preparedStatement.setBoolean(4, isActive);
             preparedStatement.executeUpdate();
         }catch (Exception e){
             System.out.println("Error create book: " + e.toString());

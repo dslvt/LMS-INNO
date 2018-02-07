@@ -13,18 +13,32 @@ public class Main {
 //        Authorization();
 //
 //        ArrayList<String> authors = new ArrayList<String>();
-//        authors.add("Dan Jones");
+//        authors.add("Alish");
 //        ArrayList<String> keywords = new ArrayList<String>();
-//        keywords.add("History"); keywords.add("Secretive");
-//        Book mat = new Book(1, "The Templars", authors, 10, keywords, false, "amazon", "first", 2017, true);
+//        keywords.add("Poem"); keywords.add("Tatar");
+//        Book mat = new Book("Alish Shigirler", authors, 10, keywords, false, "pub", "first", 2016, false);
 //        mat.CreateDocumentInDB();
-//
-//        //db.CreateAVMaterial(mat);
 
-//        Booking booking = new Booking();
+        //db.CreateAVMaterial(mat);
+
+        //Booking booking = new Booking();
 
         FirstWindow window = new FirstWindow();
         window.setVisible(true);
+
+
+        Tester tester = new Tester();
+
+        tester.test1();
+        tester.test2();
+        tester.test3();
+        tester.test4();
+        tester.test5();
+        tester.test6();
+        tester.test7();
+        tester.test8();
+        tester.test9();
+        tester.test10();
     }
 
     /**

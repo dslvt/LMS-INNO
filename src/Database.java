@@ -7,12 +7,12 @@ import java.util.List;
 
 public class Database {
 
-//    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
-//    private static final String user = "admin";
-//    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
-    String user = "root";
-    String password = "enaca2225";
-    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
+    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
+    private static final String user = "admin";
+    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+//    String user = "root";
+//    String password = "enaca2225";
+//    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
 
     public static Connection connection;
     private static Statement statement;
@@ -37,39 +37,33 @@ public class Database {
      * @return boolean
      */
     public static int isDocumentExist(Document document){
+        int localId = -1;
         try {
             int isDocExist = -1;
 
             statement = connection.createStatement();
-            resultSet = statement.executeQuery("select id_av_materials, id_books, id_journals, type from documents");
+            resultSet = statement.executeQuery("select id_av_materials, id_books, id_journals, id from documents");
 
             while (resultSet.next()){
                 int id=0;
-                if(resultSet.getInt(1) != 0){
-                    id = resultSet.getInt(1);
-                }else if(resultSet.getInt(2) != 0){
-                    id = resultSet.getInt(2);
-                }else if(resultSet.getInt(3) != 0){
-                    id = resultSet.getInt(3);
+                if(resultSet.getInt("id_av_materials") != 0){
+                    id = resultSet.getInt("id_av_materials");
+                }else if(resultSet.getInt("id_books") != 0){
+                    id = resultSet.getInt("id_books");
+                }else if(resultSet.getInt("id_journals") != 0){
+                    id = resultSet.getInt("id_journals");
                 }
-                String searchQuery = "select title, author, id from " + resultSet.getString(4) + " where id = " + Integer.toString(id);
-                Statement searchStatement = connection.createStatement();
-                ResultSet searchResultSet = searchStatement.executeQuery(searchQuery);
 
-                if(searchResultSet.next()) {
-                    System.out.println(searchResultSet.getString(1) + " " +searchResultSet.getString(2));
-                    if (searchResultSet.getString(1).equals(document.name) && searchResultSet.getString(2).equals(document.authors.toString())) {
-                        isDocExist = searchResultSet.getInt(3);
-                        break;
-                    }
+                if(document.localId == id){
+                    localId = resultSet.getInt("id");
                 }
             }
 
-            return isDocExist;
         }catch (Exception ex){
             System.out.println("error isDocExist: " + ex.toString());
-            return -1;
         }
+
+        return localId;
     }
 
     /**
@@ -299,6 +293,7 @@ public class Database {
                         trs.next();
 
                         document = createAVMaterialByResultSet(trs, rs.getInt("id"), rs.getString("location"));
+                        document.localId = rs.getInt("id_av_materials");
                     }else if (rs.getInt("id_books") != 0){
                         query += "books where id=" + Integer.toString(rs.getInt("id_books"));
 
@@ -307,6 +302,8 @@ public class Database {
                         trs.next();
 
                         document = createBookByResultSet(trs, rs.getInt("id"), rs.getString("location"));
+                        document.localId = rs.getInt("id_books");
+
                     }else if(rs.getInt("id_journals") != 0){
                         query += "journals where id=" + Integer.toString(rs.getInt("id_journals"));
 
@@ -315,6 +312,7 @@ public class Database {
                         trs.next();
 
                         document = createJournalByResultSet(trs, rs.getInt("id"), rs.getString("location"));
+                        document.localId = rs.getInt("id_journals");
                     }
 
                     documents.add(document);
@@ -422,6 +420,51 @@ public class Database {
         }
 
         return ansv;
+    }
+
+    public Document getDocumentById(int id){
+        String query = "select * from documents where id=" + Integer.toString(id);
+        Document document = null;
+        try{
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+            resultSet.next();
+            int localId = -1;
+
+            Statement localStatment = connection.createStatement();
+            ResultSet localResultSet;
+
+            if(resultSet.getInt("id_av_materials") != 0){
+                String localQuery = "select * from av_materials where id="+Integer.toString(resultSet.getInt("id_av_materials"));
+
+                localResultSet = localStatment.executeQuery(localQuery);
+                localResultSet.next();
+
+                document = (AVmaterial)createAVMaterialByResultSet(localResultSet, resultSet.getInt("id"), resultSet.getString("location"));
+                document.localId = resultSet.getInt("id_av_materials");
+            }else if(resultSet.getInt("id_books") != 0){
+                String localQuery = "select * from books where id="+Integer.toString(resultSet.getInt("id_books"));
+
+                localResultSet = localStatment.executeQuery(localQuery);
+                localResultSet.next();
+
+                document = (Book)createBookByResultSet(localResultSet, resultSet.getInt("id"), resultSet.getString("location"));
+                document.localId = resultSet.getInt("id_books");
+            }else if(resultSet.getInt("id_journals") != 0){
+                String localQuery = "select * from journals where id="+Integer.toString(resultSet.getInt("id_journals"));
+
+                localResultSet = localStatment.executeQuery(localQuery);
+                localResultSet.next();
+
+                document = (Journal)createJournalByResultSet(localResultSet, resultSet.getInt("id"), resultSet.getString("location"));
+                document.localId = resultSet.getInt("id_journals");
+            }
+
+        }catch (Exception e){
+            System.out.println("Error in getDocumentById: " + e.toString());
+        }
+
+        return document;
     }
 
     public static int getCorrectIdInLocalDatabase(int documentId){
