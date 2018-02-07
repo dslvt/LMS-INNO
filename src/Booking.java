@@ -132,35 +132,21 @@ public class Booking {
         int days = (int) (bookingDate.getTime() - currentDate.getTime() / (1000 * 60 * 60 * 24));
         int overdue = days * 100;
 
-        statement.executeQuery("SELECT*FROM documents WHERE id = '" + document.id + "'");
         ResultSet line = statement.getResultSet();
 
         String type = getType(document);
+        int id = Database.getCorrectIdInLocalDatabase(document.id);
 
         if (type.equals("book")) {
-            int id = 0;
-            if (line.next()) {
-                id = line.getInt("id_books");
-            }
             statement.executeQuery("SELECT*FROM books WHERE id = '" + id + "'");
-            line = statement.getResultSet();
         }
         if (type.equals("journal")) {
-            int id = 0;
-            if (line.next()) {
-                id = line.getInt("id_journals");
-            }
             statement.executeQuery("SELECT*FROM journals WHERE id = '" + id + "'");
-            line = statement.getResultSet();
         }
         if (type.equals("av_materials")) {
-            int id = 0;
-            if (line.next()) {
-                id = line.getInt("id_av_materials");
-            }
             statement.executeQuery("SELECT*FROM av_materials WHERE id = '" + id + "'");
-            line = statement.getResultSet();
         }
+        line = statement.getResultSet();
         int cost = 0;
         if (line.next()) {
             cost = line.getInt("cost");
@@ -210,23 +196,18 @@ public class Booking {
 
         int term;
         if (type.equals("book")) {
-            statement.executeQuery("SELECT*FROM documents WHERE id = '" + document.id + "'");
-            rec = statement.getResultSet();
-            int id_books = 0;
-            if (rec.next()) {
-                id_books = rec.getInt("id_books");
-            }
+            int id_books = Database.getCorrectIdInLocalDatabase(document.id);
             statement.executeQuery("SELECT*FROM books WHERE id = '" + id_books + "'");
             rec = statement.getResultSet();
             boolean isBestSeller = false;
             if (rec.next()) {
                 isBestSeller = rec.getBoolean("isBestSeller");
             }
-            if (isBestSeller) {
-                term = 14;
+            if (isFaculty) {
+                term = 28;
             } else {
-                if (isFaculty) {
-                    term = 28;
+                if (isBestSeller) {
+                    term = 14;
                 } else {
                     term = 21;
                 }
