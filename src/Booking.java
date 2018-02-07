@@ -24,7 +24,7 @@ public class Booking {
 
 
     public Booking() throws ClassNotFoundException, SQLException {
-
+//
 //        Class.forName("com.mysql.jdbc.Driver");
 //        Connection connection = DriverManager.getConnection(connectionUrl, userName, password);
 //        statement = connection.createStatement();
@@ -235,5 +235,3 @@ public class Booking {
 
     }
 }
-
-
