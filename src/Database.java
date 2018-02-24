@@ -490,4 +490,21 @@ public class Database {
 
         return id;
     }
+
+    public Patron getPatronById(int id){
+        String query = "select * from users where id="+Integer.toString(id);
+        Patron user = null;
+        try{
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+            resultSet.next();
+
+            user = new Patron(resultSet.getString("name"), resultSet.getString("password"), resultSet.getString("phoneNumber"),
+                    resultSet.getString("address"), resultSet.getBoolean("isFacultyMember"), resultSet.getInt("debt"));
+        }catch (Exception e){
+            System.out.println("Database get_user_by_id: " + e.toString());
+        }
+
+        return user;
+    }
 }
