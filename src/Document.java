@@ -18,5 +18,7 @@ public abstract class Document {
      */
     public void CreateDocumentInDB(){}
 
+    public void DeleteFromDB(){}
+
     public abstract boolean isCanBeTaken();
 }

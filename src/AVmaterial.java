@@ -78,6 +78,26 @@ public class AVmaterial extends Document {
     }
 
     @Override
+    public void DeleteFromDB(){
+        Database db = new Database();
+        Statement statement;
+        try {
+            statement = db.connection.createStatement();
+            Integer lastId = Database.isDocumentExist(this);
+            if(lastId != -1){
+                statement.executeUpdate("DELETE FROM av_materials WHERE id = " + lastId.toString());
+                statement.executeUpdate("DELETE FROM documents WHERE id = " + this.id);
+            }
+            else{
+                System.out.println("Error delete av material:  there is no av_material with id " + lastId.toString());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error delete av_material: " + e.toString());
+        }
+    }
+
+    @Override
     public boolean isCanBeTaken() {
 
         return !isReference && Database.getAmountOfCurrentAvmaterial(this) > 0;
