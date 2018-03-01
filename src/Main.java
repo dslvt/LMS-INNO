@@ -12,21 +12,23 @@ public class Main {
 
 //        Authorization();
 //
-//        ArrayList<String> authors = new ArrayList<String>();
-//        authors.add("Alish");
-//        ArrayList<String> keywords = new ArrayList<String>();
-//        keywords.add("Poem"); keywords.add("Tatar");
-//        Book mat = new Book("Alish Shigirler", authors, 10, keywords, false, "pub", "first", 2016, false);
+        ArrayList<String> authors = new ArrayList<String>();
+        authors.add("Alish");
+        ArrayList<String> keywords = new ArrayList<String>();
+        keywords.add("Poem"); keywords.add("Tatar");
+        Book mat = new Book("Alish Newnew", authors, 10, keywords, false, "pub", "first", 2016, false);
 //        mat.CreateDocumentInDB();
+//        mat.localId = 16;
+//        mat.DeleteFromDB();
 
         //db.CreateAVMaterial(mat);
 
         //Booking booking = new Booking();
 
-        FirstWindow window = new FirstWindow();
-        window.setVisible(true);
-
-
+//        FirstWindow window = new FirstWindow();
+//        window.setVisible(true);
+//
+//
 //        Tester tester = new Tester();
 //
 //        tester.test1();
@@ -39,6 +41,8 @@ public class Main {
 //        tester.test8();
 //        tester.test9();
 //        tester.test10();
+
+
     }
 
     /**

@@ -7,12 +7,12 @@ import java.util.List;
 
 public class Database {
 
-    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
-    private static final String user = "admin";
-    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
-//    String user = "root";
-//    String password = "enaca2225";
-//    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
+//    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
+//    private static final String user = "admin";
+//    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+    String user = "root";
+    String password = "enaca2225";
+    String url = "jdbc:mysql://localhost:3306/new_version?useSSL=false";
 
     public static Connection connection;
     private static Statement statement;
@@ -53,10 +53,10 @@ public class Database {
                 }else if(resultSet.getInt("id_journals") != 0){
                     id = resultSet.getInt("id_journals");
                 }
-
                 if(document.localId == id){
-                    localId = resultSet.getInt("id");
+                    localId = id;
                 }
+
             }
 
         }catch (Exception ex){

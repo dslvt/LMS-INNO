@@ -1,6 +1,7 @@
 import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -41,6 +42,7 @@ public class Book extends Document{
 
         try{
             Integer lastId = Database.isDocumentExist(this);
+            System.out.println(lastId);
             if(lastId != -1){
                 preparedStatement = Database.connection.prepareStatement("update books set number = number + 1 where id = " + lastId.toString());
                 preparedStatement.executeUpdate();
@@ -62,6 +64,7 @@ public class Book extends Document{
                 if(resultSet.next()){
                     lastId = resultSet.getInt(1);
                 }
+                this.localId = lastId;
             }
 
             preparedStatement = Database.connection.prepareStatement("insert into documents(id_books, location, type) values(?, ?, ?)");
@@ -69,8 +72,30 @@ public class Book extends Document{
             preparedStatement.setString(2, location);
             preparedStatement.setString(3, "books");
             preparedStatement.executeUpdate();
+
+
         }catch (Exception e){
             System.out.println("Error create book: " + e.toString());
+        }
+    }
+
+    @Override
+    public void DeleteFromDB(){
+        Database db = new Database();
+        Statement statement;
+        try {
+            statement = db.connection.createStatement();
+            Integer lastId = Database.isDocumentExist(this);
+            if(lastId != -1){
+                statement.executeUpdate("DELETE FROM books WHERE id = " + lastId.toString());
+                statement.executeUpdate("DELETE FROM documents WHERE id = " + this.id);
+            }
+            else{
+                System.out.println("Error delete book:  there is no book with id " + lastId.toString());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error delete book: " + e.toString());
         }
     }
 

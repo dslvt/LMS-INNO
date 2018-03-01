@@ -72,6 +72,26 @@ public class Journal extends Document {
     }
 
     @Override
+    public void DeleteFromDB(){
+        Database db = new Database();
+        Statement statement;
+        try {
+            statement = db.connection.createStatement();
+            Integer lastId = Database.isDocumentExist(this);
+            if(lastId != -1){
+                statement.executeUpdate("DELETE FROM journals WHERE id = " + lastId.toString());
+                statement.executeUpdate("DELETE FROM documents WHERE id = " + this.id);
+            }
+            else{
+                System.out.println("Error delete journal:  there is no journal with id " + lastId.toString());
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error delete journal: " + e.toString());
+        }
+    }
+
+    @Override
     public boolean isCanBeTaken() {
         return !isReference && Database.getAmountOfCurrentJournal(this) > 0;
     }
