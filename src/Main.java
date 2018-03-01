@@ -30,18 +30,18 @@ public class Main {
 //        window.setVisible(true);
 //
 //
-//        Tester tester = new Tester();
-//
-//        tester.test1();
-//        tester.test2();
-//        tester.test3();
-//        tester.test4();
-//        tester.test5();
-//        tester.test6();
-//        tester.test7();
-//        tester.test8();
-//        tester.test9();
-//        tester.test10();
+        Tester tester = new Tester();
+
+        tester.test1();
+        tester.test2();
+        tester.test3();
+        tester.test4();
+        tester.test5();
+        tester.test6();
+        tester.test7();
+        tester.test8();
+        tester.test9();
+        tester.test10();
 
 
     }
