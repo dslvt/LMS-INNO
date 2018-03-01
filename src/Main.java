@@ -16,10 +16,11 @@ public class Main {
         authors.add("Alish");
         ArrayList<String> keywords = new ArrayList<String>();
         keywords.add("Poem"); keywords.add("Tatar");
-        Book mat = new Book("Alish Newnew", authors, 10, keywords, false, "pub", "first", 2016, false);
-//        mat.CreateDocumentInDB();
+        Book mat = new Book("Old book", authors, 10, keywords, false, "pub", "first", 2016, false, "shelf #1", true);
+        mat.CreateDocumentInDB(5);
 //        mat.localId = 16;
 //        mat.DeleteFromDB();
+        mat.ModifyInDB("New book", authors, 10, keywords, false, "pub", "first", 2016, false, "shelf #1", true, 4);
 
         //db.CreateAVMaterial(mat);
 

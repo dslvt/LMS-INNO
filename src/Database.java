@@ -330,9 +330,8 @@ public class Database {
         try {
             aVmaterial = new AVmaterial(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
                     rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
-                    rs.getBoolean("reference"));
+                    rs.getBoolean("reference"), true, location);
             aVmaterial.id = id;
-            aVmaterial.location = location;
         }catch (Exception e){
             System.out.println("Error in createAVMaterialByResultSet: " + e.toString());
         }
@@ -346,9 +345,8 @@ public class Database {
             book = new Book(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
                     rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
                     rs.getBoolean("reference"), rs.getString("publisher"), rs.getString("edition"),
-                    rs.getInt("publish_year"), rs.getBoolean("isBestSeller"));
+                    rs.getInt("publish_year"), rs.getBoolean("isBestSeller"), location, true);
             book.id = id;
-            book.location = location;
         }catch (Exception e){
             System.out.println("Error in createBookByResultSet: " + e.toString());
         }
@@ -361,9 +359,8 @@ public class Database {
         try {
             journal = new Journal(rs.getString("title"), new ArrayList<String>(Arrays.asList(rs.getString("author").split(", "))),
                     rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
-                    rs.getBoolean("reference"), "-1", rs.getString("issue"), rs.getString("editor"));
+                    rs.getBoolean("reference"), "-1", rs.getString("issue"), rs.getString("editor"),true, location);
             journal.id = id;
-            journal.location = location;
         }catch (Exception e){
             System.out.println("Error in createBookByResultSet: " + e.toString());
         }
@@ -506,5 +503,20 @@ public class Database {
         }
 
         return user;
+    }
+
+    public static boolean isLibrarian(int id){
+        try {
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM users WHERE id =" + id);
+            resultSet.next();
+            boolean isLibrarian = resultSet.getBoolean("isLibrarian");
+
+            return isLibrarian;
+
+        } catch (SQLException e) {
+            System.out.println("Error is in isLibrarian method: " + e.toString());
+        }
+        return false;
     }
 }

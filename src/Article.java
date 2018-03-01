@@ -22,7 +22,7 @@ public class Article extends Document {
      * creating document in database
      */
     @Override
-    public void CreateDocumentInDB() {
+    public void CreateDocumentInDB(int idLibrarian) {
         Statement statement;
         ResultSet resultSet;
         PreparedStatement preparedStatement;

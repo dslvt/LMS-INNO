@@ -16,9 +16,20 @@ public abstract class Document {
     /**
      * common feature
      */
-    public void CreateDocumentInDB(){}
 
-    public void DeleteFromDB(){}
+    public void CreateDocument(String name, int price, ArrayList<String> keywords, ArrayList<String> authors, boolean isReference, boolean isActive, String location){
+        this.name = name;
+        this.price = price;
+        this.keywords = keywords;
+        this.authors = authors;
+        this.isReference = isReference;
+        this.isActive = isActive;
+        this.location = location;
+    }
+
+    public void CreateDocumentInDB(int idLibrarian){}
+
+    public void DeleteFromDB(boolean withCopies, int idLibrarian){}
 
     public abstract boolean isCanBeTaken();
 }
