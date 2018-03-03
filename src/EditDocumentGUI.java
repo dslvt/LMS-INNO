@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class EditDocumentGUI  extends JFrame {
     private JButton editingBook = new JButton("Edit Book");
@@ -18,8 +19,20 @@ public class EditDocumentGUI  extends JFrame {
             Container containerTB = deleteBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
-            Object[][] books = {{"Lol,kek,cheburek", new Integer(5)}};
-            String[] columnNames = {"Name", "Amount"};
+            Database db = new Database();
+            ArrayList<Document> documents = db.getAllDocuments();
+
+            Object[][] books = new Object[documents.size()][];
+
+            for (int i = 0; i < documents.size(); i++) {
+                books[i] = new Object[4];
+                books[i][0] = documents.get(i).name;
+                books[i][1] = documents.get(i).authors;
+                books[i][2] = documents.get(i).location;
+                books[i][3] = documents.get(i).price;
+            }
+
+            String[] columnNames = {"Name", "Authors", "Location", "Price"};
 
             JTable table = new JTable(books, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
@@ -31,18 +44,15 @@ public class EditDocumentGUI  extends JFrame {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
-                    int type = 1;
-                    if(type == 0){
+
+                    if(documents.get(index).type == DocumentType.book){
                         AddBookGUI book = new AddBookGUI();
                     }
-                    else if (type == 1){
+                    else if (documents.get(index).type == DocumentType.journal){
                         AddJournalGUI journal = new AddJournalGUI();
                     }
-                    else if (type == 2){
+                    else if (documents.get(index).type == DocumentType.avmaterial){
                         AddAVmaterialGUI AVmaterial = new AddAVmaterialGUI();
-                    }
-                    else if (type == 3){
-
                     }
                 }
             });

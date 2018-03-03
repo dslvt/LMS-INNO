@@ -36,17 +36,18 @@ public class Journal extends Document {
             try {
                 Integer lastId = Database.isDocumentExist(this);
                 if (lastId != -1) {
-                    preparedStatement = Database.connection.prepareStatement("update books set number = number + 1 where id = " + lastId.toString());
+                    preparedStatement = Database.connection.prepareStatement("update journals set number = number + 1 where id = " + lastId.toString());
                     preparedStatement.executeUpdate();
                 } else {
-                    preparedStatement = Database.connection.prepareStatement("insert into books(title, author, issue, editor, cost, keywords, reference) values(?, ?, ?, ?, ?, ?, ?)");
+                    preparedStatement = Database.connection.prepareStatement("insert into journals(title, author, issue, editor, cost, keywords, reference, number) values(?, ?, ?, ?, ?, ?, ?, ?)");
                     preparedStatement.setString(1, this.name);
                     preparedStatement.setString(2, this.authors.toString());
-                    preparedStatement.setString(3, issue);
-                    preparedStatement.setString(4, editor);
-                    preparedStatement.setInt(5, price);
-                    preparedStatement.setString(6, keywords.toString());
-                    preparedStatement.setBoolean(7, isReference);
+                    preparedStatement.setString(3, this.issue);
+                    preparedStatement.setString(4, this.editor);
+                    preparedStatement.setInt(5, this.price);
+                    preparedStatement.setString(6, this.keywords.toString());
+                    preparedStatement.setBoolean(7, this.isReference);
+                    preparedStatement.setInt(8, 1);
                     preparedStatement.executeUpdate();
 
                     statement = Database.connection.createStatement();
@@ -57,11 +58,10 @@ public class Journal extends Document {
                     this.localId = lastId;
                 }
 
-                preparedStatement = Database.connection.prepareStatement("insert into documents(id_journals, location, type, isActive) values(?, ?, ?, ?)");
+                preparedStatement = Database.connection.prepareStatement("insert into documents(id_journals, location, type) values(?, ?, ?)");
                 preparedStatement.setInt(1, lastId);
                 preparedStatement.setString(2, location);
                 preparedStatement.setString(3, "journals");
-                preparedStatement.setBoolean(4, isActive);
                 preparedStatement.executeUpdate();
 
                 int globalID = 0;

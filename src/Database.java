@@ -7,12 +7,12 @@ import java.util.List;
 
 public class Database {
 
-//    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
-//    private static final String user = "admin";
-//    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
-    String user = "root";
-    String password = "enaca2225";
-    String url = "jdbc:mysql://localhost:3306/new_version?useSSL=false";
+    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
+    private static final String user = "admin";
+    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+//    String user = "root";
+//    String password = "enaca2225";
+//    String url = "jdbc:mysql://localhost:3306/new_version?useSSL=false";
 
     public static Connection connection;
     private static Statement statement;
@@ -227,18 +227,21 @@ public class Database {
                     res.next();
                     currentDoc = createAVMaterialByResultSet(res, resultSet.getInt("id"), resultSet.getString("location"));
                     currentDoc.localId = res.getInt("id");
+                    currentDoc.type = DocumentType.avmaterial;
                 }else if(resultSet.getInt(3) != 0){
                     findInCurrentDBQuery += "books where id="+Integer.toString(resultSet.getInt(3));
                     ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
                     res.next();
                     currentDoc = createBookByResultSet(res, resultSet.getInt("id"), resultSet.getString("location"));
                     currentDoc.localId = res.getInt("id");
+                    currentDoc.type = DocumentType.book;
                 }else if(resultSet.getInt(4) != 0){
                     findInCurrentDBQuery += "journals where id="+Integer.toString(resultSet.getInt(4));
                     ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
                     res.next();
                     currentDoc = createJournalByResultSet(res, resultSet.getInt("id"), resultSet.getString("location"));
                     currentDoc.localId = res.getInt("id");
+                    currentDoc.type = DocumentType.journal;
                 }
                 users.add(currentDoc);
             }
@@ -498,6 +501,7 @@ public class Database {
 
             user = new Patron(resultSet.getString("name"), resultSet.getString("password"), resultSet.getString("phoneNumber"),
                     resultSet.getString("address"), resultSet.getBoolean("isFacultyMember"), resultSet.getInt("debt"));
+            user.id = id;
         }catch (Exception e){
             System.out.println("Database get_user_by_id: " + e.toString());
         }
@@ -518,5 +522,23 @@ public class Database {
             System.out.println("Error is in isLibrarian method: " + e.toString());
         }
         return false;
+    }
+
+    public ArrayList<LibTask> getAllLibTasks(){
+        String query = "select * from libtasks order by id";
+        ArrayList<LibTask> ans = new ArrayList<>();
+        try{
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+            while(resultSet.next()){
+                int userid = resultSet.getInt("id_user");
+                String libType = resultSet.getString("type");
+                ans.add(new LibTask(this.getDocumentById(resultSet.getInt("id_document")), this.getPatronById(userid), libType));
+            }
+        }catch (Exception e){
+            System.out.println("Error in database, getAllLibTasks: " + e.toString());
+        }
+
+        return ans;
     }
 }

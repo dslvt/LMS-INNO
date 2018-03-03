@@ -54,7 +54,7 @@ public class AVmaterial extends Document {
                     preparedStatement.setInt(3, price);
                     preparedStatement.setString(4, this.keywords.toString());
                     preparedStatement.setInt(5, 1);
-                    preparedStatement.setBoolean(6, false);
+                    preparedStatement.setBoolean(6, this.isReference);
                     preparedStatement.executeUpdate();
 
                     statement = Database.connection.createStatement();
@@ -65,11 +65,10 @@ public class AVmaterial extends Document {
                     this.localId = lastId;
                 }
 
-                preparedStatement = Database.connection.prepareStatement("insert into documents(id_av_materials, location, type, isActive) values(?, ?, ?, ?)");
+                preparedStatement = Database.connection.prepareStatement("insert into documents(id_av_materials, location, type) values(?, ?, ?)");
                 preparedStatement.setInt(1, lastId);
                 preparedStatement.setString(2, location);
                 preparedStatement.setString(3, "av_materials");
-                preparedStatement.setBoolean(4, isActive);
                 preparedStatement.executeUpdate();
 
                 int globalID = 0;

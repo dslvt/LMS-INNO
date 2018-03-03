@@ -106,9 +106,9 @@ public class Book extends Document{
                 statement = db.connection.createStatement();
                 Integer lastId = Database.isDocumentExist(this);
                 if (lastId != -1) {
-                    statement.executeUpdate("DELETE FROM books WHERE id = " + lastId.toString());
+                    statement.executeUpdate("DELETE FROM books WHERE id = " + lastId.toString());//error
                     if (withCopies) {
-                        statement.executeUpdate("DELETE FROM documents WHERE id = " + this.id);
+                        statement.executeUpdate("DELETE FROM documents WHERE id = " + this.id);//error
                     }
                 } else {
                     System.out.println("Error delete book:  there is no book with id " + lastId.toString());

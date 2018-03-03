@@ -58,12 +58,16 @@ public class TakeBook extends JFrame{
                         int amountOfDays = -1;
 
                         String time = "";
-                        amountOfDays = booking.checkOut(new AVmaterial(documentIds.get(index)) , CurrentSession.user);
-                        if(amountOfDays == -1){
-                            time = "Sorry, but you cant take this book";
-                        }else{
-                            time = "You have been taken book on " + Integer.toString(amountOfDays) + " days.";
-                        }
+//                        amountOfDays = booking.checkOut(new AVmaterial(documentIds.get(index)) , CurrentSession.user);
+//                        if(amountOfDays == -1){
+//                            time = "Sorry, but you cant take this book";
+//                        }else{
+//                            time = "You have been taken book on " + Integer.toString(amountOfDays) + " days.";
+//                        }
+
+                        EventManager eventManager = new EventManager();
+                        eventManager.CreateQuery(new LibTask(new AVmaterial(documentIds.get(index)), (Patron)CurrentSession.user, "checkout"));
+                        time = "Wait, your decision has been sent";
 
                         JOptionPane.showMessageDialog(null, time, "", JOptionPane.PLAIN_MESSAGE);
 

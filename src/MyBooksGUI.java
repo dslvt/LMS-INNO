@@ -47,16 +47,13 @@ public class MyBooksGUI extends JFrame{
             listScroller.setPreferredSize(new Dimension(100,100));
             containerTB.add(listScroller, BorderLayout.CENTER);
 
-            Booking booking = new Booking();
-
-            ArrayList<Integer> documentIds = db.getAllDocumentsIDs();
-
             takingBook.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int index = allBooks.getSelectedIndex();
                     if(index != -1){
-
+                        EventManager eventManager = new EventManager();
+                        eventManager.CreateQuery(new LibTask(vector.get(index), (Patron)CurrentSession.user, "return"));
 
                         String time = "";
                         JOptionPane.showMessageDialog(null, time, "", JOptionPane.PLAIN_MESSAGE);

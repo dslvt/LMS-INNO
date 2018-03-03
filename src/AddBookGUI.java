@@ -2,7 +2,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.print.Book;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AddBookGUI extends JFrame {
     private JLabel labelName = new JLabel("Name");
@@ -64,6 +66,11 @@ public class AddBookGUI extends JFrame {
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Book book = new Book(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
+                        new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(), textFieldPublisher.getText(), textFieldEdition.getText(),
+                        Integer.parseInt(textFieldPublishYear.getText()), Bestseller.getState(), textFieldLocation.getText(), true);
+                book.CreateDocumentInDB(CurrentSession.user.id);
+
                 BookWindow.setVisible(false);
             }
         });

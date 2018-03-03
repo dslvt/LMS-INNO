@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.Book;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AddJournalGUI extends JFrame {
     private JLabel labelName = new JLabel("Name");
@@ -24,21 +26,24 @@ public class AddJournalGUI extends JFrame {
     private JTextField textFieldIssue = new JTextField("", 5);
 
     private JLabel labelLocation = new JLabel("Location");
-    private  JTextField textFieldLocation = new JTextField("", 5);
-    private Checkbox Bestseller = new Checkbox("Bestseller");
+    private JTextField textFieldLocation = new JTextField("", 5);
+
+    private JLabel labelEditor = new JLabel("Editor");
+    private JTextField textFieldEditor = new JTextField("", 5);
+
     private Checkbox Reference = new Checkbox("Reference");
 
     private JButton add = new JButton("ADD");
 
     public AddJournalGUI(){
-        JFrame JournalWindow = new JFrame("Book");
+        JFrame JournalWindow = new JFrame("Journal");
         JournalWindow.setBounds(100, 100, 250, 450);
         JournalWindow.setLocationRelativeTo(null);
         JournalWindow.setResizable(false);
         this.setTitle("Book");
         JournalWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         Container containerSU = JournalWindow.getContentPane();
-        containerSU.setLayout(new GridLayout(9, 2, 2, 2));
+        containerSU.setLayout(new GridLayout(10, 2, 2, 2));
 
         containerSU.add(labelName);
         containerSU.add(textFieldNameSU);
@@ -54,12 +59,19 @@ public class AddJournalGUI extends JFrame {
         containerSU.add(textFieldPublishYear);
         containerSU.add(labelIssue);
         containerSU.add(textFieldIssue);
-        containerSU.add(Bestseller);
+        containerSU.add(labelEditor);
+        containerSU.add(textFieldEditor);
         containerSU.add(Reference);
 
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                Journal journal = new Journal(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))),
+                Integer.parseInt(textFieldPrice.getText()), new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))),
+                Reference.getState(), textFieldPublishYear.getText(), textFieldIssue.getText(), textFieldEditor.getText(), true, textFieldLocation.getText());
+
+                journal.CreateDocumentInDB(CurrentSession.user.id);
+
                 JournalWindow.setVisible(false);
             }
         });

@@ -23,7 +23,11 @@ public class EventManager {
             ResultSet rs = statement.executeQuery(query);
 
             while (rs.next()){
-                LibTask libTask = new LibTask(db.getDocumentById(rs.getInt("id_document")), db.getPatronById(rs.getInt("id_user")), rs.getString("type"));
+                int doc_id = rs.getInt("id_document");
+                int user_id = rs.getInt("id_user");
+                String taskType = rs.getString("type");
+                LibTask libTask = new LibTask(db.getDocumentById(doc_id), db.getPatronById(user_id), taskType);
+                libTask.id = rs.getInt("id");
                 libTasks.add(libTask);
             }
         }catch (Exception e){
@@ -53,8 +57,20 @@ public class EventManager {
             } else if (libTask.type.equals("return")) {
                 booking.returnBook(libTask.document, libTask.user);
             }
+            this.DeleteQuery(libTask);
         }catch (Exception e){
             System.out.println("EventManager executeQuery: " + e.toString());
+        }
+    }
+
+    public void DeleteQuery(LibTask libTask){
+        try{
+            Database db = new Database();
+            PreparedStatement ps = db.connection.prepareStatement("delete from libtasks where id = ?");
+            ps.setInt(1, libTask.id);
+            ps.executeUpdate();
+        }catch (Exception e){
+            System.out.println("EventManager deleteQuery: " + e.toString());
         }
     }
 }

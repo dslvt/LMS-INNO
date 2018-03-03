@@ -3,6 +3,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.print.Book;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class AddAVmaterialGUI extends JFrame {
     private JLabel labelName = new JLabel("Name");
@@ -16,6 +18,9 @@ public class AddAVmaterialGUI extends JFrame {
 
     private JLabel labelKeywords = new JLabel("Keywords");
     private JTextField textFieldKeywords = new JTextField("", 5);
+
+    private JLabel labelLocation = new JLabel("Location");
+    private JTextField textFieldLocation = new JTextField("", 5);
 
     private Checkbox Reference = new Checkbox("Reference");
 
@@ -39,11 +44,18 @@ public class AddAVmaterialGUI extends JFrame {
         containerSU.add(textFieldKeywords);
         containerSU.add(labelPrice);
         containerSU.add(textFieldPrice);
+        containerSU.add(labelLocation);
+        containerSU.add(textFieldLocation);
         containerSU.add(Reference);
+
 
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                AVmaterial aVmaterial = new AVmaterial(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
+                    new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(), true, textFieldLocation.getText());
+
+                aVmaterial.CreateDocumentInDB(CurrentSession.user.id);
                 AVmaterialWindow.setVisible(false);
             }
         });

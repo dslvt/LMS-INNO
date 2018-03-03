@@ -23,10 +23,23 @@ public class LibrarianTasksGUI extends JFrame{
             Container containerTB = tasks.getContentPane();
             containerTB.setLayout(new BorderLayout());
             containerTB.setLayout(new GridLayout(3, 1, 1, 1));
-            Object[][] books = {{"Nigu & listochki", "Elvira", "Student"}};
-            String[] columnNames = {"Book", "Name", "Position"};
 
-            JTable table = new JTable(books, columnNames);
+            String[] columnNames = {"Document", "Document's Position", "Username", "Login", "Type"};
+
+            Database db = new Database();
+            EventManager eventManager = new EventManager();
+            ArrayList<LibTask> libTasks = eventManager.GetElements();
+            Object[][] tasksA = new Object[libTasks.size()][];
+            for (int i = 0; i < libTasks.size(); i++) {
+                tasksA[i] = new Object[5];
+                tasksA[i][0] = libTasks.get(i).document.name;
+                tasksA[i][1] = libTasks.get(i).document.location;
+                tasksA[i][2] = libTasks.get(i).user.name;
+                tasksA[i][3] = libTasks.get(i).user.phoneNumber;
+                tasksA[i][4] = libTasks.get(i).type;
+            }
+
+            JTable table = new JTable(tasksA, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             table.setFillsViewportHeight(true);
             listScroller.setPreferredSize(new Dimension(100,100));
@@ -38,6 +51,7 @@ public class LibrarianTasksGUI extends JFrame{
                     int index = table.getSelectedRow();
                     if(index != -1){
 
+                        eventManager.ExecuteQuery(libTasks.get(index));
                     }
                     else{
                         String message = "Select a book!\n";
@@ -51,7 +65,7 @@ public class LibrarianTasksGUI extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if(index != -1){
-
+                        eventManager.DeleteQuery(libTasks.get(index));
                     }
                     else{
                         String message = "Select a book!\n";

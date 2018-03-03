@@ -34,7 +34,12 @@ public class FirstWindow extends JFrame{
                 if(database.isCorrectAuthorization(textFieldPhoneNumber.getText(), fieldPassword.getText())){
                     CurrentSession.user = database.getPatronByNumber(textFieldPhoneNumber.getText());
                     closeFirstWindow();
-                    MenuWindow menuWindow = new MenuWindow();
+                    if(database.isLibrarian(CurrentSession.user.id)){
+                        LibrarianGUI librarianGUI = new LibrarianGUI();
+                    }else{
+                        MenuWindow menuWindow = new MenuWindow();
+                    }
+
                 }
                 else {
                 String message = "User does not exist\n" + "You need to Sign Up";

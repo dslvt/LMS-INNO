@@ -10,40 +10,22 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-//        Authorization();
-//
-        ArrayList<String> authors = new ArrayList<String>();
-        authors.add("Alish");
-        ArrayList<String> keywords = new ArrayList<String>();
-        keywords.add("Poem"); keywords.add("Tatar");
-        Book mat = new Book("Old book", authors, 10, keywords, false, "pub", "first", 2016, false, "shelf #1", true);
-        mat.CreateDocumentInDB(5);
-//        mat.localId = 16;
-//        mat.DeleteFromDB();
-        mat.ModifyInDB("New book", authors, 10, keywords, false, "pub", "first", 2016, false, "shelf #1", true, 4);
-
-        //db.CreateAVMaterial(mat);
-
-        //Booking booking = new Booking();
-
-//        FirstWindow window = new FirstWindow();
-//        window.setVisible(true);
+        FirstWindow window = new FirstWindow();
+        window.setVisible(true);
 //
 //
-        Tester tester = new Tester();
-
-        tester.test1();
-        tester.test2();
-        tester.test3();
-        tester.test4();
-        tester.test5();
-        tester.test6();
-        tester.test7();
-        tester.test8();
-        tester.test9();
-        tester.test10();
-
-
+//        Tester tester = new Tester();
+//
+//        tester.test1();
+//        tester.test2();
+//        tester.test3();
+//        tester.test4();
+//        tester.test5();
+//        tester.test6();
+//        tester.test7();
+//        tester.test8();
+//        tester.test9();
+//        tester.test10();
     }
 
     /**
