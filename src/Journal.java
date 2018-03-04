@@ -14,7 +14,7 @@ public class Journal extends Document {
      * common constructor
      */
     public Journal(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords,
-                   boolean isReference, String publicationDate, String issue, String editor, boolean isActive, String location){
+                   boolean isReference, String publicationDate, String issue, String editor, boolean isActive, String location) {
         CreateDocument(name, cost, keywords, authors, isReference, isActive, location);
         this.publicationDate = publicationDate;
         this.issue = issue;
@@ -28,7 +28,7 @@ public class Journal extends Document {
      */
     @Override
     public void CreateDocumentInDB(int idLibrarian) {
-        if(Database.isLibrarian(idLibrarian)) {
+        if (Database.isLibrarian(idLibrarian)) {
             Statement statement;
             ResultSet resultSet;
             PreparedStatement preparedStatement;
@@ -75,29 +75,27 @@ public class Journal extends Document {
             } catch (Exception e) {
                 System.out.println("Error create journal: " + e.toString());
             }
-        }
-        else {
+        } else {
             System.out.println("Error: User does not have access to add new Journal");
         }
     }
 
     public void ModifyInDB(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords,
-                           boolean isReference, String publicationDate, String issue, String editor, boolean isActive, String location, int idLibrarian){
-        if(Database.isLibrarian(idLibrarian)) {
-            Journal modifiedJournal = new Journal(name, authors, cost, keywords, isReference, publicationDate, issue,editor,isActive,location);
+                           boolean isReference, String publicationDate, String issue, String editor, boolean isActive, String location, int idLibrarian) {
+        if (Database.isLibrarian(idLibrarian)) {
+            Journal modifiedJournal = new Journal(name, authors, cost, keywords, isReference, publicationDate, issue, editor, isActive, location);
             modifiedJournal.id = this.id;
             modifiedJournal.localId = this.localId;
-            this.DeleteFromDB(false, idLibrarian);
+            this.DeleteFromDB(idLibrarian);
             modifiedJournal.CreateDocumentInDB(idLibrarian);
-        }
-        else {
+        } else {
             System.out.println("Error: User does not have access to modify Journal");
         }
     }
 
     @Override
-    public void DeleteFromDB(boolean withCopies, int idLibrarian){
-        if(Database.isLibrarian(idLibrarian)) {
+    public void DeleteFromDB(int idLibrarian) {
+        if (Database.isLibrarian(idLibrarian)) {
             Database db = new Database();
             Statement statement;
             try {
@@ -105,9 +103,8 @@ public class Journal extends Document {
                 Integer lastId = Database.isDocumentExist(this);
                 if (lastId != -1) {
                     statement.executeUpdate("DELETE FROM journals WHERE id = " + lastId.toString());
-                    if (withCopies) {
-                        statement.executeUpdate("DELETE FROM documents WHERE id = " + this.id);
-                    }
+                    statement.executeUpdate("DELETE FROM documents WHERE id = " + this.id);
+
                 } else {
                     System.out.println("Error delete journal:  there is no journal with id " + lastId.toString());
                 }
@@ -115,8 +112,7 @@ public class Journal extends Document {
             } catch (Exception e) {
                 System.out.println("Error delete journal: " + e.toString());
             }
-        }
-        else {
+        } else {
             System.out.println("Error: User does not have access to delete Journal");
         }
     }

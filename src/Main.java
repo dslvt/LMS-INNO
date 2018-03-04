@@ -1,3 +1,4 @@
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,8 +11,19 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-        FirstWindow window = new FirstWindow();
-        window.setVisible(true);
+//        FirstWindow window = new FirstWindow();
+//        window.setVisible(true);
+        ArrayList<String> author = new ArrayList<>();
+        author.add("author");
+        Book book = new Book("Noname", author, 100, author, false, "publisher","editor",2008, false, "location", true);
+        book.CreateDocumentInDB(5);
+        book.addCopies(2, 5);
+//        book.localId = 31;
+//        book.deleteCopies(1,5);
+//        book.DeleteFromDB(true, 5);
+//        book.ModifyInDB("Extra", author, 100, author, false, "publisher","editor",2008, false, "newLocation", 5);
+
+
 //
 //
 //        Tester tester = new Tester();

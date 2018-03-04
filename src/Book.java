@@ -5,16 +5,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class Book extends Document{
+public class Book extends Document {
 
     public String publisher, edition;
     public int publishYear;
     public boolean isBestseller;
 
     /**
-     *common constructor
+     * common constructor
      */
-    public Book(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String publisher, String edition, int publishYear, boolean isBestseller, String location, boolean isActive){
+    public Book(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String publisher, String edition, int publishYear, boolean isBestseller, String location, boolean isActive) {
         CreateDocument(name, cost, keywords, authors, isReference, isActive, location);
         this.publisher = publisher;
         this.edition = edition;
@@ -24,7 +24,9 @@ public class Book extends Document{
         type = DocumentType.book;
     }
 
-    public Book(){}
+    public Book() {
+    }
+
     /**
      * creating book in database
      */
@@ -37,10 +39,7 @@ public class Book extends Document{
 
             try {
                 Integer lastId = Database.isDocumentExist(this);
-                if (lastId != -1) {
-                    preparedStatement = Database.connection.prepareStatement("update books set number = number + 1 where id = " + lastId.toString());
-                    preparedStatement.executeUpdate();
-                } else {
+                if (lastId == -1) {
                     preparedStatement = Database.connection.prepareStatement("insert into books(title, author, publisher, edition, publish_year, cost, keywords, reference, number) values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
                     preparedStatement.setString(1, this.name);
                     preparedStatement.setString(2, this.authors.toString());
@@ -59,47 +58,115 @@ public class Book extends Document{
                         lastId = resultSet.getInt(1);
                     }
                     this.localId = lastId;
-                }
 
-                preparedStatement = Database.connection.prepareStatement("insert into documents(id_books, location, type) values(?, ?, ?)");
-                preparedStatement.setInt(1, lastId);
-                preparedStatement.setString(2, location);
-                preparedStatement.setString(3, "books");
-                preparedStatement.executeUpdate();
 
-                int globalID = 0;
-                statement = Database.connection.createStatement();
-                resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
-                if (resultSet.next()) {
-                    globalID = resultSet.getInt(1);
+                    preparedStatement = Database.connection.prepareStatement("insert into documents(id_books, location, type, isActive) values(?, ?, ?, ?)");
+                    preparedStatement.setInt(1, lastId);
+                    preparedStatement.setString(2, location);
+                    preparedStatement.setString(3, "books");
+                    preparedStatement.setBoolean(4, this.isActive);
+                    preparedStatement.executeUpdate();
+
+                    int globalID = 0;
+                    statement = Database.connection.createStatement();
+                    resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
+                    if (resultSet.next()) {
+                        globalID = resultSet.getInt(1);
+                    }
+                    this.id = globalID;
                 }
-                this.id = globalID;
+                else{
+                    System.out.println("Error create book: this book is already exist");
+                }
 
             } catch (Exception e) {
                 System.out.println("Error create book: " + e.toString());
             }
-        }
-        else{
+        } else {
             System.out.println("Error: User does not have access to add new Book");
         }
     }
 
-    public void ModifyInDB(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String publisher, String edition, int publishYear, boolean isBestseller, String location, boolean isActive, int idLibrarian){
-        if(Database.isLibrarian(idLibrarian)) {
-            Book modifiedBook = new Book(name, authors, cost, keywords, isReference, publisher, edition, publishYear, isBestseller, location, isActive);
-            modifiedBook.id = this.id;
-            modifiedBook.localId = this.localId;
-            this.DeleteFromDB(false, idLibrarian);
-            modifiedBook.CreateDocumentInDB(idLibrarian);
+    public ArrayList<Book> addCopies(int copies, int idLibrarian) {
+        ArrayList<Book> newCopies = new ArrayList<>();
+        if (Database.isLibrarian(idLibrarian)) {
+            PreparedStatement preparedStatement;
+            Statement statement;
+            ResultSet resultSet;
+            Integer lastId = Database.isDocumentExist(this);
+            if (lastId != -1) {
+                try {
+                    for (int i = 0; i < copies; i++) {
+                        preparedStatement = Database.connection.prepareStatement("update books set number = number + 1 where id = " + lastId.toString());
+                        preparedStatement.executeUpdate();
+                        preparedStatement = Database.connection.prepareStatement("insert into documents(id_books, location, type, isActive) values(?, ?, ?, ?)");
+                        preparedStatement.setInt(1, lastId);
+                        preparedStatement.setString(2, location);
+                        preparedStatement.setString(3, "books");
+                        preparedStatement.setBoolean(4, this.isActive);
+                        preparedStatement.executeUpdate();
+                        int globalID = 0;
+                        statement = Database.connection.createStatement();
+                        resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
+                        if (resultSet.next()) {
+                            globalID = resultSet.getInt(1);
+                        }
+                        Book newCopy = this;
+                        newCopy.id = globalID;
+                        newCopies.add(newCopy);
+                    }
+                } catch (SQLException e) {
+                    System.out.println("Error add copies of  book: " + e.toString());
+                }
+            } else {
+                System.out.println("Error add copy of book:  there is no book with id " + lastId.toString());
+            }
+        } else {
+            System.out.println("Error: User does not have access to add new copy of Book");
         }
-        else {
+
+        return newCopies;
+    }
+
+    public void ModifyInDB(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String publisher, String edition, int publishYear, boolean isBestseller, String location, int idLibrarian) {
+        if (Database.isLibrarian(idLibrarian)) {
+            PreparedStatement preparedStatement;
+            try {
+                Integer lastId = Database.isDocumentExist(this);
+                if (lastId != -1) {
+                    preparedStatement = Database.connection.prepareStatement("UPDATE books SET title = ?, author = ?, publisher = ?, edition = ?, publish_year = ?, cost = ?, keywords = ?, reference = ?,isBestSeller = ? WHERE id = ?");
+                    preparedStatement.setString(1, name);
+                    preparedStatement.setString(2, authors.toString());
+                    preparedStatement.setString(3, publisher);
+                    preparedStatement.setString(4, edition);
+                    preparedStatement.setInt(5, publishYear);
+                    preparedStatement.setInt(6, cost);
+                    preparedStatement.setString(7, keywords.toString());
+                    preparedStatement.setBoolean(8, isReference);
+                    preparedStatement.setBoolean(9, isBestseller);
+                    preparedStatement.setInt(10, this.localId);
+                    preparedStatement.executeUpdate();
+
+                    preparedStatement = Database.connection.prepareStatement("UPDATE documents SET location = ? WHERE id = ?");
+                    preparedStatement.setString(1, location);
+                    preparedStatement.setInt(2, this.id);
+                    preparedStatement.executeUpdate();
+                } else {
+                    System.out.println("Error modify book:  there is no book with id " + lastId.toString());
+                }
+
+            } catch (SQLException e) {
+                System.out.println("Error modify book: " + e.toString());
+            }
+
+        } else {
             System.out.println("Error: User does not have access to modify Book");
         }
     }
 
     @Override
-    public void DeleteFromDB(boolean withCopies, int idLibrarian){
-        if(Database.isLibrarian(idLibrarian)) {
+    public void DeleteFromDB(int idLibrarian) {
+        if (Database.isLibrarian(idLibrarian)) {
             Database db = new Database();
             Statement statement;
             try {
@@ -107,9 +174,8 @@ public class Book extends Document{
                 Integer lastId = Database.isDocumentExist(this);
                 if (lastId != -1) {
                     statement.executeUpdate("DELETE FROM books WHERE id = " + lastId.toString());//error
-                    if (withCopies) {
-                        statement.executeUpdate("DELETE FROM documents WHERE id = " + this.id);//error
-                    }
+                    statement.executeUpdate("DELETE FROM documents WHERE id_books= " + lastId.toString());//error
+
                 } else {
                     System.out.println("Error delete book:  there is no book with id " + lastId.toString());
                 }
@@ -117,9 +183,25 @@ public class Book extends Document{
             } catch (Exception e) {
                 System.out.println("Error delete book: " + e.toString());
             }
-        }
-        else {
+        } else {
             System.out.println("Error: User does not have access to delete Book");
+        }
+    }
+
+    public void deleteCopies(int copies, int idLibrarian) {
+        if (Database.isLibrarian(idLibrarian)) {
+            Database db = new Database();
+            Statement statement;
+            try {
+                statement = db.connection.createStatement();
+                Integer lastId = Database.isDocumentExist(this);
+                statement.executeUpdate("DELETE FROM documents WHERE id_books= " + lastId.toString() + " LIMIT " + copies);
+
+            } catch (SQLException e) {
+                System.out.println("Error delete copy of book: " + e.toString());
+            }
+        } else {
+            System.out.println("Error: User does not have access to delete copies of Book");
         }
     }
 

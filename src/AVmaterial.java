@@ -86,22 +86,22 @@ public class AVmaterial extends Document {
             System.out.println("Error: User does not have access to add new AV Material");
         }
     }
-    public void ModifyInDB(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String location, boolean isActive, int idLibrarian){
-        if(Database.isLibrarian(idLibrarian)) {
+
+    public void ModifyInDB(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String location, boolean isActive, int idLibrarian) {
+        if (Database.isLibrarian(idLibrarian)) {
             AVmaterial modifiedAV = new AVmaterial(name, authors, cost, keywords, isReference, isActive, location);
             modifiedAV.id = this.id;
             modifiedAV.localId = this.localId;
-            this.DeleteFromDB(false, idLibrarian);
+            this.DeleteFromDB(idLibrarian);
             modifiedAV.CreateDocumentInDB(idLibrarian);
-        }
-        else {
+        } else {
             System.out.println("Error: User does not have access to modify AV Material");
         }
     }
 
     @Override
-    public void DeleteFromDB(boolean withCopies, int idLibrarian) {
-        if(Database.isLibrarian(idLibrarian)) {
+    public void DeleteFromDB(int idLibrarian) {
+        if (Database.isLibrarian(idLibrarian)) {
             Database db = new Database();
             Statement statement;
             try {
@@ -109,9 +109,8 @@ public class AVmaterial extends Document {
                 Integer lastId = Database.isDocumentExist(this);
                 if (lastId != -1) {
                     statement.executeUpdate("DELETE FROM av_materials WHERE id = " + lastId.toString());
-                    if (withCopies) {
-                        statement.executeUpdate("DELETE FROM documents WHERE id = " + this.id);
-                    }
+                    statement.executeUpdate("DELETE FROM documents WHERE id_journals = " + lastId.toString());
+
                 } else {
                     System.out.println("Error delete av material:  there is no av_material with id " + lastId.toString());
                 }
@@ -119,8 +118,7 @@ public class AVmaterial extends Document {
             } catch (Exception e) {
                 System.out.println("Error delete av_material: " + e.toString());
             }
-        }
-        else {
+        } else {
             System.out.println("Error: User does not have access to delete AV Material");
         }
 

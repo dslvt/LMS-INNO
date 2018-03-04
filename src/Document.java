@@ -29,7 +29,7 @@ public abstract class Document {
 
     public void CreateDocumentInDB(int idLibrarian){}
 
-    public void DeleteFromDB(boolean withCopies, int idLibrarian){}
+    public void DeleteFromDB(int idLibrarian){}
 
     public abstract boolean isCanBeTaken();
 }

@@ -50,7 +50,7 @@ public class DeleteDocumentGUI  extends JFrame {
                         String message = "Book succesfully deleted!";
                         JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);
 
-                        documents.get(index).DeleteFromDB(false, CurrentSession.user.id);
+                        documents.get(index).DeleteFromDB(CurrentSession.user.id);
                     }
                     else{
                         String message = "Select a book!\n";
