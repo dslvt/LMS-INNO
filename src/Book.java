@@ -40,7 +40,7 @@ public class Book extends Document {
             try {
                 Integer lastId = Database.isDocumentExist(this);
                 if (lastId == -1) {
-                    preparedStatement = Database.connection.prepareStatement("insert into books(title, author, publisher, edition, publish_year, cost, keywords, reference, number) values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    preparedStatement = Database.connection.prepareStatement("insert into books(title, author, publisher, edition, publish_year, cost, keywords, reference, number, isBestSeller) values(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                     preparedStatement.setString(1, this.name);
                     preparedStatement.setString(2, this.authors.toString());
                     preparedStatement.setString(3, publisher);
@@ -50,6 +50,7 @@ public class Book extends Document {
                     preparedStatement.setString(7, keywords.toString());
                     preparedStatement.setBoolean(8, isReference);
                     preparedStatement.setInt(9, 1);
+                    preparedStatement.setBoolean(10,this.isBestseller);
                     preparedStatement.executeUpdate();
 
                     statement = Database.connection.createStatement();

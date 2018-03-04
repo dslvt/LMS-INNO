@@ -1,5 +1,8 @@
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 
 public class Patron extends User {
     public boolean isFacultyMember;
@@ -26,21 +29,41 @@ public class Patron extends User {
 
     public void CreateUserDB() {
         try {
-                PreparedStatement preparedStatement;
-                preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian) values(?, ?, ?, ?, ?, ?, ?)");
-                preparedStatement.setString(1, this.name);
-                preparedStatement.setString(2, this.phoneNumber);
-                preparedStatement.setString(3, this.address);
-                preparedStatement.setInt(4, 0);
-                preparedStatement.setBoolean(5, this.isFacultyMember);
-                preparedStatement.setString(6, this.password);
-                preparedStatement.setBoolean(7, false);
-                preparedStatement.executeUpdate();
-            } catch (Exception ex) {
-                System.out.println("Error create patron: " + ex.toString());
-            }
+            PreparedStatement preparedStatement;
+            preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian) values(?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement.setString(1, this.name);
+            preparedStatement.setString(2, this.phoneNumber);
+            preparedStatement.setString(3, this.address);
+            preparedStatement.setInt(4, 0);
+            preparedStatement.setBoolean(5, this.isFacultyMember);
+            preparedStatement.setString(6, this.password);
+            preparedStatement.setBoolean(7, false);
+            preparedStatement.executeUpdate();
+        } catch (Exception ex) {
+            System.out.println("Error create patron: " + ex.toString());
         }
     }
+
+
+    public ArrayList<Integer> getAllRequests(){
+        ArrayList<Integer> requests = new ArrayList<>();
+        try {
+            Statement statement = Database.connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT id from request WHERE id_user = " + this.id);
+            while (resultSet.next()){
+                requests.add(resultSet.getInt(1));
+            }
+
+            return requests;
+
+        } catch (SQLException e) {
+            System.out.println("Error in getRequest: "+e.toString());
+        }
+
+        return requests;
+    }
+
+}
 
 
 

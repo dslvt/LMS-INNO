@@ -1,4 +1,4 @@
-import java.awt.image.AreaAveragingScaleFilter;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -7,12 +7,12 @@ public class Main {
     private static Scanner sc;
     private static User user;
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
         db = new Database();
         sc = new Scanner(System.in);
 
-        FirstWindow window = new FirstWindow();
-        window.setVisible(true);
+//        FirstWindow window = new FirstWindow();
+//        window.setVisible(true);
 //        ArrayList<String> author = new ArrayList<>();
 //        author.add("author");
 //        Book book = new Book("Noname", author, 100, author, false, "publisher","editor",2008, false, "location", true);
@@ -22,7 +22,14 @@ public class Main {
 //        book.deleteCopies(1,5);
 //        book.DeleteFromDB(true, 5);
 //        book.ModifyInDB("Extra", author, 100, author, false, "publisher","editor",2008, false, "newLocation", 5);
-
+//        Librarian librarian = new Librarian();
+//        Patron patron = new Patron();
+//        patron.id = 6;
+//        Booking booking = new Booking();
+//        booking.checkOut(book, patron);
+//
+//        librarian.sendRequest(book,patron);
+//        System.out.println(patron.getAllRequests());
 
 //
 //

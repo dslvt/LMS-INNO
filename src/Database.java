@@ -541,4 +541,20 @@ public class Database {
 
         return ans;
     }
+
+    public static boolean isRequestDocument(Document document){
+        try {
+            resultSet = statement.executeQuery("SELECT Count(*) AS total FROM request WHERE id_document ="+document.id);
+            resultSet.next();
+            if(resultSet.getInt("total")>0){
+                return true;
+            }
+            else {
+                return false;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error in isRequestDocument: "+ e.toString());
+        }
+        return false;
+    }
 }

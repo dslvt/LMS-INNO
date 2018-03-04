@@ -42,6 +42,11 @@ public class Booking {
                 java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
                 statement.executeUpdate("INSERT into booking set user_id = '" + user.id + "', document_id = '" + document.id + "', time = '" + timestamp + "' ");
 
+                //Change status of document
+                PreparedStatement preparedStatement = Database.connection.prepareStatement("UPDATE documents SET isActive = ? WHERE id = ?");
+                preparedStatement.setBoolean(1, false);
+                preparedStatement.setInt(2, document.id);
+
                 //Get line from Documents
                 String type = getType(document);
 
@@ -90,6 +95,16 @@ public class Booking {
 
         //Delete record from Booking
         statement.executeUpdate("DELETE FROM booking WHERE document_id = '" + document.id + "' AND user_id = '" + user.id + "'");
+
+        //Delete request if it is a request book
+        if(Database.isRequestDocument(document)){
+            statement.executeUpdate("DELETE FROM request WHERE id_document = '" + document.id + "' AND id_user = '" + user.id + "'");
+        }
+
+        //Change status of document
+        PreparedStatement preparedStatement = Database.connection.prepareStatement("UPDATE documents SET isActive = ? WHERE id = ?");
+        preparedStatement.setBoolean(1, true);
+        preparedStatement.setInt(2, document.id);
 
         //Change number of available documents
         changeNumber(true, getType(document), document);
