@@ -1,4 +1,5 @@
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 
 public class Patron extends User {
     public boolean isFacultyMember;
@@ -7,7 +8,7 @@ public class Patron extends User {
     /**
      * common constructor
      */
-    public Patron(String name, String password, String phoneNumber, String address, boolean isFacultyMember, int debt){
+    public Patron(String name, String password, String phoneNumber, String address, boolean isFacultyMember, int debt) {
         this.name = name;
         this.password = password;
         this.phoneNumber = phoneNumber;
@@ -19,24 +20,30 @@ public class Patron extends User {
     /**
      * empty constructor
      */
-    public Patron(){
+    public Patron() {
 
     }
-    public void CreateUserDB(){
-        try {
-            PreparedStatement preparedStatement;
 
-            preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian) values(?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement.setString(1, this.name);
-            preparedStatement.setString(2, this.phoneNumber);
-            preparedStatement.setString(3, this.address);
-            preparedStatement.setInt(4, 0);
-            preparedStatement.setBoolean(5, this.isFacultyMember);
-            preparedStatement.setString(6, this.password);
-            preparedStatement.setBoolean(7, false);
-            preparedStatement.executeUpdate();
-        }catch (Exception ex){
-            System.out.println("error: " + ex.toString());
+    public void CreateUserDB(int idLibrarian) {
+        if (Database.isLibrarian(idLibrarian)) {
+            try {
+                PreparedStatement preparedStatement;
+                preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian) values(?, ?, ?, ?, ?, ?, ?)");
+                preparedStatement.setString(1, this.name);
+                preparedStatement.setString(2, this.phoneNumber);
+                preparedStatement.setString(3, this.address);
+                preparedStatement.setInt(4, 0);
+                preparedStatement.setBoolean(5, this.isFacultyMember);
+                preparedStatement.setString(6, this.password);
+                preparedStatement.setBoolean(7, false);
+                preparedStatement.executeUpdate();
+            } catch (Exception ex) {
+                System.out.println("Error create patron: " + ex.toString());
+            }
+        } else {
+            System.out.println("Error: User does not have access to create Patron");
         }
     }
+
+
 }

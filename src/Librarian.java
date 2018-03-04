@@ -18,21 +18,26 @@ public class Librarian extends User {
 
     }
 
-    public void CreateUserDB(){
-        try {
-            PreparedStatement preparedStatement;
+    public void CreateUserDB(int idLibrarian){
+        if(Database.isLibrarian(idLibrarian)) {
+            try {
+                PreparedStatement preparedStatement;
 
-            preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian) values(?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement.setString(1, this.name);
-            preparedStatement.setString(2, this.phoneNumber);
-            preparedStatement.setString(3, this.address);
-            preparedStatement.setInt(4, 0);
-            preparedStatement.setBoolean(5, false);
-            preparedStatement.setString(6, this.password);
-            preparedStatement.setBoolean(7, true);
-            preparedStatement.executeUpdate();
-        }catch (Exception ex){
-            System.out.println("error: " + ex.toString());
+                preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian) values(?, ?, ?, ?, ?, ?, ?)");
+                preparedStatement.setString(1, this.name);
+                preparedStatement.setString(2, this.phoneNumber);
+                preparedStatement.setString(3, this.address);
+                preparedStatement.setInt(4, 0);
+                preparedStatement.setBoolean(5, false);
+                preparedStatement.setString(6, this.password);
+                preparedStatement.setBoolean(7, true);
+                preparedStatement.executeUpdate();
+            } catch (Exception ex) {
+                System.out.println("Error create librarian: " + ex.toString());
+            }
+        }
+        else {
+            System.out.println("Error: User does not have access to create Librarian");
         }
     }
 }
