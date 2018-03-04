@@ -18,9 +18,8 @@ public class Librarian extends User {
 
     }
 
-    public void CreateUserDB(int idLibrarian){
-        if(Database.isLibrarian(idLibrarian)) {
-            try {
+    public void CreateUserDB(){
+          try {
                 PreparedStatement preparedStatement;
 
                 preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian) values(?, ?, ?, ?, ?, ?, ?)");
@@ -36,8 +35,6 @@ public class Librarian extends User {
                 System.out.println("Error create librarian: " + ex.toString());
             }
         }
-        else {
-            System.out.println("Error: User does not have access to create Librarian");
-        }
-    }
+
+
 }

@@ -24,9 +24,8 @@ public class Patron extends User {
 
     }
 
-    public void CreateUserDB(int idLibrarian) {
-        if (Database.isLibrarian(idLibrarian)) {
-            try {
+    public void CreateUserDB() {
+        try {
                 PreparedStatement preparedStatement;
                 preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian) values(?, ?, ?, ?, ?, ?, ?)");
                 preparedStatement.setString(1, this.name);
@@ -40,10 +39,8 @@ public class Patron extends User {
             } catch (Exception ex) {
                 System.out.println("Error create patron: " + ex.toString());
             }
-        } else {
-            System.out.println("Error: User does not have access to create Patron");
         }
     }
 
 
-}
+

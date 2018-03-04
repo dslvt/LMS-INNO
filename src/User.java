@@ -12,7 +12,7 @@ public abstract class User {
     /**
      * add new user in database
      */
-    public abstract void CreateUserDB(int idLibrarian);
+    public abstract void CreateUserDB();
 
     public void ModifyUserDB(String name, String password, String phoneNumber, String address, boolean isFacultyMember, int debt, boolean isLibrarian, int idLibrarian) {
         if (Database.isLibrarian(idLibrarian)) {
