@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.print.DocFlavor;
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,8 +24,17 @@ public class CreateCopyGUI extends JFrame{
             Container containerTB = takeBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
-            Object[][] books = {{"Lol,kek,cheburek", new Integer(5)}};
             String[] columnNames = {"User", "Amount"};
+
+
+            Database db = new Database();
+            ArrayList<Pair<Document, Integer>> documents = db.getAllDocumentsWithoutCopies();
+            Object[][] books = new Object[documents.size()][2];
+
+            for (int i = 0; i < documents.size(); i++) {
+                books[i][0] = documents.get(i).first.name;
+                books[i][1] = documents.get(i).second;
+            }
 
             JTable table = new JTable(books, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
@@ -37,6 +47,10 @@ public class CreateCopyGUI extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if(index != -1){
+                        Document document = documents.get(index).first;
+                        document.location = "its dont important";
+                        document.addCopies(1, CurrentSession.user.id);
+
                         takeBook.setVisible(false);
                         String message = "You created one copy of document";
                         JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);

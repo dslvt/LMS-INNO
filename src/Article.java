@@ -54,4 +54,14 @@ public class Article extends Document {
     public boolean isCanBeTaken() {
         return false;
     }
+
+    @Override
+    public ArrayList<Document> addCopies(int copies, int idLibrarian) {
+        return null;
+    }
+
+    @Override
+    public void deleteCopies(int copies, int idLibrarian) {
+
+    }
 }

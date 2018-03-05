@@ -87,8 +87,8 @@ public class AVmaterial extends Document {
         }
     }
 
-    public ArrayList<AVmaterial> addCopies(int copies, int idLibrarian) {
-        ArrayList<AVmaterial> newCopies = new ArrayList<>();
+    public ArrayList<Document> addCopies(int copies, int idLibrarian) {
+        ArrayList<Document> newCopies = new ArrayList<>();
         if (Database.isLibrarian(idLibrarian)) {
             PreparedStatement preparedStatement;
             Statement statement;

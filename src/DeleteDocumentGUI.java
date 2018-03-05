@@ -62,7 +62,18 @@ public class DeleteDocumentGUI  extends JFrame {
             deletingCopy.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
+                    int index = table.getSelectedRow();
+                    if(index != -1){
+                        deleteBook.setVisible(false);
+                        String message = "Book succesfully deleted!";
+                        JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);
 
+                        documents.get(index).deleteCopies(1, CurrentSession.user.id);
+                    }
+                    else{
+                        String message = "Select a book!\n";
+                        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                    }
                 }
             });
             deletingBook.setPreferredSize(new Dimension(250, 40));
