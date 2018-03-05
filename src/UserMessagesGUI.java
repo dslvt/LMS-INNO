@@ -14,14 +14,13 @@ public class UserMessagesGUI extends JFrame{
     public UserMessagesGUI() {
         try {
             JFrame tasks = new JFrame();
-            tasks.setBounds(100, 100, 500, 400);
+            tasks.setBounds(100, 100, 300, 400);
             tasks.setLocationRelativeTo(null);
             tasks.setResizable(false);
             tasks.setTitle("Messages");
             tasks.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             Container containerTB = tasks.getContentPane();
             containerTB.setLayout(new BorderLayout());
-            containerTB.setLayout(new GridLayout(2, 1, 1, 1));
 
             String[] columnNames = {"Document"};
 
@@ -38,7 +37,7 @@ public class UserMessagesGUI extends JFrame{
             JTable table = new JTable(tasksA, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             table.setFillsViewportHeight(true);
-            listScroller.setPreferredSize(new Dimension(100,100));
+            listScroller.setPreferredSize(new Dimension(100,150));
             containerTB.add(listScroller, BorderLayout.CENTER);
 
             accept.addActionListener(new ActionListener() {
@@ -55,9 +54,8 @@ public class UserMessagesGUI extends JFrame{
                 }
             });
 
-            accept.setPreferredSize(new Dimension(250, 10));
+            accept.setPreferredSize(new Dimension(100, 40));
             containerTB.add(accept, BorderLayout.SOUTH);
-            containerTB.add(accept);
             tasks.setVisible(true);
         }
         catch (Exception e){

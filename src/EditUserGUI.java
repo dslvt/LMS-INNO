@@ -3,7 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EditUserGUI extends JFrame implements ActionListener {
+public class EditUserGUI extends JFrame{
     private JLabel labelNameSU = new JLabel("Name");
     private JTextField textFieldNameSU = new JTextField("", 5);
     private JLabel labelPhoneNumberSU = new JLabel("Phone Number");
@@ -16,11 +16,8 @@ public class EditUserGUI extends JFrame implements ActionListener {
     private JRadioButton radioFacultyMember = new JRadioButton("Faculty Member");
     private JButton submit = new JButton("Edit");
 
-    /**
-     * creating register GUI
-     * @param e
-     */
-    public void actionPerformed(ActionEvent e) {
+
+    public EditUserGUI(){
         JFrame signUp = new JFrame("Edit User");
         signUp.setBounds(100, 100, 250, 300);
         signUp.setLocationRelativeTo(null);

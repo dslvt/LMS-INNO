@@ -30,7 +30,7 @@ public class EditUserSelectGUI extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if(index != -1){
-                        new EditUserGUI();
+                        EditUserGUI edit =  new EditUserGUI();
                     }
                     else{
                         String message = "Select a student!\n";

@@ -24,7 +24,7 @@ class LibrarianUserOptionsGUI extends JFrame{
         EditUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                EditUserGUI edit = new EditUserGUI();
+                EditUserSelectGUI edit = new EditUserSelectGUI();
             }
         });
 

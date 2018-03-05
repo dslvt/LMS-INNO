@@ -7,18 +7,21 @@ class LibrarianGUI extends JFrame{
     private JButton Books = new JButton("Books");
     private JButton Users = new JButton("Users");
     private JButton Tasks = new JButton("Tasks");
+    private JButton Request = new JButton("Checked out documents");
+
     public LibrarianGUI(){
         JFrame menuWindow = new JFrame();
-        menuWindow.setBounds(100, 100, 250, 150);
+        menuWindow.setBounds(100, 100, 250, 200);
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
         menuWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container containerM = menuWindow.getContentPane();
-        containerM.setLayout(new GridLayout(3, 1, 2, 2));
+        containerM.setLayout(new GridLayout(4, 1, 2, 2));
         containerM.add(Books);
         containerM.add(Users);
         containerM.add(Tasks);
+        containerM.add(Request);
 
         Books.addActionListener(new ActionListener() {
             @Override
@@ -41,6 +44,12 @@ class LibrarianGUI extends JFrame{
             }
         });
 
+        Request.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LibrarianRequestGUI request = new LibrarianRequestGUI();
+            }
+        });
         menuWindow.setVisible(true);
     }
 }

@@ -5,16 +5,16 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class DeleteDocumentGUI  extends JFrame {
-    private JButton deletingBook = new JButton("Delete Book");
-
+    private JButton deletingBook = new JButton("Delete Document");
+    private JButton deletingCopy = new JButton("Delete copy");
 
     public DeleteDocumentGUI() {
         try {
             JFrame deleteBook = new JFrame();
-            deleteBook.setBounds(100, 100, 250, 200);
+            deleteBook.setBounds(100, 100, 250, 300);
             deleteBook.setLocationRelativeTo(null);
             deleteBook.setResizable(false);
-            deleteBook.setTitle("Delete Book");
+            deleteBook.setTitle("Delete Document");
             deleteBook.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             Container containerTB = deleteBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
@@ -38,8 +38,8 @@ public class DeleteDocumentGUI  extends JFrame {
             JTable table = new JTable(books, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             table.setFillsViewportHeight(true);
-            listScroller.setPreferredSize(new Dimension(100,100));
-            containerTB.add(listScroller, BorderLayout.CENTER);
+            listScroller.setPreferredSize(new Dimension(250,180));
+            containerTB.add(listScroller, BorderLayout.NORTH);
 
             deletingBook.addActionListener(new ActionListener() {
                 @Override
@@ -58,8 +58,17 @@ public class DeleteDocumentGUI  extends JFrame {
                     }
                 }
             });
+
+            deletingCopy.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+
+                }
+            });
             deletingBook.setPreferredSize(new Dimension(250, 40));
-            containerTB.add(deletingBook, BorderLayout.SOUTH);
+            containerTB.add(deletingBook, BorderLayout.CENTER);
+            deletingCopy.setPreferredSize(new Dimension(250,40));
+            containerTB.add(deletingCopy, BorderLayout.SOUTH);
             deleteBook.setVisible(true);
         }
         catch (Exception e){

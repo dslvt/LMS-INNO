@@ -22,7 +22,6 @@ public class LibrarianTasksGUI extends JFrame{
             tasks.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             Container containerTB = tasks.getContentPane();
             containerTB.setLayout(new BorderLayout());
-            containerTB.setLayout(new GridLayout(3, 1, 1, 1));
 
             String[] columnNames = {"Document", "Document's Position", "Username", "Login", "Type"};
 
@@ -42,8 +41,8 @@ public class LibrarianTasksGUI extends JFrame{
             JTable table = new JTable(tasksA, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             table.setFillsViewportHeight(true);
-            listScroller.setPreferredSize(new Dimension(100,100));
-            containerTB.add(listScroller, BorderLayout.CENTER);
+            listScroller.setPreferredSize(new Dimension(500,280));
+            containerTB.add(listScroller, BorderLayout.NORTH);
 
             accept.addActionListener(new ActionListener() {
                 @Override
@@ -73,10 +72,10 @@ public class LibrarianTasksGUI extends JFrame{
                     }
                 }
             });
-            accept.setPreferredSize(new Dimension(250, 10));
-            containerTB.add(accept, BorderLayout.SOUTH);
+            accept.setPreferredSize(new Dimension(500, 40));
+            containerTB.add(accept, BorderLayout.CENTER);
             containerTB.add(accept);
-            decline.setPreferredSize(new Dimension(250, 10));
+            decline.setPreferredSize(new Dimension(500, 40));
             containerTB.add(decline, BorderLayout.SOUTH);
             tasks.setVisible(true);
         }
