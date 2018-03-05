@@ -11,8 +11,8 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-//        FirstWindow window = new FirstWindow();
-//        window.setVisible(true);
+        FirstWindow window = new FirstWindow();
+        window.setVisible(true);
 //        ArrayList<String> author = new ArrayList<>();
 //        author.add("author");
 //        Book book = new Book("Noname", author, 100, author, false, "publisher","editor",2008, false, "location", true);
