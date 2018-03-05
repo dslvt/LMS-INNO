@@ -88,8 +88,8 @@ public class Book extends Document {
         }
     }
 
-    public ArrayList<Book> addCopies(int copies, int idLibrarian) {
-        ArrayList<Book> newCopies = new ArrayList<>();
+    public ArrayList<Document> addCopies(int copies, int idLibrarian) {
+        ArrayList<Document> newCopies = new ArrayList<>();
         if (Database.isLibrarian(idLibrarian)) {
             PreparedStatement preparedStatement;
             Statement statement;
@@ -98,7 +98,7 @@ public class Book extends Document {
             if (lastId != -1) {
                 try {
                     for (int i = 0; i < copies; i++) {
-                        preparedStatement = Database.connection.prepareStatement("update books set number = number + 1 where id = " + lastId.toString());
+                        preparedStatement = Database.connection.prepareStatement("update books set number = number + 1 where id = " + lastId);
                         preparedStatement.executeUpdate();
                         preparedStatement = Database.connection.prepareStatement("insert into documents(id_books, location, type, isActive) values(?, ?, ?, ?)");
                         preparedStatement.setInt(1, lastId);

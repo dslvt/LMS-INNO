@@ -81,8 +81,8 @@ public class Journal extends Document {
         }
     }
 
-    public ArrayList<Journal> addCopies(int copies, int idLibrarian) {
-        ArrayList<Journal> newCopies = new ArrayList<>();
+    public ArrayList<Document> addCopies(int copies, int idLibrarian) {
+        ArrayList<Document> newCopies = new ArrayList<>();
         if (Database.isLibrarian(idLibrarian)) {
             PreparedStatement preparedStatement;
             Statement statement;

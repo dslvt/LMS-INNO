@@ -1,5 +1,6 @@
 import javax.print.Doc;
 import javax.print.attribute.standard.DocumentName;
+import java.net.StandardSocketOptions;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,9 +9,9 @@ import java.util.List;
 public class Database {
 
     private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
-    private static final String user = "root";
-    private static final String password = "333999333tima";
-//    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+    private static final String user = "admin";
+//    private static final String password = "333999333tima";
+    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
 //    String user = "root";
 //    String password = "enaca2225";
 //    String url = "jdbc:mysql://localhost:3306/new_version?useSSL=false";
@@ -557,5 +558,37 @@ public class Database {
             System.out.println("Error in isRequestDocument: "+ e.toString());
         }
         return false;
+    }
+
+    public ArrayList<Pair<Document, Integer>> getAllDocumentsWithoutCopies(){
+        ArrayList<Pair<Document, Integer>> documents = new ArrayList<>();
+        try{
+            String query = "select * from books order by id";
+            statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            while(rs.next()){
+                Book book = createBookByResultSet(rs, -1, "Its dont important");
+                book.localId = rs.getInt("id");
+                documents.add(new Pair<Document, Integer>(book, rs.getInt("number")));
+            }
+            query = "select * from journals order by id";
+            rs = statement.executeQuery(query);
+            while (rs.next()){
+                Journal journal = createJournalByResultSet(rs, -1, "Its dont important");
+                journal.localId = rs.getInt("id");
+                documents.add(new Pair<Document, Integer>(journal, rs.getInt("number")));
+            }
+            query = "select * from av_materials order by id";
+            rs = statement.executeQuery(query);
+            while (rs.next()){
+                AVmaterial aVmaterial = createAVMaterialByResultSet(rs, -1, "Its dont important");
+                aVmaterial.localId = rs.getInt("id");
+                documents.add(new Pair<Document, Integer>(aVmaterial, rs.getInt("number")));
+            }
+        }catch (Exception e){
+            System.out.println("Error in database, getAllDocumentsWithoutCopies: " + e.toString());
+        }
+
+        return documents;
     }
 }

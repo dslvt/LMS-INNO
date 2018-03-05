@@ -17,7 +17,7 @@ public abstract class Document {
      * common feature
      */
 
-    public void CreateDocument(String name, int price, ArrayList<String> keywords, ArrayList<String> authors, boolean isReference, boolean isActive, String location){
+    public void CreateDocument(String name, int price, ArrayList<String> keywords, ArrayList<String> authors, boolean isReference, boolean isActive, String location) {
         this.name = name;
         this.price = price;
         this.keywords = keywords;
@@ -27,9 +27,15 @@ public abstract class Document {
         this.location = location;
     }
 
-    public void CreateDocumentInDB(int idLibrarian){}
+    public void CreateDocumentInDB(int idLibrarian) {
+    }
 
-    public void DeleteFromDB(int idLibrarian){}
+    public void DeleteFromDB(int idLibrarian) {
+    }
 
     public abstract boolean isCanBeTaken();
+
+    public abstract ArrayList<Document> addCopies(int copies, int idLibrarian);
+
+    public abstract void deleteCopies(int copies, int idLibrarian);
 }

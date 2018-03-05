@@ -23,8 +23,9 @@ public class LibrarianRequestGUI extends JFrame{
             Container containerTB = takeBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
-            Object[][] books = {{"Lol,kek,cheburek", new Integer(5)}};
-            String[] columnNames = {"User", "Amount"};
+            Object[][] books = {{"All Ina", "Tuchay"}, {"Ill yas", "kfla;s"}, {"sdkjfl", "skjdf"}};
+            String[] columnNames = {"User", "Book"};
+
 
             JTable table = new JTable(books, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
@@ -38,7 +39,7 @@ public class LibrarianRequestGUI extends JFrame{
                     int index = table.getSelectedRow();
                     if(index != -1){
                         takeBook.setVisible(false);
-                        String message = "You're bitch";
+                        String message = "You sent request!";
                         JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);
                     }
                     else{
