@@ -2,6 +2,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.DayOfWeek;
 import java.util.ArrayList;
 
 public class Patron extends User {
@@ -45,13 +46,14 @@ public class Patron extends User {
     }
 
 
-    public ArrayList<Integer> getAllRequests(){
-        ArrayList<Integer> requests = new ArrayList<>();
+    public ArrayList<Document> getAllRequests(){
+        ArrayList<Document> requests = new ArrayList<>();
+        Database db = new Database();
         try {
             Statement statement = Database.connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT id from request WHERE id_user = " + this.id);
+            ResultSet resultSet = statement.executeQuery("SELECT id_document from request WHERE id_user = " + this.id);
             while (resultSet.next()){
-                requests.add(resultSet.getInt(1));
+                requests.add(db.getDocumentById(resultSet.getInt(1)));
             }
 
             return requests;
