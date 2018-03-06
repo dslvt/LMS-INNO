@@ -1,5 +1,7 @@
 import javax.xml.crypto.Data;
 import java.net.StandardSocketOptions;
+import java.sql.Connection;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 public class Tester {
@@ -245,5 +247,47 @@ public class Tester {
         }catch (Exception e){
             System.out.println("Error in test10 " + e.toString());
         }
+    }
+
+
+    public void tc1(){
+        Database db = new Database();
+        try {
+            Statement statement = Database.connection.createStatement();
+        }catch (Exception e){
+            System.out.println("Error in tc1: " + e.toString());
+        }
+    }
+
+    public void tc2(){
+
+    }
+
+    public void tc3(){
+
+    }
+
+    public void tc4(){
+
+    }
+
+    public void tc5(){
+
+    }
+
+    public void tc6(){
+
+    }
+
+    public void tc7(){
+
+    }
+
+    public void tc8(){
+
+    }
+
+    public void tc9(){
+
     }
 }
