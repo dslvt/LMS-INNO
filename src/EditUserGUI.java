@@ -5,13 +5,13 @@ import java.awt.event.ActionListener;
 
 public class EditUserGUI extends JFrame{
     private JLabel labelNameSU = new JLabel("Name");
-    private JTextField textFieldNameSU = new JTextField("", 5);
+    private JTextField textFieldNameSU = new JTextField(CurrentSession.editUser.name, 5);
     private JLabel labelPhoneNumberSU = new JLabel("Phone Number");
-    private JTextField textFieldPhoneNumberSU = new JTextField("", 5);
+    private JTextField textFieldPhoneNumberSU = new JTextField(CurrentSession.editUser.phoneNumber, 5);
     private JLabel labelPasswordSU = new JLabel("Password");
-    private JPasswordField fieldPasswordSU = new JPasswordField("", 5);
+    private JPasswordField fieldPasswordSU = new JPasswordField(CurrentSession.editUser.password, 5);
     private JLabel labelAdressSU = new JLabel("Adress");
-    private JTextField textFieldAdressSU = new JTextField("", 5);
+    private JTextField textFieldAdressSU = new JTextField(CurrentSession.editUser.password, 5);
     private JRadioButton radioStudent = new JRadioButton("Student");
     private JRadioButton radioFacultyMember = new JRadioButton("Faculty Member");
     private JButton submit = new JButton("Edit");
@@ -40,10 +40,24 @@ public class EditUserGUI extends JFrame{
         containerSU.add(radioStudent);
         radioStudent.setSelected(true);
         containerSU.add(radioFacultyMember);
+        if(CurrentSession.editUser.isFacultyMember){
+            radioFacultyMember.doClick();
+        }else{
+            radioStudent.doClick();
+        }
 
         submit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                CurrentSession.editUser.phoneNumber = textFieldPhoneNumberSU.getText();
+                CurrentSession.editUser.name = textFieldNameSU.getText();
+                CurrentSession.editUser.password = fieldPasswordSU.getText();
+                CurrentSession.editUser.address = fieldPasswordSU.getText();
+                if(radioFacultyMember.isSelected()){
+                    CurrentSession.editUser.isFacultyMember = true;
+                }else{
+                    CurrentSession.editUser.isFacultyMember = false;
+                }
                 signUp.setVisible(false);
             }
         });

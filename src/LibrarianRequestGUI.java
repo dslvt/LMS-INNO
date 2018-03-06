@@ -23,11 +23,16 @@ public class LibrarianRequestGUI extends JFrame{
             Container containerTB = takeBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
-            Object[][] books = {{"All Ina", "Tuchay"}, {"Ill yas", "kfla;s"}, {"sdkjfl", "skjdf"}};
             String[] columnNames = {"User", "Book"};
+            Database db = new Database();
+            ArrayList<UserRequest> requests = db.getAllRequests();
+            Object[][] requestA = new Object[requests.size()][2];
+            for(int i = 0; i < requestA.length; i++){
+                requestA[i][0] = requests.get(i).patron.name;
+                requestA[i][1] = requests.get(i).document.name;
+            }
 
-
-            JTable table = new JTable(books, columnNames);
+            JTable table = new JTable(requestA, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             table.setFillsViewportHeight(true);
             listScroller.setPreferredSize(new Dimension(100,100));

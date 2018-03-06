@@ -22,7 +22,7 @@ public class UserMessagesGUI extends JFrame{
             Container containerTB = tasks.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
-            String[] columnNames = {"Document"};
+            String[] columnNames = {"Messages"};
 
             Patron patron = (Patron) CurrentSession.user;
             ArrayList<Document> documents = patron.getAllRequests();

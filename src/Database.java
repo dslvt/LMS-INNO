@@ -197,7 +197,7 @@ public class Database {
             Patron patron = new Patron(resultSet.getString(2), resultSet.getString(7),
                     resultSet.getString(3), resultSet.getString(4), resultSet.getBoolean(6), resultSet.getInt(5));
 
-            patron.id = resultSet.getInt(1);
+            patron.id = resultSet.getInt("id");
 
             return patron;
         }catch (Exception e){
@@ -590,5 +590,23 @@ public class Database {
         }
 
         return documents;
+    }
+
+    public ArrayList<UserRequest> getAllRequests(){
+        ArrayList<UserRequest> requests = new ArrayList<>();
+        try{
+            String query = "select * from request order by id";
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()){
+                int docId = resultSet.getInt("id_document");
+                requests.add(new UserRequest(getPatronById(resultSet.getInt("id_user")), getDocumentById(docId)));
+            }
+        }catch (Exception e){
+            System.out.println("Error in database, getAllRequests: " + e.toString());
+        }
+
+        return requests;
     }
 }
