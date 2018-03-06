@@ -10,8 +10,8 @@ public class Database {
 
     private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
     private static final String user = "admin";
-//    private static final String password = "333999333tima";
     private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+    //    private static final String password = "333999333tima";
 //    String user = "root";
 //    String password = "enaca2225";
 //    String url = "jdbc:mysql://localhost:3306/new_version?useSSL=false";
@@ -564,22 +564,22 @@ public class Database {
         ArrayList<Pair<Document, Integer>> documents = new ArrayList<>();
         try{
             String query = "select * from books order by id";
-            statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery(query);
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
             while(rs.next()){
                 Book book = createBookByResultSet(rs, -1, "Its dont important");
                 book.localId = rs.getInt("id");
                 documents.add(new Pair<Document, Integer>(book, rs.getInt("number")));
             }
             query = "select * from journals order by id";
-            rs = statement.executeQuery(query);
+            rs = st.executeQuery(query);
             while (rs.next()){
                 Journal journal = createJournalByResultSet(rs, -1, "Its dont important");
                 journal.localId = rs.getInt("id");
                 documents.add(new Pair<Document, Integer>(journal, rs.getInt("number")));
             }
             query = "select * from av_materials order by id";
-            rs = statement.executeQuery(query);
+            rs = st.executeQuery(query);
             while (rs.next()){
                 AVmaterial aVmaterial = createAVMaterialByResultSet(rs, -1, "Its dont important");
                 aVmaterial.localId = rs.getInt("id");
@@ -596,17 +596,35 @@ public class Database {
         ArrayList<UserRequest> requests = new ArrayList<>();
         try{
             String query = "select * from request order by id";
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(query);
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
 
-            while (resultSet.next()){
-                int docId = resultSet.getInt("id_document");
-                requests.add(new UserRequest(getPatronById(resultSet.getInt("id_user")), getDocumentById(docId)));
+            while (rs.next()){
+                int docId = rs.getInt("id_document");
+                requests.add(new UserRequest(getPatronById(rs.getInt("id_user")), getDocumentById(docId)));
             }
         }catch (Exception e){
             System.out.println("Error in database, getAllRequests: " + e.toString());
         }
 
         return requests;
+    }
+
+    public ArrayList<Pair<Document, Patron>> getAllDocumentsWithUsers(){
+        ArrayList<Pair<Document, Patron>> ans = new ArrayList<>();
+        try{
+            String query = "select * from booking order by id";
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()) {
+                int userId = rs.getInt("user_id");
+                ans.add(new Pair<Document, Patron>(getDocumentById(rs.getInt("document_id")), getPatronById(userId)));
+            }
+        }catch (Exception e){
+            System.out.println("Error in database, getAllDocumentsWithUsers: " + e.toString());
+        }
+
+        return ans;
     }
 }

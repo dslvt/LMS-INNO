@@ -25,11 +25,11 @@ public class LibrarianRequestGUI extends JFrame{
 
             String[] columnNames = {"User", "Book"};
             Database db = new Database();
-            ArrayList<UserRequest> requests = db.getAllRequests();
+            ArrayList<Pair<Document, Patron>> requests = db.getAllDocumentsWithUsers();
             Object[][] requestA = new Object[requests.size()][2];
             for(int i = 0; i < requestA.length; i++){
-                requestA[i][0] = requests.get(i).patron.name;
-                requestA[i][1] = requests.get(i).document.name;
+                requestA[i][0] = requests.get(i).second.name;
+                requestA[i][1] = requests.get(i).first.name;
             }
 
             JTable table = new JTable(requestA, columnNames);
@@ -43,6 +43,8 @@ public class LibrarianRequestGUI extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if(index != -1){
+                        Librarian lib = new Librarian();
+                        lib.sendRequest(requests.get(index).first, requests.get(index).second);
                         takeBook.setVisible(false);
                         String message = "You sent request!";
                         JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);
