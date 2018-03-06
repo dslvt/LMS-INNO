@@ -37,10 +37,20 @@ public class Booking {
         try {
 
             if (takeCopy(document, user) && document.isCanBeTaken()) {
-                //Crete new line in Booking
+                //Crete current date
                 java.util.Date date = new java.util.Date();
                 java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
-                statement.executeUpdate("INSERT into booking set user_id = '" + user.id + "', document_id = '" + document.id + "', time = '" + timestamp + "' ");
+
+                //Crete date of returning
+                java.util.Date returnDay = new java.util.Date();
+                Calendar day = Calendar.getInstance();
+                day.setTime(returnDay);
+                day.add(Calendar.DATE, bookingTerm(document,user));
+                returnDay = day.getTime();
+                java.sql.Timestamp timestamp1 = new java.sql.Timestamp(returnDay.getTime());
+
+                //Crete line in Booking
+                statement.executeUpdate("INSERT into booking set user_id = '" + user.id + "', document_id = '" + document.id + "', time = '" + timestamp + "', returnTime = " + timestamp1 );
 
                 //Change status of document
                 PreparedStatement preparedStatement = Database.connection.prepareStatement("UPDATE documents SET isActive = ? WHERE id = ?");
@@ -111,7 +121,7 @@ public class Booking {
 
     }
 
-    public void renewBook(Document document) throws SQLException {
+    public void renewBook(Document document, User user) throws SQLException {
         //Get line from Booking
         statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
 
@@ -126,9 +136,17 @@ public class Booking {
         java.util.Date date = new java.util.Date();
         java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 
+        //Crete new date of returning
+        java.util.Date returnDay = new java.util.Date();
+        Calendar day = Calendar.getInstance();
+        day.setTime(returnDay);
+        day.add(Calendar.DATE, bookingTerm(document,user));
+        returnDay = day.getTime();
+        java.sql.Timestamp timestamp1 = new java.sql.Timestamp(returnDay.getTime());
+
         //Renew document
         if (!isRenew) {
-            statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "' WHERE document_id = '" + document.id + "'");
+            statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "', returnTime = '"+ timestamp + "' WHERE document_id = '" + document.id + "'");
         }
 
     }
