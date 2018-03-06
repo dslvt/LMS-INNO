@@ -51,7 +51,7 @@ public class Librarian extends User {
         }
     }
 
-    private ArrayList<Patron> getDebtors() {
+    public ArrayList<Patron> getDebtors() {
         ArrayList<Patron> debtors = new ArrayList<>();
         try {
             Database db = new Database();

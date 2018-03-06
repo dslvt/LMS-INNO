@@ -5,26 +5,26 @@ import javax.swing.*;
 import java.sql.SQLException;
 import java.util.*;
 
-public class AllUsersGUI extends JFrame{
+public class DebtorsGUI extends JFrame{
 
     private JButton ShowInfo = new JButton("Show info");
 
+    private Librarian lb = new Librarian();
     private Database db = new Database();
-
-    public AllUsersGUI() {
+    public DebtorsGUI() {
 
         try {
             JFrame users = new JFrame();
             users.setBounds(100, 100, 250, 200);
             users.setLocationRelativeTo(null);
             users.setResizable(false);
-            users.setTitle("All users");
+            users.setTitle("Debtors");
             users.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             Container containerTB = users.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
             String[] columnNames = {"Name", "Login"};
-            ArrayList<Patron> patrons = db.getAllPatrons();
+            ArrayList<Patron> patrons = lb.getDebtors();
             Object[][] names = new Object[patrons.size()][2];
             for(int i = 0; i < names.length; i++){
                 names[i][0] = patrons.get(i).name;
