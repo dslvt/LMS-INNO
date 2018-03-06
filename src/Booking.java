@@ -99,7 +99,7 @@ public class Booking {
 
         //Check overdue
         if (!date.before(bookingDate)) {
-            int overdue = countOverdue(bookingDate, date, document);
+            int overdue = countOverdueCost(document);
             statement.executeUpdate("UPDATE users set debt = '" + overdue + "' WHERE id = '" + user.id + "'");
         }
 
@@ -161,11 +161,11 @@ public class Booking {
         return type;
     }
 
-    private int countOverdue(Date bookingDate, Date currentDate, Document document) throws SQLException {
-        int days = (int) (bookingDate.getTime() - currentDate.getTime() / (1000 * 60 * 60 * 24));
+    private int countOverdueCost(Document document) throws SQLException {
+        int days = countOverdue(document);
         int overdue = days * 100;
 
-        ResultSet line = statement.getResultSet();
+        ResultSet line;
 
         String type = getType(document);
         int id = Database.getCorrectIdInLocalDatabase(document.id);
@@ -192,6 +192,34 @@ public class Booking {
         return overdue;
     }
 
+    public int countOverdue(Document document){
+        //Get line from Booking
+        try {
+            statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
+
+        //Current date
+        java.util.Date date = new java.util.Date();
+
+        //Get date of booking
+        java.util.Date bookingDate = new java.util.Date();
+        ResultSet rec = statement.getResultSet();
+
+
+        if (rec.next()) {
+            bookingDate = rec.getDate("time");
+        }
+
+        int days = (int) (bookingDate.getTime() - date.getTime() / (1000 * 60 * 60 * 24));
+
+        return days;
+
+        } catch (SQLException e) {
+            System.out.println("Error in countOverdue: " + e.toString());
+        }
+
+        return -1;
+    }
+
     private void changeNumber(boolean add, String type, Document document) throws SQLException {
         int one;
         if (add) {
@@ -215,7 +243,7 @@ public class Booking {
     }
 
     private int bookingTerm(Document document, User user) throws SQLException {
-        ResultSet rec = statement.getResultSet();
+        ResultSet rec;
         //Get type of document
         String type = getType(document);
 
