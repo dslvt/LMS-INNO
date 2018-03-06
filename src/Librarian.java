@@ -41,7 +41,7 @@ public class Librarian extends User {
         }
     }
 
-    private void sendRequest(Document document, Patron patron) {
+    public void sendRequest(Document document, Patron patron) {
         try {
             Statement statement = Database.connection.createStatement();
             statement.executeUpdate("INSERT INTO request SET id_user = " + patron.id + ", id_document = " + document.id);
