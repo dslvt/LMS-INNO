@@ -1,6 +1,8 @@
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public class Librarian extends User {
 
@@ -39,14 +41,60 @@ public class Librarian extends User {
         }
     }
 
-    public void sendRequest(Document document, Patron patron){
+    private void sendRequest(Document document, Patron patron) {
         try {
             Statement statement = Database.connection.createStatement();
-            statement.executeUpdate("INSERT INTO request SET id_user = " + patron.id + ", id_document = "+ document.id);
+            statement.executeUpdate("INSERT INTO request SET id_user = " + patron.id + ", id_document = " + document.id);
 
         } catch (SQLException e) {
             System.out.println("Error in sendRequest: " + e.toString());
         }
+    }
+
+    private ArrayList<Patron> getDebtors() {
+        ArrayList<Patron> debtors = new ArrayList<>();
+        try {
+            Database db = new Database();
+            Statement statement = Database.connection.createStatement();
+            statement.executeUpdate("SELECT * FROM users WHERE debt != 0");
+            ResultSet resultSet = statement.getResultSet();
+            while (resultSet.next()) {
+                debtors.add(db.getPatronById(resultSet.getInt("id")));
+            }
+            return debtors;
+        } catch (SQLException e) {
+            System.out.println("Error in getDebtors: " + e.toString());
+        }
+        return debtors;
+    }
+
+    private ArrayList<Document> getOverdueDocuments() {
+        ArrayList<Document> overdueDocuments = new ArrayList<>();
+        try {
+            Statement statement = Database.connection.createStatement();
+            Database db = new Database();
+
+            //Crete current date
+            java.util.Date date = new java.util.Date();
+            java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
+
+            statement.executeQuery("SELECT * FROM booking");
+
+            ResultSet resultSet = statement.getResultSet();
+            while (resultSet.next()) {
+                java.util.Date bookingDate = new java.util.Date();
+                bookingDate = resultSet.getDate("returnTime");
+                if(!date.before(bookingDate)){
+                    overdueDocuments.add(db.getDocumentById(resultSet.getInt("document_id")));
+                }
+            }
+
+            return overdueDocuments;
+
+        } catch (SQLException e) {
+            System.out.println("Error in getOverdueDocuments: " + e.toString());
+        }
+        return overdueDocuments;
     }
 
 }
