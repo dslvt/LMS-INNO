@@ -38,12 +38,18 @@ public class MyBooksGUI extends JFrame{
                 documentNames.add(vector.get(i).name);
             }
 
-            allBooks = new JList<String>(documentNames);
-            allBooks.setPreferredSize(new Dimension(150, 200));
-            allBooks.setLayoutOrientation(JList.VERTICAL);
-            allBooks.setVisibleRowCount(0);
-            allBooks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            JScrollPane listScroller = new JScrollPane(allBooks);
+            String[] columnNames = {"Name", "Author", "Return date"};
+
+            Object[][] docs = new Object[vector.size()][3];
+
+            for (int i = 0; i < docs.length; i++) {
+                docs[i][0] = vector.get(i).name;
+                docs[i][1] = vector.get(i).authors;
+                docs[i][2] = db.getDocumentReturnDate(vector.get(i));
+            }
+
+            JTable table = new JTable(docs, columnNames);
+            JScrollPane listScroller = new JScrollPane(table);
             listScroller.setPreferredSize(new Dimension(100,100));
             containerTB.add(listScroller, BorderLayout.CENTER);
 

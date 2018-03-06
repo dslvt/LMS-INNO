@@ -15,7 +15,6 @@ class LibrarianGUI extends JFrame{
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
-        menuWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         Container containerM = menuWindow.getContentPane();
         containerM.setLayout(new GridLayout(4, 1, 2, 2));
         containerM.add(Books);
