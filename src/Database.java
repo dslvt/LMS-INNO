@@ -627,4 +627,20 @@ public class Database {
 
         return ans;
     }
+
+    public ArrayList<Patron> getAllPatrons(){
+        ArrayList<Patron> ans = new ArrayList<>();
+        try {
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("select id from users where isLibrarian = false");
+
+            while (rs.next()){
+                ans.add(getPatronById(rs.getInt("id")));
+            }
+
+        }catch (Exception e){
+            System.out.println("Error in getAllPatrons. db: " + e.toString());
+        }
+        return ans;
+    }
 }

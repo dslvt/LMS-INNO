@@ -33,7 +33,8 @@ public class Main {
 
 //
 //
-//        Tester tester = new Tester();
+        Tester tester = new Tester();
+        //tester.tc1();
 //
 //        tester.test1();
 //        tester.test2();
