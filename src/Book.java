@@ -194,9 +194,23 @@ public class Book extends Document {
             Database db = new Database();
             Statement statement;
             try {
+                PreparedStatement preparedStatement;
                 statement = db.connection.createStatement();
                 Integer lastId = Database.isDocumentExist(this);
                 statement.executeUpdate("DELETE FROM documents WHERE id_books= " + lastId.toString() + " LIMIT " + copies);
+
+                statement.executeQuery("SELECT number FROM books WHERE id="+lastId);
+                ResultSet resultSet = statement.getResultSet();
+                resultSet.next();
+                int number = resultSet.getInt("number");
+                if(number>=copies) {
+                    preparedStatement = Database.connection.prepareStatement("update books set number = number - copies where id = " + lastId);
+                    preparedStatement.executeUpdate();
+                }
+                else{
+                    preparedStatement = Database.connection.prepareStatement("update books set number = 0 where id = " + lastId);
+                    preparedStatement.executeUpdate();
+                }
 
             } catch (SQLException e) {
                 System.out.println("Error delete copy of book: " + e.toString());
