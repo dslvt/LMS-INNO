@@ -561,7 +561,7 @@ public class Tester {
 
             Booking booking = new Booking();
 
-            if(booking.countOverdue(book2) == 5 && booking.countOverdue(av1) == 4 && booking.countOverdue(book1Cop) == 16){
+            if(booking.countOverdue(book2) == 19 && booking.countOverdue(av1) == 4 && booking.countOverdue(book1Cop) == 16){
                 System.out.println("TC8 PASSED!");
                 gFw.write("TC8 PASSED!\n");
             }else{
@@ -576,11 +576,9 @@ public class Tester {
 
     public void tc9(){
         try {
-
             File in = new File("input.txt");
-            FileWriter fileWriter = new FileWriter(in);
-            fileWriter.write("0");
-            fileWriter.close();
+//            FileWriter fileWriter = new FileWriter(in);
+//            fileWriter.close();
             Scanner sc = new Scanner(in);
             if (sc.next().equals("0")){
                 this.tc1();
@@ -593,17 +591,22 @@ public class Tester {
                 gFw.close();
                 System.exit(1);
             }else{
-                if(true){
+                ResultSet rs1 = db.SelectFromDB("select count(id) from documents");
+                rs1.next();
+                ResultSet rs2 = db.SelectFromDB("select count(id) from users");
+                rs2.next();
+
+                if(rs1.getInt(1) == 8 && rs2.getInt(1) == 4){
                     System.out.println("TC9 PASSED!");
                     gFw.write("TC9 PASSED!\n");
                 }else{
                     System.out.println("TC9 FAILED!");
                     gFw.write("TC9 FAILED!\n");
-
                 }
+                gFw.flush();
+                gFw.close();
+                System.exit(0);
             }
-
-
         }catch (Exception e){
             System.out.println("Error in tc9: " + e.toString());
         }
