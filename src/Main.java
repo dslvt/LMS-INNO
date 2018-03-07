@@ -13,26 +13,6 @@ public class Main {
 
         FirstWindow window = new FirstWindow();
         window.setVisible(true);
-//        ArrayList<String> author = new ArrayList<>();
-//        author.add("author");
-//        Book book = new Book("Noname", author, 100, author, false, "publisher","editor",2008, false, "location", true);
-//        book.CreateDocumentInDB(5);
-//        book.addCopies(2, 5);
-//        book.localId = 31;
-//        book.deleteCopies(1,5);
-//        book.DeleteFromDB(true, 5);
-//        book.ModifyInDB("Extra", author, 100, author, false, "publisher","editor",2008, false, "newLocation", 5);
-//        Librarian librarian = new Librarian();
-//        Patron patron = new Patron();
-//        patron.id = 6;
-//        Booking booking = new Booking();
-//        booking.checkOut(book, patron);
-//
-//        librarian.sendRequest(book,patron);
-//        System.out.println(patron.getAllRequests());
-
-//
-//
         Tester tester = new Tester();
         tester.tc1();
         tester.tc2();
