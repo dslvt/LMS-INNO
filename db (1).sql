@@ -57,6 +57,7 @@ CREATE TABLE `booking` (
   `user_id` int(11) DEFAULT NULL,
   `time` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `is_renew` tinyint(4) NOT NULL DEFAULT '0',
+  `returnTime` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `document_id_idx` (`document_id`),
   KEY `user_id_idx` (`user_id`),
@@ -71,7 +72,7 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES (224,57,6,'2018-03-04 19:26:51',0),(225,58,6,'2018-03-04 19:27:33',0),(226,59,6,'2018-03-04 19:28:17',0),(227,60,6,'2018-03-04 19:28:53',0),(228,61,6,'2018-03-04 19:29:38',0);
+INSERT INTO `booking` VALUES (224,57,6,'2018-03-04 19:26:51',0,'0000-00-00 00:00:00'),(225,58,6,'2018-03-04 19:27:33',0,'0000-00-00 00:00:00'),(226,59,6,'2018-03-04 19:28:17',0,'0000-00-00 00:00:00'),(227,60,6,'2018-03-04 19:28:53',0,'0000-00-00 00:00:00'),(228,61,6,'2018-03-04 19:29:38',0,'0000-00-00 00:00:00');
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -288,7 +289,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (3,'Ilsur','89991697701','def',NULL,NULL,'root',NULL),(4,'Vagiz','89991697702','defdd',NULL,NULL,'root',NULL),(5,'Ilgiz','9991697006','address',0,'\0','root',''),(6,'Ilgiz','9991697006','address',10,'',NULL,NULL),(7,'Vildan','777','Chalny',10,'','root',NULL);
+INSERT INTO `users` VALUES (3,'Ilsur','89991697701','def',NULL,NULL,'root',NULL),(4,'Vagiz','89991697702','defdd',NULL,NULL,'root',NULL),(5,'Ilgiz','9991697006','address',0,'\0','root',''),(6,'Ilgiz','9991697006','address',10,'',NULL,NULL),(7,'Vildan','777','Chalny',10,'','root','');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -301,4 +302,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-05 11:17:58
+-- Dump completed on 2018-03-07 10:31:50
