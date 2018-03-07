@@ -21,7 +21,7 @@ public class Booking {
 //        //booking.renewBook(document);
 //        //booking.returnBook(document, user);
 //    }
-    public static long setDate = 1520197200000L;
+    public static long setDate = 0L;
     public static boolean useCustomDate = false;
 
 
@@ -213,10 +213,10 @@ public class Booking {
 
 
         if (rec.next()) {
-            bookingDate = rec.getDate("time");
+            bookingDate = rec.getDate("returnTime");
         }
 
-        int days = (int) (bookingDate.getTime() - date.getTime() / (1000 * 60 * 60 * 24));
+        int days = (int) ((-bookingDate.getTime() + date.getTime()) / (1000 * 60 * 60 * 24));
 
         return days;
 

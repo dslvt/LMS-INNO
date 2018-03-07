@@ -1,21 +1,39 @@
+import com.sun.jdi.IntegerType;
+
 import javax.xml.crypto.Data;
+import java.io.File;
+import java.io.FileWriter;
 import java.net.StandardSocketOptions;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
+import java.util.function.BinaryOperator;
 
 public class Tester {
     Database db;
     Booking booking;
 
     private int book1LocId, book2LocId, book3LocId;
+    private int av1Id, av2Id;
     private int user2ID, user1ID, user3ID;
     private Patron lib;
+    private long March5Date = 1520197200000L;
+    private long  February9Date = 1518123600000L;
+    private long February2Date = 1517518800000L;
+    private long February5Date = 1517778000000L;
+    private long February17Date = 1518814800000L;
+
+    private FileWriter gFw;
+    private File gF;
+
 
     public Tester(){
         try{
             db = new Database();
             booking = new Booking();
+            gF = new File("log.txt");
+            gFw = new FileWriter(gF);
         }catch(Exception e){
             System.out.println("Error in Tester " + e.toString());
         }
@@ -285,9 +303,11 @@ public class Tester {
             String[][] avAuthors = {{"Tony Hoare"}, {"Claude Shannon"}};
             AVmaterial aVmaterial1 = new AVmaterial("Null References: The Billion Dollar Mistake", new ArrayList<String>(Arrays.asList(avAuthors[0])), 0, new ArrayList<>(), false, true, "loc");
             aVmaterial1.CreateDocumentInDB(lib.id);
+            av1Id = aVmaterial1.id;
 
             AVmaterial aVmateria2 = new AVmaterial("Information Entropy", new ArrayList<String>(Arrays.asList(avAuthors[1])), 0, new ArrayList<>(), false, true, "loc");
             aVmateria2.CreateDocumentInDB(lib.id);
+            av2Id = aVmateria2.id;
 
             Patron  patron1 = new Patron("Sergey Afonso", "1", "30001", "Via Margutta, 3", true, 0);
             patron1.CreateUserDB();
@@ -308,8 +328,11 @@ public class Tester {
 
             if(rs1.getInt(1) == 8 && rs2.getInt(1) == 4){
                 System.out.println("TC1 PASSED!");
+                gFw.write("TC1 PASSED!\n");
             }else{
                 System.out.println("TC1 FAILED!");
+                gFw.write("TC1 FAILED!\n");
+
             }
         }catch (Exception e){
             System.out.println("Error in tc1: " + e.toString());
@@ -335,8 +358,11 @@ public class Tester {
 
             if(rs1.getInt(1) == 5 && rs2.getInt(1) == 3){
                 System.out.println("TC2 PASSED!");
+                gFw.write("TC2 PASSED!\n");
             }else{
                 System.out.println("TC2 FAILED!");
+                gFw.write("TC2 FAILED!\n");
+
             }
         }catch (Exception e){
             System.out.println("Error in tc2: " + e.toString());
@@ -353,8 +379,11 @@ public class Tester {
 
             if(patronInfo1.second.size() == 0 && patronInfo2.second.size() == 0 && p1.name.equals(patronInfo1.first.name) && p2.name.equals(patronInfo2.first.name)){
                 System.out.println("TC3 PASSED!");
+                gFw.write("TC3 PASSED!\n");
             }else{
                 System.out.println("TC3 FAILED!");
+                gFw.write("TC3 FAILED!\n");
+
             }
 
         }catch (Exception e){
@@ -372,8 +401,11 @@ public class Tester {
 
             if(p1 == patronInfo1.first && p2.name.equals(patronInfo2.first.name) && patronInfo2.second.size() == 0 && patronInfo1.second.size() == 0){
                 System.out.println("TC4 PASSED!");
+                gFw.write("TC4 PASSED!\n");
             }else{
                 System.out.println("TC4 FAILED!");
+                gFw.write("TC4 FAILED!\n");
+
             }
         }catch (Exception e){
             System.out.println("Error in tc4: " + e.toString());
@@ -395,8 +427,11 @@ public class Tester {
 
             if(patron == null && rs1.getInt(1) == 0){
                 System.out.println("TC5 PASSED!");
+                gFw.write("TC5 PASSED!\n");
             }else{
                 System.out.println("TC5 FAILED!");
+                gFw.write("TC5 FAILED!\n");
+
             }
         }catch (Exception e){
             System.out.println("Error in tc5: " + e.toString());
@@ -417,6 +452,7 @@ public class Tester {
             LibTask libTask2 = new LibTask(book1, patron3, "checkout");
             LibTask libTask3 = new LibTask(book2, patron3, "checkout");
             Booking.useCustomDate = true;
+            Booking.setDate = March5Date;
             libTask1.id = eventManager.CreateQuery(libTask1);
             libTask2.id = eventManager.CreateQuery(libTask2);
             libTask3.id = eventManager.CreateQuery(libTask3);
@@ -431,9 +467,11 @@ public class Tester {
             Booking.useCustomDate = false;
             if(patronInfo1.second.size() == 1 && patronInfo2.second.size() == 1){
                 System.out.println("TC6 PASSED!");
-                System.out.println(db.getDocumentReturnDate(patronInfo1.second.get(0)) + " " + db.getDocumentReturnDate(patronInfo2.second.get(0)));
+                gFw.write("TC6 PASSED!\n");
             }else{
                 System.out.println("TC6 FAILED!");
+                gFw.write("TC6 FAILED!\n");
+
             }
         }catch (Exception e){
             System.out.println("Error in tc6: " + e.toString());
@@ -444,11 +482,46 @@ public class Tester {
         try {
             this.tc1();
 
+            Patron patron1 = db.getPatronById(user1ID);
+            Patron patron3 = db.getPatronById(user2ID);
+            Book book1 = (Book) db.getDocumentById(book1LocId);
+            Book book2 = (Book) db.getDocumentById(book2LocId);
+            Book book3 = (Book) db.getDocumentById(book3LocId);
+            AVmaterial av1 = (AVmaterial) db.getDocumentById(av1Id);
+            AVmaterial av2 = (AVmaterial) db.getDocumentById(av2Id);
 
-            if(true){
+            EventManager eventManager = new EventManager();
+            LibTask libTask1 = new LibTask(book1, patron1, "checkout");
+            LibTask libTask2 = new LibTask(book2, patron1, "checkout");
+            LibTask libTask3 = new LibTask(book3, patron1, "checkout");
+            LibTask libTask4 = new LibTask(av1, patron1, "checkout");
+            LibTask libTask5 = new LibTask(book1, patron3, "checkout");
+            LibTask libTask6 = new LibTask(book2, patron3, "checkout");
+            LibTask libTask7 = new LibTask(av2, patron3, "checkout");
+
+            Booking.setDate = March5Date;
+            Booking.useCustomDate = true;
+
+            eventManager.ExecuteQuery(libTask1);
+            eventManager.ExecuteQuery(libTask2);
+            eventManager.ExecuteQuery(libTask3);
+            eventManager.ExecuteQuery(libTask4);
+            eventManager.ExecuteQuery(libTask5);
+            eventManager.ExecuteQuery(libTask6);
+            eventManager.ExecuteQuery(libTask7);
+
+            Pair<Patron, ArrayList<Document>> patronInfo1 = FullPatronInfo.GetInfo(user1ID, lib.id);
+            Pair<Patron, ArrayList<Document>> patronInfo2 = FullPatronInfo.GetInfo(user2ID, lib.id);
+
+            Booking.useCustomDate = false;
+
+            if(patronInfo1.second.size() == 3 && patronInfo2.second.size() == 3){
                 System.out.println("TC7 PASSED!");
+                gFw.write("TC7 PASSED!\n");
             }else{
                 System.out.println("TC7 FAILED!");
+                gFw.write("TC7 FAILED!\n");
+
             }
         }catch (Exception e){
             System.out.println("Error in tc7: " + e.toString());
@@ -456,10 +529,83 @@ public class Tester {
     }
 
     public void tc8(){
+        try {
+            this.tc1();
+            Patron patron1 = db.getPatronById(user1ID);
+            Patron patron2 = db.getPatronById(user2ID);
+            Book book1 = (Book) db.getDocumentById(book1LocId);
+            Book book2 = (Book) db.getDocumentById(book2LocId);
+            Book book1Cop = (Book) db.getDocumentById(book1LocId+1);
+            AVmaterial av1 = (AVmaterial) db.getDocumentById(av1Id);
+            AVmaterial av2 = (AVmaterial) db.getDocumentById(av2Id);
 
+            Booking.setDate = February9Date;
+            Booking.useCustomDate = true;
+            EventManager eventManager = new EventManager();
+
+            LibTask libTask1 = new LibTask(book1, patron1, "checkout");
+            eventManager.ExecuteQuery(libTask1);
+
+            Booking.setDate = February2Date;
+            LibTask libTask2 = new LibTask(book2, patron1, "checkout");
+            eventManager.ExecuteQuery(libTask2);
+
+            Booking.setDate = February5Date;
+            LibTask libTask3 = new LibTask(book1Cop, patron2, "checkout");
+            eventManager.ExecuteQuery(libTask3);
+
+            Booking.setDate = February17Date;
+            LibTask libTask4 = new LibTask(av1, patron2, "checkout");
+            eventManager.ExecuteQuery(libTask4);
+            Booking.useCustomDate = false;
+
+            Booking booking = new Booking();
+
+            if(booking.countOverdue(book2) == 5 && booking.countOverdue(av1) == 4 && booking.countOverdue(book1Cop) == 16){
+                System.out.println("TC8 PASSED!");
+                gFw.write("TC8 PASSED!\n");
+            }else{
+                System.out.println("TC8 FAILED!");
+                gFw.write("TC8 FAILED!\n");
+
+            }
+        }catch (Exception e){
+            System.out.println("Error in tc8: " + e.toString());
+        }
     }
 
     public void tc9(){
+        try {
 
+            File in = new File("input.txt");
+            FileWriter fileWriter = new FileWriter(in);
+            fileWriter.write("0");
+            fileWriter.close();
+            Scanner sc = new Scanner(in);
+            if (sc.next().equals("0")){
+                this.tc1();
+                sc.close();
+                FileWriter fw = new FileWriter(in);
+                fw.write("1");
+                fw.flush();
+                fw.close();
+                gFw.flush();
+                gFw.close();
+                System.exit(1);
+            }else{
+                if(true){
+                    System.out.println("TC9 PASSED!");
+                    gFw.write("TC9 PASSED!\n");
+                }else{
+                    System.out.println("TC9 FAILED!");
+                    gFw.write("TC9 FAILED!\n");
+
+                }
+            }
+
+
+        }catch (Exception e){
+            System.out.println("Error in tc9: " + e.toString());
+        }
     }
 }
