@@ -204,7 +204,7 @@ public class Book extends Document {
                 resultSet.next();
                 int number = resultSet.getInt("number");
                 if(number>=copies) {
-                    preparedStatement = Database.connection.prepareStatement("update books set number = number - copies where id = " + lastId);
+                    preparedStatement = Database.connection.prepareStatement("update books set number = number - " + Integer.toString(copies) + " where id = " + lastId);
                     preparedStatement.executeUpdate();
                 }
                 else{

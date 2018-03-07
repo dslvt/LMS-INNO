@@ -61,10 +61,11 @@ public class AVmaterial extends Document {
                     }
                     this.localId = lastId;
 
-                    preparedStatement = Database.connection.prepareStatement("insert into documents(id_av_materials, location, type) values(?, ?, ?)");
+                    preparedStatement = Database.connection.prepareStatement("insert into documents(id_av_materials, location, type, isActive) values(?, ?, ?, ?)");
                     preparedStatement.setInt(1, lastId);
                     preparedStatement.setString(2, location);
                     preparedStatement.setString(3, "av_materials");
+                    preparedStatement.setBoolean(4, this.isActive);
                     preparedStatement.executeUpdate();
 
                     int globalID = 0;

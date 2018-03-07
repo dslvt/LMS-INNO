@@ -30,6 +30,7 @@ public class Patron extends User {
 
     public void CreateUserDB() {
         try {
+            Database db = new Database();
             PreparedStatement preparedStatement;
             preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian) values(?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setString(1, this.name);
@@ -39,7 +40,16 @@ public class Patron extends User {
             preparedStatement.setBoolean(5, this.isFacultyMember);
             preparedStatement.setString(6, this.password);
             preparedStatement.setBoolean(7, false);
+
             preparedStatement.executeUpdate();
+
+            Statement statement = Database.connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
+            int lastId = 0;
+            if (resultSet.next()) {
+                lastId = resultSet.getInt(1);
+            }
+            this.id = lastId;
         } catch (Exception ex) {
             System.out.println("Error create patron: " + ex.toString());
         }

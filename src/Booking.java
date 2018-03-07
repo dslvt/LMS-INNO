@@ -21,6 +21,8 @@ public class Booking {
 //        //booking.renewBook(document);
 //        //booking.returnBook(document, user);
 //    }
+    public static long setDate = 1520197200000L;
+    public static boolean useCustomDate = false;
 
 
     public Booking() throws ClassNotFoundException, SQLException {
@@ -39,10 +41,14 @@ public class Booking {
             if (takeCopy(document, user) && document.isCanBeTaken()) {
                 //Crete current date
                 java.util.Date date = new java.util.Date();
+                if(useCustomDate)
+                    date.setTime(setDate);
                 java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 
                 //Crete date of returning
                 java.util.Date returnDay = new java.util.Date();
+                if(useCustomDate)
+                    returnDay.setTime(setDate);
                 Calendar day = Calendar.getInstance();
                 day.setTime(returnDay);
                 day.add(Calendar.DATE, bookingTerm(document,user));
@@ -50,7 +56,8 @@ public class Booking {
                 java.sql.Timestamp timestamp1 = new java.sql.Timestamp(returnDay.getTime());
 
                 //Crete line in Booking
-                statement.executeUpdate("INSERT into booking set user_id = '" + user.id + "', document_id = '" + document.id + "', time = '" + timestamp + "', returnTime = " + timestamp1 );
+                statement.executeUpdate("INSERT into booking(document_id, user_id, time, returnTime) values(" + Integer.toString(document.id) +", " + Integer.toString(user.id) +", '"+
+                   timestamp + "', '" + timestamp1 +"');" );
 
                 //Change status of document
                 PreparedStatement preparedStatement = Database.connection.prepareStatement("UPDATE documents SET isActive = ? WHERE id = ?");
@@ -170,10 +177,10 @@ public class Booking {
         String type = getType(document);
         int id = Database.getCorrectIdInLocalDatabase(document.id);
 
-        if (type.equals("book")) {
+        if (type.equals("books")) {
             statement.executeQuery("SELECT*FROM books WHERE id = '" + id + "'");
         }
-        if (type.equals("journal")) {
+        if (type.equals("journals")) {
             statement.executeQuery("SELECT*FROM journals WHERE id = '" + id + "'");
         }
         if (type.equals("av_materials")) {
@@ -228,11 +235,11 @@ public class Booking {
             one = -1;
         }
         //Change number of available documents
-        if (type.equals("book")) {//If it's book
+        if (type.equals("books")) {//If it's book
             int counter = Database.getAmountOfCurrentBook((Book)document)+ one;
             statement.executeUpdate("UPDATE books set number = '" + counter + "' WHERE id ='" + document.localId + "'");
         }
-        if (type.equals("journal")) {//If it's journal
+        if (type.equals("journals")) {//If it's journal
             int counter = Database.getAmountOfCurrentJournal((Journal)document)+ one;
             statement.executeUpdate("UPDATE journals set number = '" + counter + "' WHERE id ='" + document.localId + "'");
         }
@@ -256,7 +263,7 @@ public class Booking {
         }
 
         int term;
-        if (type.equals("book")) {
+        if (type.equals("books")) {
             int id_books = Database.getCorrectIdInLocalDatabase(document.id);
             statement.executeQuery("SELECT*FROM books WHERE id = '" + id_books + "'");
             rec = statement.getResultSet();

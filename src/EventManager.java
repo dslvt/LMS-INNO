@@ -37,27 +37,37 @@ public class EventManager {
         return libTasks;
     }
 
-    public void CreateQuery(LibTask libTask){
+    public int CreateQuery(LibTask libTask){
+        int id = 0;
         try{
             PreparedStatement preparedStatement = Database.connection.prepareStatement("insert into libtasks(id_user, id_document, type) values(?, ?, ?)");
             preparedStatement.setInt(1, libTask.user.id);
             preparedStatement.setInt(2, libTask.document.id);
             preparedStatement.setString(3, libTask.type);
             preparedStatement.executeUpdate();
+
+            int globalID = 0;
+            statement = Database.connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
+            if (resultSet.next()) {
+                globalID = resultSet.getInt(1);
+            }
+            id = globalID;
         }catch (Exception e){
             System.out.println("EventManager, CreateQuery: " + e.toString());
         }
+        return id;
     }
 
     public void ExecuteQuery(LibTask libTask){
         try {
             Booking booking = new Booking();
+            this.DeleteQuery(libTask);
             if (libTask.type.equals("checkout")) {
                 booking.checkOut(libTask.document, libTask.user);
             } else if (libTask.type.equals("return")) {
                 booking.returnBook(libTask.document, libTask.user);
             }
-            this.DeleteQuery(libTask);
         }catch (Exception e){
             System.out.println("EventManager executeQuery: " + e.toString());
         }

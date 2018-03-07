@@ -8,13 +8,13 @@ import java.util.List;
 
 public class Database {
 
-//    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
-//    private static final String user = "admin";
-//    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
+    private static final String user = "admin";
+    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
     //private static final String password = "333999333tima";
-    String user = "root";
-    String password = "enaca2225";
-    String url = "jdbc:mysql://localhost:3306/new_version?useSSL=false";
+//    String user = "root";
+//    String password = "enaca2225";
+//    String url = "jdbc:mysql://localhost:3306/new_version?useSSL=false";
 
     public static Connection connection;
     private static Statement statement;
@@ -287,40 +287,40 @@ public class Database {
 
                     Statement st = connection.createStatement();
                     ResultSet rs = st.executeQuery("select * from documents where id=" + resultSet.getInt("document_id"));
-                    rs.next();
+                    if(rs.next()) {
+                        String query = "select * from ";
+                        if (rs.getInt("id_av_materials") != 0) {
+                            query += "av_materials where id=" + Integer.toString(rs.getInt("id_av_materials"));
 
-                    String query = "select * from ";
-                    if(rs.getInt("id_av_materials") != 0){
-                        query += "av_materials where id=" + Integer.toString(rs.getInt("id_av_materials"));
+                            Statement tst = connection.createStatement();
+                            ResultSet trs = tst.executeQuery(query);
+                            trs.next();
 
-                        Statement tst = connection.createStatement();
-                        ResultSet trs = tst.executeQuery(query);
-                        trs.next();
+                            document = createAVMaterialByResultSet(trs, rs.getInt("id"), rs.getString("location"));
+                            document.localId = rs.getInt("id_av_materials");
+                        } else if (rs.getInt("id_books") != 0) {
+                            query += "books where id=" + Integer.toString(rs.getInt("id_books"));
 
-                        document = createAVMaterialByResultSet(trs, rs.getInt("id"), rs.getString("location"));
-                        document.localId = rs.getInt("id_av_materials");
-                    }else if (rs.getInt("id_books") != 0){
-                        query += "books where id=" + Integer.toString(rs.getInt("id_books"));
+                            Statement tst = connection.createStatement();
+                            ResultSet trs = tst.executeQuery(query);
+                            trs.next();
 
-                        Statement tst = connection.createStatement();
-                        ResultSet trs = tst.executeQuery(query);
-                        trs.next();
+                            document = createBookByResultSet(trs, rs.getInt("id"), rs.getString("location"));
+                            document.localId = rs.getInt("id_books");
 
-                        document = createBookByResultSet(trs, rs.getInt("id"), rs.getString("location"));
-                        document.localId = rs.getInt("id_books");
+                        } else if (rs.getInt("id_journals") != 0) {
+                            query += "journals where id=" + Integer.toString(rs.getInt("id_journals"));
 
-                    }else if(rs.getInt("id_journals") != 0){
-                        query += "journals where id=" + Integer.toString(rs.getInt("id_journals"));
+                            Statement tst = connection.createStatement();
+                            ResultSet trs = tst.executeQuery(query);
+                            trs.next();
 
-                        Statement tst = connection.createStatement();
-                        ResultSet trs = tst.executeQuery(query);
-                        trs.next();
+                            document = createJournalByResultSet(trs, rs.getInt("id"), rs.getString("location"));
+                            document.localId = rs.getInt("id_journals");
+                        }
 
-                        document = createJournalByResultSet(trs, rs.getInt("id"), rs.getString("location"));
-                        document.localId = rs.getInt("id_journals");
+                        documents.add(document);
                     }
-
-                    documents.add(document);
                 }
             }
         }catch (Exception e){
@@ -377,7 +377,7 @@ public class Database {
         int ans = -1;
         try {
             statement = connection.createStatement();
-            String query = "select number from books where id ="+Integer.toString(getCorrectIdInLocalDatabase(book.id));
+            String query = "select number from books where id ="+Integer.toString(book.localId);
             resultSet = statement.executeQuery(query);
             resultSet.next();
 
@@ -497,13 +497,14 @@ public class Database {
         String query = "select * from users where id="+Integer.toString(id);
         Patron user = null;
         try{
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery(query);
-            resultSet.next();
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            if(rs.next()) {
 
-            user = new Patron(resultSet.getString("name"), resultSet.getString("password"), resultSet.getString("phoneNumber"),
-                    resultSet.getString("address"), resultSet.getBoolean("isFacultyMember"), resultSet.getInt("debt"));
-            user.id = id;
+                user = new Patron(rs.getString("name"), rs.getString("password"), rs.getString("phoneNumber"),
+                        rs.getString("address"), rs.getBoolean("isFacultyMember"), rs.getInt("debt"));
+                user.id = id;
+            }
         }catch (Exception e){
             System.out.println("Database get_user_by_id: " + e.toString());
         }
@@ -648,7 +649,7 @@ public class Database {
         String returnDate = "";
         try {
             Statement st = connection.createStatement();
-             ResultSet rs = st.executeQuery("SELECT returnTime FROM booking WHERE id =" + document.id);
+             ResultSet rs = st.executeQuery("SELECT returnTime FROM booking WHERE document_id =" + document.id);
             while (rs.next()){
                 returnDate = rs.getDate("returnTime").toString();
             }
@@ -657,5 +658,56 @@ public class Database {
             System.out.println("Error in getDocumentReturnDate: "+ e.toString());
         }
         return returnDate;
+    }
+
+    public void DeleteAllInTable(String tableName){
+        try{
+            ArrayList<Integer> ids = this.getAllTableIds(tableName);
+            Statement st = connection.createStatement();
+            for (int i = 0; i < ids.size(); i++) {
+                st.executeUpdate("DELETE FROM " + tableName + " where id = " + ids.get(i).toString());
+            }
+        }catch (Exception e){
+            System.out.println("Error in db, deleteAllInTable: " + e.toString());
+        }
+    }
+
+    public ArrayList<Integer> getAllTableIds(String tableName){
+        ArrayList<Integer> ans = new ArrayList<>();
+
+        try{
+            String query = "select id from " + tableName + " order by id";
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+
+            while (rs.next()){
+                ans.add(rs.getInt("id"));
+            }
+        }catch (Exception e){
+            System.out.println("Error in db, getAllTableIds: " + e.toString());
+        }
+
+        return ans;
+    }
+
+    public void ExecuteQuery(String query){
+        try{
+            Statement st = connection.createStatement();
+            st.executeUpdate(query);
+        }catch (Exception e){
+            System.out.println("Error in db, executeQuery: " + e.toString());
+
+        }
+    }
+
+    public ResultSet SelectFromDB(String query){
+        ResultSet rs = null;
+        try{
+            Statement st = connection.createStatement();
+            rs = st.executeQuery(query);
+        }catch (Exception e){
+            System.out.println("Error in db, selectFromDB: " + e.toString());
+        }
+        return rs;
     }
 }
