@@ -271,11 +271,11 @@ public class Booking {
             if (rec.next()) {
                 isBestSeller = rec.getBoolean("isBestSeller");
             }
-            if (isFaculty) {
-                term = 28;
+            if (isBestSeller) {
+                term = 14;
             } else {
-                if (isBestSeller) {
-                    term = 14;
+                if (isFaculty) {
+                    term = 28;
                 } else {
                     term = 21;
                 }
