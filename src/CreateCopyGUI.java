@@ -24,7 +24,7 @@ public class CreateCopyGUI extends JFrame{
             Container containerTB = takeBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
-            String[] columnNames = {"User", "Amount"};
+            String[] columnNames = {"Document", "Amount"};
 
 
             Database db = new Database();

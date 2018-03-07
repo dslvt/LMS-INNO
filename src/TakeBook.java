@@ -32,19 +32,18 @@ public class TakeBook extends JFrame{
             containerTB.setLayout(new BorderLayout());
 
             ArrayList<Integer> documentIds = db.getAllDocumentsIDs();
-            vector = new Vector(db.getAllDocuments());
-            Vector <String> documentNames = new Vector<>();
-            for (int i = 0; i < vector.size(); i++){
-                if(vector.get(i).isCanBeTaken())
-                    documentNames.add(vector.get(i).name);
+
+            String[] columnNames = {"Document", "Amount"};
+            Database db = new Database();
+            ArrayList<Pair<Document, Integer>> requests = db.getAllDocumentsWithoutCopies();
+            Object[][] requestA = new Object[requests.size()][2];
+            for(int i = 0; i < requestA.length; i++){
+                requestA[i][1] = requests.get(i).second;
+                requestA[i][0] = requests.get(i).first.name;
             }
 
-            allBooks = new JList<String>(documentNames);
-            allBooks.setPreferredSize(new Dimension(150, 200));
-            allBooks.setLayoutOrientation(JList.VERTICAL);
-            allBooks.setVisibleRowCount(0);
-            allBooks.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            JScrollPane listScroller = new JScrollPane(allBooks);
+            JTable table = new JTable(requestA, columnNames);
+            JScrollPane listScroller = new JScrollPane(table);
             listScroller.setPreferredSize(new Dimension(100,100));
             containerTB.add(listScroller, BorderLayout.CENTER);
 
