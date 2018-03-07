@@ -2,6 +2,7 @@ import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 public abstract class User {
     public String name;
@@ -58,5 +59,23 @@ public abstract class User {
             System.out.println("Error: User does not have access to delete user");
         }
         return -1;
+    }
+
+    public ArrayList<Pair<Document, Integer>> getAllOverdueDocuments(int libId){
+        ArrayList<Pair<Document, Integer>> ans = new ArrayList<>();
+        try{
+            Database db = new Database();
+            Booking booking = new Booking();
+            ArrayList<Document> docs = db.getUserDocuments((Patron) this);
+            for (int i = 0; i < docs.size(); i++) {
+                int countOver = booking.countOverdue(docs.get(i));
+                if(countOver > 0){
+                    ans.add(new Pair<Document, Integer>(docs.get(i), countOver));
+                }
+            }
+        }catch (Exception e){
+            System.out.println("Error in getAllOverdueDocuments, user: " + e.toString());
+        }
+        return ans;
     }
 }

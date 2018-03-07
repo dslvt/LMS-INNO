@@ -27,6 +27,11 @@ public class Tester {
     private FileWriter gFw;
     private File gF;
 
+    private String[] names = {"Sergey Afonso", "Elvira Espindola" ,"Nadia Teixeira"};
+    private String[] addresses = {"Via Margutta, 3", "Via Sacra, 13", "Via del Corso, 22"};
+    private String[] phoneNumbers = {"30001", "30002", "30003"};
+    private Boolean[] isFaculty = {true, false, false};
+
 
     public Tester(){
         try{
@@ -309,15 +314,15 @@ public class Tester {
             aVmateria2.CreateDocumentInDB(lib.id);
             av2Id = aVmateria2.id;
 
-            Patron  patron1 = new Patron("Sergey Afonso", "1", "30001", "Via Margutta, 3", true, 0);
+            Patron  patron1 = new Patron(names[0], "1", phoneNumbers[0], addresses[0], isFaculty[0], 0);
             patron1.CreateUserDB();
             user1ID = patron1.id;
 
-            Patron patron2 = new Patron("Nadia Teixeira", "1", "30002", "Via Sacra, 13", false, 0);
+            Patron patron2 = new Patron(names[1], "1", phoneNumbers[1], addresses[1], isFaculty[1], 0);
             patron2.CreateUserDB();
             user2ID = patron2.id;
 
-            Patron patron3 = new Patron(" Elvira Espindola", "1", "30003", "Via del Corso, 22", false, 0);
+            Patron patron3 = new Patron(names[2], "1", phoneNumbers[2], addresses[2], isFaculty[2], 0);
             patron3.CreateUserDB();
             user3ID = patron3.id;
 
@@ -377,7 +382,9 @@ public class Tester {
             Patron p1 = db.getPatronById(user1ID);
             Patron p2 = db.getPatronById(user3ID);
 
-            if(patronInfo1.second.size() == 0 && patronInfo2.second.size() == 0 && p1.name.equals(patronInfo1.first.name) && p2.name.equals(patronInfo2.first.name)){
+            if(patronInfo1.second.size() == 0 && patronInfo2.second.size() == 0 && p1.name.equals(names[0])
+                    && p1.phoneNumber.equals(phoneNumbers[0]) && p1.isFacultyMember == isFaculty[0] && p1.address.equals(addresses[0]) &&
+                    p2.name.equals(names[2]) && p2.address.equals(addresses[2]) && p2.phoneNumber.equals(phoneNumbers[2]) && p2.isFacultyMember == isFaculty[2]){
                 System.out.println("TC3 PASSED!");
                 gFw.write("TC3 PASSED!\n");
             }else{
@@ -399,7 +406,8 @@ public class Tester {
             Patron p1 = db.getPatronById(user2ID);
             Patron p2 = db.getPatronById(user3ID);
 
-            if(p1 == patronInfo1.first && p2.name.equals(patronInfo2.first.name) && patronInfo2.second.size() == 0 && patronInfo1.second.size() == 0){
+            if(p1 == null && patronInfo1.first == null && patronInfo2.second.size() == 0 && patronInfo1.second.size() == 0 &&
+                    p2.name.equals(names[2]) && p2.address.equals(addresses[2]) && p2.phoneNumber.equals(phoneNumbers[2]) && p2.isFacultyMember == isFaculty[2]){
                 System.out.println("TC4 PASSED!");
                 gFw.write("TC4 PASSED!\n");
             }else{
@@ -442,15 +450,15 @@ public class Tester {
         try {
             this.tc2();
 
-            Patron patron1 = db.getPatronById(user1ID);
-            Patron patron3 = db.getPatronById(user3ID);
+            Patron p1 = db.getPatronById(user1ID);
+            Patron p3 = db.getPatronById(user3ID);
             Book book1 = (Book) db.getDocumentById(book1LocId);
             Book book2 = (Book) db.getDocumentById(book2LocId);
 
             EventManager eventManager = new EventManager();
-            LibTask libTask1 = new LibTask(book1, patron1, "checkout");
-            LibTask libTask2 = new LibTask(book1, patron3, "checkout");
-            LibTask libTask3 = new LibTask(book2, patron3, "checkout");
+            LibTask libTask1 = new LibTask(book1, p1, "checkout");
+            LibTask libTask2 = new LibTask(book1, p3, "checkout");
+            LibTask libTask3 = new LibTask(book2, p3, "checkout");
             Booking.useCustomDate = true;
             Booking.setDate = March5Date;
             libTask1.id = eventManager.CreateQuery(libTask1);
@@ -465,7 +473,10 @@ public class Tester {
             Pair<Patron, ArrayList<Document>> patronInfo2 = FullPatronInfo.GetInfo(user3ID, lib.id);
 
             Booking.useCustomDate = false;
-            if(patronInfo1.second.size() == 1 && patronInfo2.second.size() == 1){
+            if(patronInfo1.second.size() == 1 && patronInfo2.second.size() == 1 && p1.name.equals(names[0])
+                    && p1.phoneNumber.equals(phoneNumbers[0]) && p1.isFacultyMember == isFaculty[0] && p1.address.equals(addresses[0]) &&
+                    p3.name.equals(names[2]) && p3.address.equals(addresses[2]) && p3.phoneNumber.equals(phoneNumbers[2]) && p3.isFacultyMember == isFaculty[2] &&
+                    db.getDocumentReturnDate(patronInfo1.second.get(0)).equals("2018-04-02") && db.getDocumentReturnDate(patronInfo2.second.get(0)).equals("2018-03-19")){
                 System.out.println("TC6 PASSED!");
                 gFw.write("TC6 PASSED!\n");
             }else{
@@ -482,22 +493,24 @@ public class Tester {
         try {
             this.tc1();
 
-            Patron patron1 = db.getPatronById(user1ID);
-            Patron patron3 = db.getPatronById(user2ID);
+            Patron p1 = db.getPatronById(user1ID);
+            Patron p2 = db.getPatronById(user2ID);
             Book book1 = (Book) db.getDocumentById(book1LocId);
             Book book2 = (Book) db.getDocumentById(book2LocId);
             Book book3 = (Book) db.getDocumentById(book3LocId);
+            Book book1Cop = (Book) db.getDocumentById(book1LocId-1);
+            Book book2Cop = (Book) db.getDocumentById(book2LocId-1);
             AVmaterial av1 = (AVmaterial) db.getDocumentById(av1Id);
             AVmaterial av2 = (AVmaterial) db.getDocumentById(av2Id);
 
             EventManager eventManager = new EventManager();
-            LibTask libTask1 = new LibTask(book1, patron1, "checkout");
-            LibTask libTask2 = new LibTask(book2, patron1, "checkout");
-            LibTask libTask3 = new LibTask(book3, patron1, "checkout");
-            LibTask libTask4 = new LibTask(av1, patron1, "checkout");
-            LibTask libTask5 = new LibTask(book1, patron3, "checkout");
-            LibTask libTask6 = new LibTask(book2, patron3, "checkout");
-            LibTask libTask7 = new LibTask(av2, patron3, "checkout");
+            LibTask libTask1 = new LibTask(book1, p1, "checkout");
+            LibTask libTask2 = new LibTask(book2, p1, "checkout");
+            LibTask libTask3 = new LibTask(book3, p1, "checkout");
+            LibTask libTask4 = new LibTask(av1, p1, "checkout");
+            LibTask libTask5 = new LibTask(book1Cop, p2, "checkout");
+            LibTask libTask6 = new LibTask(book2Cop, p2, "checkout");
+            LibTask libTask7 = new LibTask(av2, p2, "checkout");
 
             Booking.setDate = March5Date;
             Booking.useCustomDate = true;
@@ -515,7 +528,12 @@ public class Tester {
 
             Booking.useCustomDate = false;
 
-            if(patronInfo1.second.size() == 3 && patronInfo2.second.size() == 3){
+            if(patronInfo1.second.size() == 3 && patronInfo2.second.size() == 3 && p1.name.equals(names[0])
+                    && p1.phoneNumber.equals(phoneNumbers[0]) && p1.isFacultyMember == isFaculty[0] && p1.address.equals(addresses[0]) &&
+                    p2.name.equals(names[1]) && p2.address.equals(addresses[1]) && p2.phoneNumber.equals(phoneNumbers[1]) && p2.isFacultyMember == isFaculty[1]
+                    && db.getDocumentReturnDate(patronInfo1.second.get(0)).equals("2018-04-02") && db.getDocumentReturnDate(patronInfo1.second.get(1)).equals("2018-04-02") &&
+                    db.getDocumentReturnDate(patronInfo1.second.get(2)).equals("2018-03-19") && db.getDocumentReturnDate(patronInfo2.second.get(0)).equals("2018-03-26") &&
+                    db.getDocumentReturnDate(patronInfo2.second.get(1)).equals("2018-03-19") && db.getDocumentReturnDate(patronInfo2.second.get(2)).equals("2018-03-19")){
                 System.out.println("TC7 PASSED!");
                 gFw.write("TC7 PASSED!\n");
             }else{
@@ -535,7 +553,7 @@ public class Tester {
             Patron patron2 = db.getPatronById(user2ID);
             Book book1 = (Book) db.getDocumentById(book1LocId);
             Book book2 = (Book) db.getDocumentById(book2LocId);
-            Book book1Cop = (Book) db.getDocumentById(book1LocId+1);
+            Book book1Cop = (Book) db.getDocumentById(book1LocId-1);
             AVmaterial av1 = (AVmaterial) db.getDocumentById(av1Id);
             AVmaterial av2 = (AVmaterial) db.getDocumentById(av2Id);
 
@@ -557,11 +575,16 @@ public class Tester {
             Booking.setDate = February17Date;
             LibTask libTask4 = new LibTask(av1, patron2, "checkout");
             eventManager.ExecuteQuery(libTask4);
-            Booking.useCustomDate = false;
 
             Booking booking = new Booking();
+            Booking.setDate = March5Date;
 
-            if(booking.countOverdue(book2) == 19 && booking.countOverdue(av1) == 4 && booking.countOverdue(book1Cop) == 16){
+            ArrayList<Pair<Document, Integer>> user1OverdueDocuments = patron1.getAllOverdueDocuments(lib.id);
+            ArrayList<Pair<Document, Integer>> user2OverdueDocuments = patron2.getAllOverdueDocuments(lib.id);
+
+            Booking.useCustomDate = false;
+
+            if(user1OverdueDocuments.get(0).second == 3 && user2OverdueDocuments.get(0).second == 7 && user2OverdueDocuments.get(1).second == 2){
                 System.out.println("TC8 PASSED!");
                 gFw.write("TC8 PASSED!\n");
             }else{

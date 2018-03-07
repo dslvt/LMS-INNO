@@ -13,6 +13,10 @@ public class Main {
 
         FirstWindow window = new FirstWindow();
         window.setVisible(true);
+
+        /**
+         * if want test program incomment need test
+         */
         Tester tester = new Tester();
         tester.tc1();
         tester.tc2();

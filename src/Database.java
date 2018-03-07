@@ -651,7 +651,7 @@ public class Database {
             Statement st = connection.createStatement();
              ResultSet rs = st.executeQuery("SELECT returnTime FROM booking WHERE document_id =" + document.id);
             while (rs.next()){
-                returnDate = rs.getDate("returnTime").toString();
+                returnDate = rs.getDate(1).toString();
             }
 
         } catch (SQLException e) {

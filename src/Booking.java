@@ -206,6 +206,8 @@ public class Booking {
 
         //Current date
         java.util.Date date = new java.util.Date();
+        if(useCustomDate)
+            date.setTime(setDate);
 
         //Get date of booking
         java.util.Date bookingDate = new java.util.Date();
@@ -272,7 +274,11 @@ public class Booking {
                 isBestSeller = rec.getBoolean("isBestSeller");
             }
             if (isBestSeller) {
-                term = 14;
+                if (isFaculty) {
+                    term = 28;
+                } else {
+                    term = 14;
+                }
             } else {
                 if (isFaculty) {
                     term = 28;
