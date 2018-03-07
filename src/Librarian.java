@@ -56,7 +56,7 @@ public class Librarian extends User {
         try {
             Database db = new Database();
             Statement statement = Database.connection.createStatement();
-            statement.executeUpdate("SELECT * FROM users WHERE debt != 0");
+            statement.executeQuery("SELECT * FROM users WHERE debt != 0");
             ResultSet resultSet = statement.getResultSet();
             while (resultSet.next()) {
                 debtors.add(db.getPatronById(resultSet.getInt("id")));
