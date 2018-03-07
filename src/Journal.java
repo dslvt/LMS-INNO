@@ -194,6 +194,19 @@ public class Journal extends Document {
                 Integer lastId = Database.isDocumentExist(this);
                 statement.executeUpdate("DELETE FROM documents WHERE id_journals= " + lastId.toString() + " LIMIT " + copies);
 
+                PreparedStatement preparedStatement;
+                statement.executeQuery("SELECT number FROM journals WHERE id="+lastId);
+                ResultSet resultSet = statement.getResultSet();
+                resultSet.next();
+                int number = resultSet.getInt("number");
+                if(number>=copies) {
+                    preparedStatement = Database.connection.prepareStatement("update journals set number = number -  "+ Integer.toString(copies)+" where id = " + lastId);
+                    preparedStatement.executeUpdate();
+                }
+                else{
+                    preparedStatement = Database.connection.prepareStatement("update journals set number = 0 where id = " + lastId);
+                    preparedStatement.executeUpdate();
+                }
             } catch (SQLException e) {
                 System.out.println("Error delete copy of journal: " + e.toString());
             }

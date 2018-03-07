@@ -196,6 +196,19 @@ public class AVmaterial extends Document {
                 Integer lastId = Database.isDocumentExist(this);
                 statement.executeUpdate("DELETE FROM documents WHERE id_av_materials= " + lastId.toString() + " LIMIT " + copies);
 
+                PreparedStatement preparedStatement;
+                statement.executeQuery("SELECT number FROM av_materials WHERE id="+lastId);
+                ResultSet resultSet = statement.getResultSet();
+                resultSet.next();
+                int number = resultSet.getInt("number");
+                if(number>=copies) {
+                    preparedStatement = Database.connection.prepareStatement("update av_materials set number = number - "+ Integer.toString(copies)+" where id = " + lastId);
+                    preparedStatement.executeUpdate();
+                }
+                else{
+                    preparedStatement = Database.connection.prepareStatement("update av_materials set number = 0 where id = " + lastId);
+                    preparedStatement.executeUpdate();
+                }
             } catch (SQLException e) {
                 System.out.println("Error delete copy of AV Material: " + e.toString());
             }
