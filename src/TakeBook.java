@@ -11,7 +11,6 @@ import java.util.Vector;
 
 public class TakeBook extends JFrame{
     private JList<String> allBooks;
-    private Vector<Document> vector;
     private JButton takingBook = new JButton("Take Book");
 
     /**
@@ -45,22 +44,14 @@ public class TakeBook extends JFrame{
             listScroller.setPreferredSize(new Dimension(100,100));
             containerTB.add(listScroller, BorderLayout.CENTER);
 
-            Booking booking = new Booking();
-
             takingBook.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int index = allBooks.getSelectedIndex();
+                    int index = table.getSelectedRow();
                     if(index != -1){
                         int amountOfDays = -1;
 
                         String time = "";
-//                        amountOfDays = booking.checkOut(new AVmaterial(documentIds.get(index)) , CurrentSession.user);
-//                        if(amountOfDays == -1){
-//                            time = "Sorry, but you cant take this book";
-//                        }else{
-//                            time = "You have been taken book on " + Integer.toString(amountOfDays) + " days.";
-//                        }
 
                         EventManager eventManager = new EventManager();
                         eventManager.CreateQuery(new LibTask(new AVmaterial(documentIds.get(index)), (Patron)CurrentSession.user, "checkout"));

@@ -17,16 +17,16 @@ public class Main {
         /**
          * if want test program incomment need test
          */
-        Tester tester = new Tester();
-        tester.tc1();
-        tester.tc2();
-        tester.tc3();
-        tester.tc4();
-        tester.tc5();
-        tester.tc6();
-        tester.tc7();
-        tester.tc8();
-        tester.tc9();
+//        Tester tester = new Tester();
+//        tester.tc1();
+//        tester.tc2();
+//        tester.tc3();
+//        tester.tc4();
+//        tester.tc5();
+//        tester.tc6();
+//        tester.tc7();
+//        tester.tc8();
+//        tester.tc9();
 //        tester.test1();
 //        tester.test2();
 //        tester.test3();

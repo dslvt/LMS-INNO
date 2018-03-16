@@ -55,7 +55,7 @@ public class MyBooksGUI extends JFrame{
             takingBook.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    int index = allBooks.getSelectedIndex();
+                    int index = table.getSelectedRow();
                     if(index != -1){
                         EventManager eventManager = new EventManager();
                         eventManager.CreateQuery(new LibTask(vector.get(index), (Patron)CurrentSession.user, "return"));
