@@ -163,10 +163,9 @@ public class Journal extends Document {
     @Override
     public void DeleteFromDB(int idLibrarian) {
         if (Database.isLibrarian(idLibrarian)) {
-            Database db = new Database();
             Statement statement;
             try {
-                statement = db.connection.createStatement();
+                statement = Database.connection.createStatement();
                 Integer lastId = Database.isDocumentExist(this);
                 if (lastId != -1) {
                     statement.executeUpdate("DELETE FROM journals WHERE id = " + lastId.toString());
@@ -187,10 +186,9 @@ public class Journal extends Document {
 
     public void deleteCopies(int copies, int idLibrarian) {
         if (Database.isLibrarian(idLibrarian)) {
-            Database db = new Database();
             Statement statement;
             try {
-                statement = db.connection.createStatement();
+                statement = Database.connection.createStatement();
                 Integer lastId = Database.isDocumentExist(this);
                 statement.executeUpdate("DELETE FROM documents WHERE id_journals= " + lastId.toString() + " LIMIT " + copies);
 

@@ -11,7 +11,6 @@ import java.util.Scanner;
 import java.util.function.BinaryOperator;
 
 public class Tester {
-    Database db;
     Booking booking;
 
     private int book1LocId, book2LocId, book3LocId;
@@ -35,7 +34,6 @@ public class Tester {
 
     public Tester(){
         try{
-            db = new Database();
             booking = new Booking();
             gF = new File("log.txt");
             gFw = new FileWriter(gF);
@@ -48,12 +46,12 @@ public class Tester {
     public void test1(){
         try {
             int id = 19;
-            Patron patron = db.getPatronByNumber("1");
-            Book book = (Book)db.getDocumentById(id);
+            Patron patron = Database.getPatronByNumber("1");
+            Book book = (Book)Database.getDocumentById(id);
             booking.checkOut(book , patron);
 
             boolean fl = false;
-            ArrayList<Document> documents = db.getUserDocuments(patron);
+            ArrayList<Document> documents = Database.getUserDocuments(patron);
             for (int i = 0; i < documents.size(); i++) {
                 if(documents.get(i).localId == book.localId && Database.getAmountOfCurrentBook(book) == 1){
                     fl = true;
@@ -78,8 +76,8 @@ public class Tester {
         try{
             int id = 25;
 
-            Patron patron = db.getPatronByNumber("1");
-            Book book = (Book) db.getDocumentById(id);
+            Patron patron = Database.getPatronByNumber("1");
+            Book book = (Book) Database.getDocumentById(id);
 
             int n = booking.checkOut(book, patron);
             if(n == -1){
@@ -97,8 +95,8 @@ public class Tester {
         try{
             int id = 19 ;
 
-            Patron patron = db.getPatronByNumber("777");//facul
-            Book book = (Book) db.getDocumentById(id);
+            Patron patron = Database.getPatronByNumber("777");//facul
+            Book book = (Book) Database.getDocumentById(id);
 
             if(booking.checkOut(book , patron) == 28){
                 System.out.println("TEST3 PASSED");
@@ -117,8 +115,8 @@ public class Tester {
         try{
             int id = 24;
 
-            Patron patron = db.getPatronByNumber("777");
-            Book book = (Book) db.getDocumentById(id);
+            Patron patron = Database.getPatronByNumber("777");
+            Book book = (Book) Database.getDocumentById(id);
 
             if(booking.checkOut(book , patron) == 14){
                 System.out.println("TEST4 PASSED");
@@ -136,10 +134,10 @@ public class Tester {
     public void test5(){
         try{
             int id = 19;
-            Patron patron1 = db.getPatronByNumber("1");
-            Patron patron2 = db.getPatronByNumber("89991697701");
-            Patron patron3 = db.getPatronByNumber("89991697702");
-            Book book = (Book) db.getDocumentById(id);
+            Patron patron1 = Database.getPatronByNumber("1");
+            Patron patron2 = Database.getPatronByNumber("89991697701");
+            Patron patron3 = Database.getPatronByNumber("89991697702");
+            Book book = (Book) Database.getDocumentById(id);
 
             int n1 = booking.checkOut(book, patron1);
             int n2 = booking.checkOut(book, patron2);
@@ -162,8 +160,8 @@ public class Tester {
     public void test6(){
         try{
             int id = 19;
-            Book book = (Book) db.getDocumentById(id);
-            Patron patron = db.getPatronByNumber("1");
+            Book book = (Book) Database.getDocumentById(id);
+            Patron patron = Database.getPatronByNumber("1");
 
             int n1 = booking.checkOut(book, patron);
             int n2 = booking.checkOut(book, patron);
@@ -184,10 +182,10 @@ public class Tester {
     public  void test7(){
         try{
             int id = 19;
-            Patron patron1 = db.getPatronByNumber("1");
-            Patron patron2 = db.getPatronByNumber("89991697701");
+            Patron patron1 = Database.getPatronByNumber("1");
+            Patron patron2 = Database.getPatronByNumber("89991697701");
 
-            Book book = (Book)db.getDocumentById(id);
+            Book book = (Book)Database.getDocumentById(id);
 
             int n1 = booking.checkOut(book, patron1);
             int n2 = booking.checkOut(book, patron2);
@@ -210,10 +208,10 @@ public class Tester {
         try{
             int id = 19;
 
-            Patron patron1 = db.getPatronByNumber("777"); // faculty
-            Patron patron2 = db.getPatronByNumber("89991697701"); //student
+            Patron patron1 = Database.getPatronByNumber("777"); // faculty
+            Patron patron2 = Database.getPatronByNumber("89991697701"); //student
 
-            Book book = (Book)db.getDocumentById(id);
+            Book book = (Book)Database.getDocumentById(id);
 
             int n1 = booking.checkOut(book, patron2);
 
@@ -233,10 +231,10 @@ public class Tester {
         try{
             int id = 24;
 
-            Patron patron1 = db.getPatronByNumber("777"); // faculty
-            Patron patron2 = db.getPatronByNumber("89991697701"); //student
+            Patron patron1 = Database.getPatronByNumber("777"); // faculty
+            Patron patron2 = Database.getPatronByNumber("89991697701"); //student
 
-            Book book = (Book)db.getDocumentById(id);
+            Book book = (Book)Database.getDocumentById(id);
 
             int n1 = booking.checkOut(book, patron2);
 
@@ -256,9 +254,9 @@ public class Tester {
         try{
             int id1 = 20, id2 = 19;
 
-            Patron patron = db.getPatronByNumber("1");
-            Book book1 = (Book) db.getDocumentById(id1); //ref
-            Book book2 = (Book) db.getDocumentById(id2); //norm
+            Patron patron = Database.getPatronByNumber("1");
+            Book book1 = (Book) Database.getDocumentById(id1); //ref
+            Book book2 = (Book) Database.getDocumentById(id2); //norm
 
             int n1 = booking.checkOut(book1, patron);
             int n2 = booking.checkOut(book2, patron);
@@ -277,15 +275,14 @@ public class Tester {
     }
 
     public void tc1(){
-        Database db = new Database();
         try {
-            Statement statement = db.connection.createStatement();
+            Statement statement = Database.connection.createStatement();
             String[] tables = {"av_materials",  "books", "journal_articles", "journals", "libtasks", "request", "users", "documents", "booking"};
             for (int i = 0; i < tables.length; i++) {
-                db.DeleteAllInTable(tables[i]);
+                Database.DeleteAllInTable(tables[i]);
             }
-            db.ExecuteQuery("INSERT INTO `users` (`id`, `name`, `phoneNumber`, `address`, `debt`, `isFacultyMember`, `password`, `isLibrarian`) VALUES ('1', 'All cash', '1', '1', '0', b'0', '1', b'1');");
-            lib = db.getPatronById(1);
+            Database.ExecuteQuery("INSERT INTO `users` (`id`, `name`, `phoneNumber`, `address`, `debt`, `isFacultyMember`, `password`, `isLibrarian`) VALUES ('1', 'All cash', '1', '1', '0', b'0', '1', b'1');");
+            lib = Database.getPatronById(1);
 
             String[][] authors = {{"Thomas H. Cormen", "Charles E. Leiserson", "Ronald L. Rivest and Clifford Stein"},
                     {"Erich Gamma", "Ralph Johnson", "John Vlissides", "Richard Helm"},
@@ -326,9 +323,9 @@ public class Tester {
             patron3.CreateUserDB();
             user3ID = patron3.id;
 
-            ResultSet rs1 = db.SelectFromDB("select count(id) from documents");
+            ResultSet rs1 = Database.SelectFromDB("select count(id) from documents");
             rs1.next();
-            ResultSet rs2 = db.SelectFromDB("select count(id) from users");
+            ResultSet rs2 = Database.SelectFromDB("select count(id) from users");
             rs2.next();
 
             if(rs1.getInt(1) == 8 && rs2.getInt(1) == 4){
@@ -347,18 +344,18 @@ public class Tester {
     public void tc2(){
         this.tc1();
         try{
-            Book book1 = (Book)db.getDocumentById(book1LocId);
+            Book book1 = (Book)Database.getDocumentById(book1LocId);
             book1.deleteCopies(2, lib.id);
 
-            Book book2 = (Book)db.getDocumentById(book2LocId);
+            Book book2 = (Book)Database.getDocumentById(book2LocId);
             book2.deleteCopies(1, lib.id);
 
-            Patron patron = db.getPatronById(user2ID);
+            Patron patron = Database.getPatronById(user2ID);
             patron.DeleteUserDB(lib.id);
 
-            ResultSet rs1 = db.SelectFromDB("select count(id) from documents");
+            ResultSet rs1 = Database.SelectFromDB("select count(id) from documents");
             rs1.next();
-            ResultSet rs2 = db.SelectFromDB("select count(id) from users");
+            ResultSet rs2 = Database.SelectFromDB("select count(id) from users");
             rs2.next();
 
             if(rs1.getInt(1) == 5 && rs2.getInt(1) == 3){
@@ -379,8 +376,8 @@ public class Tester {
             this.tc1();
             Pair<Patron, ArrayList<Document>> patronInfo1 = FullPatronInfo.GetInfo(user1ID, lib.id);
             Pair<Patron, ArrayList<Document>> patronInfo2 = FullPatronInfo.GetInfo(user3ID, lib.id);
-            Patron p1 = db.getPatronById(user1ID);
-            Patron p2 = db.getPatronById(user3ID);
+            Patron p1 = Database.getPatronById(user1ID);
+            Patron p2 = Database.getPatronById(user3ID);
 
             if(patronInfo1.second.size() == 0 && patronInfo2.second.size() == 0 && p1.name.equals(names[0])
                     && p1.phoneNumber.equals(phoneNumbers[0]) && p1.isFacultyMember == isFaculty[0] && p1.address.equals(addresses[0]) &&
@@ -403,8 +400,8 @@ public class Tester {
             this.tc2();
             Pair<Patron, ArrayList<Document>> patronInfo1 = FullPatronInfo.GetInfo(user2ID, lib.id);
             Pair<Patron, ArrayList<Document>> patronInfo2 = FullPatronInfo.GetInfo(user3ID, lib.id);
-            Patron p1 = db.getPatronById(user2ID);
-            Patron p2 = db.getPatronById(user3ID);
+            Patron p1 = Database.getPatronById(user2ID);
+            Patron p2 = Database.getPatronById(user3ID);
 
             if(p1 == null && patronInfo1.first == null && patronInfo2.second.size() == 0 && patronInfo1.second.size() == 0 &&
                     p2.name.equals(names[2]) && p2.address.equals(addresses[2]) && p2.phoneNumber.equals(phoneNumbers[2]) && p2.isFacultyMember == isFaculty[2]){
@@ -423,14 +420,14 @@ public class Tester {
     public void tc5(){
         try {
             this.tc2();
-            Patron patron = db.getPatronById(user2ID);
-            Book book = (Book)db.getDocumentById(book1LocId);
+            Patron patron = Database.getPatronById(user2ID);
+            Book book = (Book)Database.getDocumentById(book1LocId);
             EventManager eventManager = new EventManager();
             LibTask libTask = new LibTask(book, patron, "checkout");
             eventManager.CreateQuery(libTask);
             eventManager.ExecuteQuery(libTask);
 
-            ResultSet rs1 = db.SelectFromDB("select count(id) from booking");
+            ResultSet rs1 = Database.SelectFromDB("select count(id) from booking");
             rs1.next();
 
             if(patron == null && rs1.getInt(1) == 0){
@@ -450,10 +447,10 @@ public class Tester {
         try {
             this.tc2();
 
-            Patron p1 = db.getPatronById(user1ID);
-            Patron p3 = db.getPatronById(user3ID);
-            Book book1 = (Book) db.getDocumentById(book1LocId);
-            Book book2 = (Book) db.getDocumentById(book2LocId);
+            Patron p1 = Database.getPatronById(user1ID);
+            Patron p3 = Database.getPatronById(user3ID);
+            Book book1 = (Book) Database.getDocumentById(book1LocId);
+            Book book2 = (Book) Database.getDocumentById(book2LocId);
 
             EventManager eventManager = new EventManager();
             LibTask libTask1 = new LibTask(book1, p1, "checkout");
@@ -476,7 +473,7 @@ public class Tester {
             if(patronInfo1.second.size() == 1 && patronInfo2.second.size() == 1 && p1.name.equals(names[0])
                     && p1.phoneNumber.equals(phoneNumbers[0]) && p1.isFacultyMember == isFaculty[0] && p1.address.equals(addresses[0]) &&
                     p3.name.equals(names[2]) && p3.address.equals(addresses[2]) && p3.phoneNumber.equals(phoneNumbers[2]) && p3.isFacultyMember == isFaculty[2] &&
-                    db.getDocumentReturnDate(patronInfo1.second.get(0)).equals("2018-04-02") && db.getDocumentReturnDate(patronInfo2.second.get(0)).equals("2018-03-19")){
+                    Database.getDocumentReturnDate(patronInfo1.second.get(0)).equals("2018-04-02") && Database.getDocumentReturnDate(patronInfo2.second.get(0)).equals("2018-03-19")){
                 System.out.println("TC6 PASSED!");
                 gFw.write("TC6 PASSED!\n");
             }else{
@@ -493,15 +490,15 @@ public class Tester {
         try {
             this.tc1();
 
-            Patron p1 = db.getPatronById(user1ID);
-            Patron p2 = db.getPatronById(user2ID);
-            Book book1 = (Book) db.getDocumentById(book1LocId);
-            Book book2 = (Book) db.getDocumentById(book2LocId);
-            Book book3 = (Book) db.getDocumentById(book3LocId);
-            Book book1Cop = (Book) db.getDocumentById(book1LocId-1);
-            Book book2Cop = (Book) db.getDocumentById(book2LocId-1);
-            AVmaterial av1 = (AVmaterial) db.getDocumentById(av1Id);
-            AVmaterial av2 = (AVmaterial) db.getDocumentById(av2Id);
+            Patron p1 = Database.getPatronById(user1ID);
+            Patron p2 = Database.getPatronById(user2ID);
+            Book book1 = (Book) Database.getDocumentById(book1LocId);
+            Book book2 = (Book) Database.getDocumentById(book2LocId);
+            Book book3 = (Book) Database.getDocumentById(book3LocId);
+            Book book1Cop = (Book) Database.getDocumentById(book1LocId-1);
+            Book book2Cop = (Book) Database.getDocumentById(book2LocId-1);
+            AVmaterial av1 = (AVmaterial) Database.getDocumentById(av1Id);
+            AVmaterial av2 = (AVmaterial) Database.getDocumentById(av2Id);
 
             EventManager eventManager = new EventManager();
             LibTask libTask1 = new LibTask(book1, p1, "checkout");
@@ -531,9 +528,9 @@ public class Tester {
             if(patronInfo1.second.size() == 3 && patronInfo2.second.size() == 3 && p1.name.equals(names[0])
                     && p1.phoneNumber.equals(phoneNumbers[0]) && p1.isFacultyMember == isFaculty[0] && p1.address.equals(addresses[0]) &&
                     p2.name.equals(names[1]) && p2.address.equals(addresses[1]) && p2.phoneNumber.equals(phoneNumbers[1]) && p2.isFacultyMember == isFaculty[1]
-                    && db.getDocumentReturnDate(patronInfo1.second.get(0)).equals("2018-04-02") && db.getDocumentReturnDate(patronInfo1.second.get(1)).equals("2018-04-02") &&
-                    db.getDocumentReturnDate(patronInfo1.second.get(2)).equals("2018-03-19") && db.getDocumentReturnDate(patronInfo2.second.get(0)).equals("2018-03-26") &&
-                    db.getDocumentReturnDate(patronInfo2.second.get(1)).equals("2018-03-19") && db.getDocumentReturnDate(patronInfo2.second.get(2)).equals("2018-03-19")){
+                    && Database.getDocumentReturnDate(patronInfo1.second.get(0)).equals("2018-04-02") && Database.getDocumentReturnDate(patronInfo1.second.get(1)).equals("2018-04-02") &&
+                    Database.getDocumentReturnDate(patronInfo1.second.get(2)).equals("2018-03-19") && Database.getDocumentReturnDate(patronInfo2.second.get(0)).equals("2018-03-26") &&
+                    Database.getDocumentReturnDate(patronInfo2.second.get(1)).equals("2018-03-19") && Database.getDocumentReturnDate(patronInfo2.second.get(2)).equals("2018-03-19")){
                 System.out.println("TC7 PASSED!");
                 gFw.write("TC7 PASSED!\n");
             }else{
@@ -549,13 +546,13 @@ public class Tester {
     public void tc8(){
         try {
             this.tc1();
-            Patron patron1 = db.getPatronById(user1ID);
-            Patron patron2 = db.getPatronById(user2ID);
-            Book book1 = (Book) db.getDocumentById(book1LocId);
-            Book book2 = (Book) db.getDocumentById(book2LocId);
-            Book book1Cop = (Book) db.getDocumentById(book1LocId-1);
-            AVmaterial av1 = (AVmaterial) db.getDocumentById(av1Id);
-            AVmaterial av2 = (AVmaterial) db.getDocumentById(av2Id);
+            Patron patron1 = Database.getPatronById(user1ID);
+            Patron patron2 = Database.getPatronById(user2ID);
+            Book book1 = (Book) Database.getDocumentById(book1LocId);
+            Book book2 = (Book) Database.getDocumentById(book2LocId);
+            Book book1Cop = (Book) Database.getDocumentById(book1LocId-1);
+            AVmaterial av1 = (AVmaterial) Database.getDocumentById(av1Id);
+            AVmaterial av2 = (AVmaterial) Database.getDocumentById(av2Id);
 
             Booking.setDate = February9Date;
             Booking.useCustomDate = true;
@@ -614,9 +611,9 @@ public class Tester {
                 gFw.close();
                 System.exit(1);
             }else{
-                ResultSet rs1 = db.SelectFromDB("select count(id) from documents");
+                ResultSet rs1 = Database.SelectFromDB("select count(id) from documents");
                 rs1.next();
-                ResultSet rs2 = db.SelectFromDB("select count(id) from users");
+                ResultSet rs2 = Database.SelectFromDB("select count(id) from users");
                 rs2.next();
 
                 if(rs1.getInt(1) == 8 && rs2.getInt(1) == 4){

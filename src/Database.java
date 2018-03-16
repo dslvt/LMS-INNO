@@ -8,9 +8,9 @@ import java.util.List;
 
 public class Database {
 
-    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
-    private static final String user = "admin";
-    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+    private static final String url = "jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11226818?useSSL=false";
+    private static final String user = "sql11226818";
+    private static final String password = "4thNzgwctD";
     //private static final String password = "333999333tima";
 //    String user = "root";
 //    String password = "enaca2225";
@@ -167,7 +167,7 @@ public class Database {
      * @param pass password
      * @return if is correct or nor
      */
-    public boolean isCorrectAuthorization(String username, String pass){
+    public static boolean isCorrectAuthorization(String username, String pass){
         try{
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT phonenumber, password FROM users");
@@ -188,7 +188,7 @@ public class Database {
      * @param login
      * @return correct patron
      */
-    public Patron getPatronByNumber(String login){
+    public static Patron getPatronByNumber(String login){
         try {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select * from users where phoneNumber=" + login);
@@ -209,7 +209,7 @@ public class Database {
     /**
      * @return all documents
      */
-    public ArrayList<Document> getAllDocuments(){
+    public static ArrayList<Document> getAllDocuments(){
         ArrayList<Document> users = new ArrayList<>();
 
         try {
@@ -258,7 +258,7 @@ public class Database {
     /**
      * @return documents' id to correct finding document
      */
-    public ArrayList<Integer> getAllDocumentsIDs(){
+    public static ArrayList<Integer> getAllDocumentsIDs(){
         ArrayList<Integer> ids = new ArrayList<>();
 
         try {
@@ -274,7 +274,7 @@ public class Database {
         return ids;
     }
 
-    public ArrayList<Document> getUserDocuments(Patron patron){
+    public static ArrayList<Document> getUserDocuments(Patron patron){
         ArrayList<Document> documents = new ArrayList<>();
 
         try {
@@ -424,7 +424,7 @@ public class Database {
         return ansv;
     }
 
-    public Document getDocumentById(int id){
+    public static Document getDocumentById(int id){
         String query = "select * from documents where id=" + Integer.toString(id);
         Document document = null;
         try{
@@ -493,7 +493,7 @@ public class Database {
         return id;
     }
 
-    public Patron getPatronById(int id){
+    public static Patron getPatronById(int id){
         String query = "select * from users where id="+Integer.toString(id);
         Patron user = null;
         try{
@@ -527,7 +527,7 @@ public class Database {
         return false;
     }
 
-    public ArrayList<LibTask> getAllLibTasks(){
+    public static ArrayList<LibTask> getAllLibTasks(){
         String query = "select * from libtasks order by id";
         ArrayList<LibTask> ans = new ArrayList<>();
         try{
@@ -536,7 +536,7 @@ public class Database {
             while(resultSet.next()){
                 int userid = resultSet.getInt("id_user");
                 String libType = resultSet.getString("type");
-                ans.add(new LibTask(this.getDocumentById(resultSet.getInt("id_document")), this.getPatronById(userid), libType));
+                ans.add(new LibTask(getDocumentById(resultSet.getInt("id_document")), getPatronById(userid), libType));
             }
         }catch (Exception e){
             System.out.println("Error in database, getAllLibTasks: " + e.toString());
@@ -561,7 +561,7 @@ public class Database {
         return false;
     }
 
-    public ArrayList<Pair<Document, Integer>> getAllDocumentsWithoutCopies(){
+    public static ArrayList<Pair<Document, Integer>> getAllDocumentsWithoutCopies(){
         ArrayList<Pair<Document, Integer>> documents = new ArrayList<>();
         try{
             String query = "select * from books order by id";
@@ -593,7 +593,7 @@ public class Database {
         return documents;
     }
 
-    public ArrayList<UserRequest> getAllRequests(){
+    public static ArrayList<UserRequest> getAllRequests(){
         ArrayList<UserRequest> requests = new ArrayList<>();
         try{
             String query = "select * from request order by id";
@@ -611,7 +611,7 @@ public class Database {
         return requests;
     }
 
-    public ArrayList<Pair<Document, Patron>> getAllDocumentsWithUsers(){
+    public static ArrayList<Pair<Document, Patron>> getAllDocumentsWithUsers(){
         ArrayList<Pair<Document, Patron>> ans = new ArrayList<>();
         try{
             String query = "select * from booking order by id";
@@ -629,7 +629,7 @@ public class Database {
         return ans;
     }
 
-    public ArrayList<Patron> getAllPatrons(){
+    public static ArrayList<Patron> getAllPatrons(){
         ArrayList<Patron> ans = new ArrayList<>();
         try {
             Statement st = connection.createStatement();
@@ -645,7 +645,7 @@ public class Database {
         return ans;
     }
 
-    public String getDocumentReturnDate(Document document){
+    public static String getDocumentReturnDate(Document document){
         String returnDate = "";
         try {
             Statement st = connection.createStatement();
@@ -660,9 +660,9 @@ public class Database {
         return returnDate;
     }
 
-    public void DeleteAllInTable(String tableName){
+    public static void DeleteAllInTable(String tableName){
         try{
-            ArrayList<Integer> ids = this.getAllTableIds(tableName);
+            ArrayList<Integer> ids = getAllTableIds(tableName);
             Statement st = connection.createStatement();
             for (int i = 0; i < ids.size(); i++) {
                 st.executeUpdate("DELETE FROM " + tableName + " where id = " + ids.get(i).toString());
@@ -672,7 +672,7 @@ public class Database {
         }
     }
 
-    public ArrayList<Integer> getAllTableIds(String tableName){
+    public static ArrayList<Integer> getAllTableIds(String tableName){
         ArrayList<Integer> ans = new ArrayList<>();
 
         try{
@@ -690,7 +690,7 @@ public class Database {
         return ans;
     }
 
-    public void ExecuteQuery(String query){
+    public static void ExecuteQuery(String query){
         try{
             Statement st = connection.createStatement();
             st.executeUpdate(query);
@@ -700,7 +700,7 @@ public class Database {
         }
     }
 
-    public ResultSet SelectFromDB(String query){
+    public static ResultSet SelectFromDB(String query){
         ResultSet rs = null;
         try{
             Statement st = connection.createStatement();

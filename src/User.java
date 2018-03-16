@@ -40,8 +40,7 @@ public abstract class User {
 
     public int DeleteUserDB(int idLibrarian){
         if(Database.isLibrarian(idLibrarian)) {
-            Database db = new Database();
-            if(db.getUserDocuments((Patron) this).isEmpty()) {
+            if(Database.getUserDocuments((Patron) this).isEmpty()) {
                 try {
                     PreparedStatement ps = Database.connection.prepareStatement("delete from users where id = ?");
                     ps.setInt(1, this.id);
@@ -64,9 +63,8 @@ public abstract class User {
     public ArrayList<Pair<Document, Integer>> getAllOverdueDocuments(int libId){
         ArrayList<Pair<Document, Integer>> ans = new ArrayList<>();
         try{
-            Database db = new Database();
             Booking booking = new Booking();
-            ArrayList<Document> docs = db.getUserDocuments((Patron) this);
+            ArrayList<Document> docs = Database.getUserDocuments((Patron) this);
             for (int i = 0; i < docs.size(); i++) {
                 int countOver = booking.countOverdue(docs.get(i));
                 if(countOver > 0){

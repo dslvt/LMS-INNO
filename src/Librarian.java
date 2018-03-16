@@ -54,12 +54,11 @@ public class Librarian extends User {
     public ArrayList<Patron> getDebtors() {
         ArrayList<Patron> debtors = new ArrayList<>();
         try {
-            Database db = new Database();
             Statement statement = Database.connection.createStatement();
             statement.executeQuery("SELECT * FROM users WHERE debt != 0");
             ResultSet resultSet = statement.getResultSet();
             while (resultSet.next()) {
-                debtors.add(db.getPatronById(resultSet.getInt("id")));
+                debtors.add(Database.getPatronById(resultSet.getInt("id")));
             }
             return debtors;
         } catch (SQLException e) {
@@ -72,7 +71,6 @@ public class Librarian extends User {
         ArrayList<Document> overdueDocuments = new ArrayList<>();
         try {
             Statement statement = Database.connection.createStatement();
-            Database db = new Database();
 
             //Crete current date
             java.util.Date date = new java.util.Date();
@@ -85,7 +83,7 @@ public class Librarian extends User {
                 java.util.Date bookingDate = new java.util.Date();
                 bookingDate = resultSet.getDate("returnTime");
                 if(!date.before(bookingDate)){
-                    overdueDocuments.add(db.getDocumentById(resultSet.getInt("document_id")));
+                    overdueDocuments.add(Database.getDocumentById(resultSet.getInt("document_id")));
                 }
             }
 

@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.Calendar;
 import java.util.Date;
@@ -31,8 +32,7 @@ public class Booking {
 //        Connection connection = DriverManager.getConnection(connectionUrl, userName, password);
 //        statement = connection.createStatement();
 
-        Database database = new Database();
-        statement = database.connection.createStatement();
+        statement = Database.connection.createStatement();
     }
 
     public int checkOut(Document document, User user) {

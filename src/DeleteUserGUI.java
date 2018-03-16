@@ -23,7 +23,6 @@ public class DeleteUserGUI extends JFrame {
 
             String[] columnNames = {"Name", "Login", "Debt", "Type", "Address"};
             ArrayList<ArrayList<String>> users = new ArrayList<>();
-            Database db = new Database();
 
             try{
                 Statement statement = Database.connection.createStatement();
@@ -72,7 +71,7 @@ public class DeleteUserGUI extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if(index != -1){
-                        Patron patron = db.getPatronByNumber(users.get(index).get(1));
+                        Patron patron = Database.getPatronByNumber(users.get(index).get(1));
                         patron.DeleteUserDB(CurrentSession.user.id);
                     }
                     else{

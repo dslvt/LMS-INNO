@@ -25,7 +25,6 @@ public class LibrarianTasksGUI extends JFrame{
 
             String[] columnNames = {"Document", "Document's Position", "Username", "Login", "Type"};
 
-            Database db = new Database();
             EventManager eventManager = new EventManager();
             ArrayList<LibTask> libTasks = eventManager.GetElements();
             Object[][] tasksA = new Object[libTasks.size()][];

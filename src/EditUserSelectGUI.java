@@ -21,7 +21,6 @@ public class EditUserSelectGUI extends JFrame {
             containerTB.setLayout(new BorderLayout());
             String[] columnNames = {"Name", "Login", "Debt", "Type", "Address"};
             ArrayList<ArrayList<String>> users = new ArrayList<>();
-            Database db = new Database();
 
             try{
                 Statement statement = Database.connection.createStatement();
@@ -70,7 +69,7 @@ public class EditUserSelectGUI extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if(index != -1){
-                        CurrentSession.editUser = db.getPatronByNumber(users.get(index).get(1));
+                        CurrentSession.editUser = Database.getPatronByNumber(users.get(index).get(1));
                         EditUserGUI edit =  new EditUserGUI();
                         CurrentSession.editUser.ModifyUserDB(CurrentSession.editUser.name, CurrentSession.editUser.password, CurrentSession.editUser.phoneNumber,
                                 CurrentSession.editUser.address, CurrentSession.editUser.isFacultyMember, CurrentSession.editUser.debt, false, CurrentSession.user.id);

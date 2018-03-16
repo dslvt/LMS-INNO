@@ -30,11 +30,10 @@ public class FirstWindow extends JFrame{
         buttonSingIn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Database database = new Database();
-                if(database.isCorrectAuthorization(textFieldPhoneNumber.getText(), fieldPassword.getText())){
-                    CurrentSession.user = database.getPatronByNumber(textFieldPhoneNumber.getText());
+                if(Database.isCorrectAuthorization(textFieldPhoneNumber.getText(), fieldPassword.getText())){
+                    CurrentSession.user = Database.getPatronByNumber(textFieldPhoneNumber.getText());
                     closeFirstWindow();
-                    if(database.isLibrarian(CurrentSession.user.id)){
+                    if(Database.isLibrarian(CurrentSession.user.id)){
                         LibrarianGUI librarianGUI = new LibrarianGUI();
                     }else{
                         MenuWindow menuWindow = new MenuWindow();

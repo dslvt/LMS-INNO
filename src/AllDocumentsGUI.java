@@ -7,8 +7,6 @@ import java.util.*;
 
 public class AllDocumentsGUI extends JFrame{
 
-    private Database db = new Database();
-
     public AllDocumentsGUI() {
 
         try {
@@ -22,7 +20,7 @@ public class AllDocumentsGUI extends JFrame{
             containerTB.setLayout(new BorderLayout());
 
             String[] columnNames = {"Name", "Author", "Price"};
-            ArrayList<Document> docs = db.getAllDocuments();
+            ArrayList<Document> docs = Database.getAllDocuments();
             Object[][] names = new Object[docs.size()][3];
             for(int i = 0; i < names.length; i++){
                 names[i][0] = docs.get(i).name;

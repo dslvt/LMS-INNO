@@ -27,8 +27,7 @@ public class CreateCopyGUI extends JFrame{
             String[] columnNames = {"Document", "Amount"};
 
 
-            Database db = new Database();
-            ArrayList<Pair<Document, Integer>> documents = db.getAllDocumentsWithoutCopies();
+            ArrayList<Pair<Document, Integer>> documents = Database.getAllDocumentsWithoutCopies();
             Object[][] books = new Object[documents.size()][2];
 
             for (int i = 0; i < documents.size(); i++) {

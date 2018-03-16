@@ -19,8 +19,7 @@ public class EditDocumentGUI  extends JFrame {
             Container containerTB = deleteBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
-            Database db = new Database();
-            ArrayList<Document> documents = db.getAllDocuments();
+            ArrayList<Document> documents = Database.getAllDocuments();
 
             Object[][] books = new Object[documents.size()][];
 

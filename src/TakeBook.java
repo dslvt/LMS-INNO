@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.print.DocFlavor;
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,8 +13,6 @@ public class TakeBook extends JFrame{
     private JList<String> allBooks;
     private Vector<Document> vector;
     private JButton takingBook = new JButton("Take Book");
-
-    private Database db = new Database();
 
     /**
      * creating take book menu GUI
@@ -31,11 +30,10 @@ public class TakeBook extends JFrame{
             Container containerTB = takeBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
-            ArrayList<Integer> documentIds = db.getAllDocumentsIDs();
+            ArrayList<Integer> documentIds = Database.getAllDocumentsIDs();
 
             String[] columnNames = {"Document", "Amount"};
-            Database db = new Database();
-            ArrayList<Pair<Document, Integer>> requests = db.getAllDocumentsWithoutCopies();
+            ArrayList<Pair<Document, Integer>> requests = Database.getAllDocumentsWithoutCopies();
             Object[][] requestA = new Object[requests.size()][2];
             for(int i = 0; i < requestA.length; i++){
                 requestA[i][1] = requests.get(i).second;

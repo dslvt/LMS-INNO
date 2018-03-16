@@ -30,7 +30,6 @@ public class Patron extends User {
 
     public void CreateUserDB() {
         try {
-            Database db = new Database();
             PreparedStatement preparedStatement;
             preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian) values(?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setString(1, this.name);
@@ -58,12 +57,11 @@ public class Patron extends User {
 
     public ArrayList<Document> getAllRequests(){
         ArrayList<Document> requests = new ArrayList<>();
-        Database db = new Database();
         try {
             Statement statement = Database.connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT id_document from request WHERE id_user = " + this.id);
             while (resultSet.next()){
-                requests.add(db.getDocumentById(resultSet.getInt(1)));
+                requests.add(Database.getDocumentById(resultSet.getInt(1)));
             }
 
             return requests;

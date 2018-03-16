@@ -8,9 +8,7 @@ import java.util.*;
 public class AllUsersGUI extends JFrame{
 
     private JButton ShowInfo = new JButton("Show info");
-
-    private Database db = new Database();
-
+    
     public AllUsersGUI() {
 
         try {
@@ -24,7 +22,7 @@ public class AllUsersGUI extends JFrame{
             containerTB.setLayout(new BorderLayout());
 
             String[] columnNames = {"Name", "Login"};
-            ArrayList<Patron> patrons = db.getAllPatrons();
+            ArrayList<Patron> patrons = Database.getAllPatrons();
             Object[][] names = new Object[patrons.size()][2];
             for(int i = 0; i < names.length; i++){
                 names[i][0] = patrons.get(i).name;
@@ -43,7 +41,7 @@ public class AllUsersGUI extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if(index != -1){
-                        ArrayList<Document> docs = db.getUserDocuments(patrons.get(index));
+                        ArrayList<Document> docs = Database.getUserDocuments(patrons.get(index));
                         String message = "";
                         for (int i = 0; i < docs.size(); i++) {
                             message += docs.get(i) + "\n";

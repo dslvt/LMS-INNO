@@ -10,7 +10,6 @@ public class DebtorsGUI extends JFrame{
     private JButton ShowInfo = new JButton("Show info");
 
     private Librarian lb = new Librarian();
-    private Database db = new Database();
     public DebtorsGUI() {
 
         try {
@@ -43,7 +42,7 @@ public class DebtorsGUI extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if(index != -1){
-                        ArrayList<Document> docs = db.getUserDocuments(patrons.get(index));
+                        ArrayList<Document> docs = Database.getUserDocuments(patrons.get(index));
                         String message = "";
                         for (int i = 0; i < docs.size(); i++) {
                             message += docs.get(i) + "\n";

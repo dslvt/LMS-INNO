@@ -168,10 +168,9 @@ public class Book extends Document {
     @Override
     public void DeleteFromDB(int idLibrarian) {
         if (Database.isLibrarian(idLibrarian)) {
-            Database db = new Database();
             Statement statement;
             try {
-                statement = db.connection.createStatement();
+                statement = Database.connection.createStatement();
                 Integer lastId = Database.isDocumentExist(this);
                 if (lastId != -1) {
                     statement.executeUpdate("DELETE FROM books WHERE id = " + lastId.toString());//error
@@ -191,11 +190,10 @@ public class Book extends Document {
 
     public void deleteCopies(int copies, int idLibrarian) {
         if (Database.isLibrarian(idLibrarian)) {
-            Database db = new Database();
             Statement statement;
             try {
                 PreparedStatement preparedStatement;
-                statement = db.connection.createStatement();
+                statement = Database.connection.createStatement();
                 Integer lastId = Database.isDocumentExist(this);
                 statement.executeUpdate("DELETE FROM documents WHERE id_books= " + lastId.toString() + " LIMIT " + copies);
 

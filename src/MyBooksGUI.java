@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.print.DocFlavor;
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -12,8 +13,6 @@ public class MyBooksGUI extends JFrame{
     private JList<String> allBooks;
     private Vector<Document> vector;
     private JButton takingBook = new JButton("Return book");
-
-    private Database db = new Database();
 
     /**
      * creating take book menu GUI
@@ -32,7 +31,7 @@ public class MyBooksGUI extends JFrame{
             containerTB.setLayout(new BorderLayout());
 
             //spisk books
-            vector = new Vector(db.getUserDocuments((Patron) CurrentSession.user));
+            vector = new Vector(Database.getUserDocuments((Patron) CurrentSession.user));
             Vector <String> documentNames = new Vector<>();
             for (int i = 0; i < vector.size(); i++){
                 documentNames.add(vector.get(i).name);
@@ -45,7 +44,7 @@ public class MyBooksGUI extends JFrame{
             for (int i = 0; i < docs.length; i++) {
                 docs[i][0] = vector.get(i).name;
                 docs[i][1] = vector.get(i).authors;
-                docs[i][2] = db.getDocumentReturnDate(vector.get(i));
+                docs[i][2] = Database.getDocumentReturnDate(vector.get(i));
             }
 
             JTable table = new JTable(docs, columnNames);

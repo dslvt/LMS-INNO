@@ -24,8 +24,7 @@ public class LibrarianRequestGUI extends JFrame{
             containerTB.setLayout(new BorderLayout());
 
             String[] columnNames = {"User", "Book"};
-            Database db = new Database();
-            ArrayList<Pair<Document, Patron>> requests = db.getAllDocumentsWithUsers();
+            ArrayList<Pair<Document, Patron>> requests = Database.getAllDocumentsWithUsers();
             Object[][] requestA = new Object[requests.size()][2];
             for(int i = 0; i < requestA.length; i++){
                 requestA[i][0] = requests.get(i).second.name;

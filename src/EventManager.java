@@ -4,12 +4,10 @@ import java.util.ArrayList;
 
 public class EventManager {
 
-    private Database db;
     private Statement statement;
 
     public EventManager(){
         try {
-            db = new Database();
             statement = Database.connection.createStatement();
         }catch (Exception e){
             System.out.println("EventManager: " + e.toString());
@@ -26,7 +24,7 @@ public class EventManager {
                 int doc_id = rs.getInt("id_document");
                 int user_id = rs.getInt("id_user");
                 String taskType = rs.getString("type");
-                LibTask libTask = new LibTask(db.getDocumentById(doc_id), db.getPatronById(user_id), taskType);
+                LibTask libTask = new LibTask(Database.getDocumentById(doc_id), Database.getPatronById(user_id), taskType);
                 libTask.id = rs.getInt("id");
                 libTasks.add(libTask);
             }

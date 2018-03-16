@@ -27,7 +27,6 @@ public class UserMessagesGUI extends JFrame{
             Patron patron = (Patron) CurrentSession.user;
             ArrayList<Document> documents = patron.getAllRequests();
 
-            Database db = new Database();
             Object[][] tasksA = new Object[documents.size()][];
             for (int i = 0; i < documents.size(); i++) {
                 tasksA[i] = new Object[1];
