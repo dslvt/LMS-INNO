@@ -111,12 +111,13 @@ public class AVmaterial extends Document {
                         statement = Database.connection.createStatement();
                         resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
                         if (resultSet.next()) {
-                            globalID = resultSet.getInt(1);
+                            globalID = resultSet.getInt("id");
                         }
 
-                        AVmaterial newCopy = this;
-                        newCopy.id = globalID;
-                        newCopies.add(newCopy);
+//                        AVmaterial newCopy = this;
+//                        newCopy.id = globalID;
+//                        newCopies.add(newCopy);
+                        id = globalID;
                     }
                 } catch (SQLException e) {
                     System.out.println("Error add copies of  AV material: " + e.toString());

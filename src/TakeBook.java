@@ -53,13 +53,24 @@ public class TakeBook extends JFrame{
 
                         String time = "";
 
+                        Document doc = requests.get(index).first;
+                        doc.id = Database.getFirstDocumentWithLocID(doc);
+
+//                        if(!doc.isReference && Database.getAmountOfCurrentDocument(doc) < 1){
+//                            Database.ExecuteQuery("insert into `document_queue` (`id_user`, `id_document`) values ('"
+//                                    + Integer.toString(CurrentSession.user.id) + "' , '" + Integer.toString(doc.id) +"');");
+//                            time = "You in queue";
+//                        }else {
+//
+//
                         EventManager eventManager = new EventManager();
-                        eventManager.CreateQuery(new LibTask(new AVmaterial(documentIds.get(index)), (Patron)CurrentSession.user, "checkout"));
+                        eventManager.CreateQuery(new LibTask(doc, (Patron) CurrentSession.user, "checkout"));
                         time = "Wait, your decision has been sent";
+//                        }
 
-                        JOptionPane.showMessageDialog(null, time, "", JOptionPane.PLAIN_MESSAGE);
+                            JOptionPane.showMessageDialog(null, time, "", JOptionPane.PLAIN_MESSAGE);
 
-                        takeBook.setVisible(false);
+                            takeBook.setVisible(false);
                     } else{
                         String message = "Select a book!\n";
                         JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);

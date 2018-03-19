@@ -190,14 +190,14 @@ public class Database {
      */
     public static Patron getPatronByNumber(String login){
         try {
-            statement = connection.createStatement();
-            resultSet = statement.executeQuery("select * from users where phoneNumber=" + login);
-            resultSet.next();
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("select * from users where phoneNumber=" + login);
+            rs.next();
 
-            Patron patron = new Patron(resultSet.getString(2), resultSet.getString(7),
-                    resultSet.getString(3), resultSet.getString(4), resultSet.getBoolean(6), resultSet.getInt(5));
+            Patron patron = new Patron(rs.getString(2), rs.getString(7),
+                    rs.getString(3), rs.getString(4), rs.getBoolean(6), rs.getInt(5),  Patron.getCorrectPatronType(rs.getString("type")));
 
-            patron.id = resultSet.getInt("id");
+            patron.id = rs.getInt("id");
 
             return patron;
         }catch (Exception e){
@@ -372,16 +372,32 @@ public class Database {
 
         return journal;
     }
+    public static int getAmountOfCurrentDocument(Document document){
+        int ans = -1;
+        try{
+            Statement st = connection.createStatement();
+            String type = Document.getParsedType(document.type);
+            String query = "select number from " + type + " where id ="+Integer.toString(document.localId);
+            ResultSet rs = st.executeQuery(query);
+            rs.next();
+            ans = rs.getInt("number");
+
+        }catch (Exception e){
+            System.out.println("Error in getAmountOfCurrentDocument: " + e.toString());
+        }
+
+        return ans;
+    }
 
     public static int getAmountOfCurrentBook(Book book){
         int ans = -1;
         try {
-            statement = connection.createStatement();
+            Statement st  = connection.createStatement();
             String query = "select number from books where id ="+Integer.toString(book.localId);
-            resultSet = statement.executeQuery(query);
-            resultSet.next();
+            ResultSet rs = st.executeQuery(query);
+            rs.next();
 
-            ans =  resultSet.getInt("number");
+            ans =  rs.getInt("number");
 
         }catch (Exception e){
             System.out.println("Error in getAmountOfCurrentBook: " + e.toString());
@@ -393,12 +409,12 @@ public class Database {
     public static int getAmountOfCurrentJournal(Journal journal){
         int ans = -1;
         try {
-            statement = connection.createStatement();
+            Statement st = connection.createStatement();
             String query = "select number from journals where id ="+Integer.toString(getCorrectIdInLocalDatabase(journal.id));
-            resultSet = statement.executeQuery(query);
-            resultSet.next();
+            ResultSet rs = st.executeQuery(query);
+            rs.next();
 
-            ans =  resultSet.getInt("number");
+            ans =  rs.getInt("number");
 
         }catch (Exception e){
             System.out.println("Error in getAmountOfCurrentJournal: " + e.toString());
@@ -502,7 +518,7 @@ public class Database {
             if(rs.next()) {
 
                 user = new Patron(rs.getString("name"), rs.getString("password"), rs.getString("phoneNumber"),
-                        rs.getString("address"), rs.getBoolean("isFacultyMember"), rs.getInt("debt"));
+                        rs.getString("address"), rs.getBoolean("isFacultyMember"), rs.getInt("debt"), Patron.getCorrectPatronType(rs.getString("type")));
                 user.id = id;
             }
         }catch (Exception e){
@@ -543,6 +559,21 @@ public class Database {
         }
 
         return ans;
+    }
+
+    public static LibTask getLibtaskByResultSet(ResultSet rs){
+        LibTask libTask = null;
+        try{
+            int userid = rs.getInt("id_user");
+            String libType = rs.getString("type");
+            int id = rs.getInt("id");
+
+            libTask = new LibTask(getDocumentById(rs.getInt("id_document")), getPatronById(userid), libType);
+            libTask.id = id;
+        }catch (Exception e){
+            System.out.println("Error in database, getLibtaskByResultSet: " + e.toString());
+        }
+        return libTask;
     }
 
     public static boolean isRequestDocument(Document document){
@@ -709,5 +740,20 @@ public class Database {
             System.out.println("Error in db, selectFromDB: " + e.toString());
         }
         return rs;
+    }
+
+    public static int getFirstDocumentWithLocID(Document document){
+        int ans = -1;
+        try{
+            String type = "id_"+Document.getParsedType(document.type);
+            String query = "select * from documents where " + type + "=" + Integer.toString(document.localId);
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            rs.next();
+            ans = rs.getInt("id");
+        }catch (Exception e){
+            System.out.println("Error in db, getFirstDocumentWithLocID: " + e.toString());
+        }
+        return ans;
     }
 }

@@ -45,7 +45,8 @@ class RegisterWindow extends JFrame implements ActionListener {
         submit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Patron patron = new Patron(textFieldNameSU.getText(), fieldPasswordSU.getText(), textFieldPhoneNumberSU.getText(), textFieldAdressSU.getText(), radioFacultyMember.isSelected(), 0);
+                //nado ispravit'
+                Patron patron = new Patron(textFieldNameSU.getText(), fieldPasswordSU.getText(), textFieldPhoneNumberSU.getText(), textFieldAdressSU.getText(), radioFacultyMember.isSelected(), 0, PatronType.student);
                 patron.CreateUserDB();
                 signUp.setVisible(false);
             }

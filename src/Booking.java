@@ -292,7 +292,7 @@ public class Booking {
         return term;
     }
 
-    private boolean takeCopy(Document document, User user) throws SQLException {
+    public boolean takeCopy(Document document, User user) throws SQLException {
         statement.executeQuery("SELECT*FROM booking WHERE user_id = '" + user.id + "'");
         ResultSet rec = statement.getResultSet();
         int id = 0;

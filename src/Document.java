@@ -38,4 +38,29 @@ public abstract class Document {
     public abstract ArrayList<Document> addCopies(int copies, int idLibrarian);
 
     public abstract void deleteCopies(int copies, int idLibrarian);
+
+    public static String getParsedType(DocumentType dt){
+        String ans = "";
+        switch (dt){
+            case book:
+                ans = "books";
+                break;
+            case journal:
+                ans = "journals";
+                break;
+            case avmaterial:
+                ans = "av_materials";
+                break;
+            case article:
+                ans = "journal_articles";
+                break;
+        }
+        return ans;
+    }
+
+    public static String getUnicKey(Document doc){
+        String ans = "";
+        ans = getParsedType(doc.type) + " " + Integer.toString(doc.localId);
+        return ans;
+    }
 }

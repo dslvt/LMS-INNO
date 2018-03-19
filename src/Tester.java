@@ -281,7 +281,7 @@ public class Tester {
             for (int i = 0; i < tables.length; i++) {
                 Database.DeleteAllInTable(tables[i]);
             }
-            Database.ExecuteQuery("INSERT INTO `users` (`id`, `name`, `phoneNumber`, `address`, `debt`, `isFacultyMember`, `password`, `isLibrarian`) VALUES ('1', 'All cash', '1', '1', '0', b'0', '1', b'1');");
+            Database.ExecuteQuery("INSERT INTO `users` (`id`, `name`, `phoneNumber`, `address`, `debt`, `isFacultyMember`, `password`, `isLibrarian`, `type`) VALUES ('1', 'All cash', '1', '1', '0', b'0', '1', b'1', 'lib');");
             lib = Database.getPatronById(1);
 
             String[][] authors = {{"Thomas H. Cormen", "Charles E. Leiserson", "Ronald L. Rivest and Clifford Stein"},
@@ -311,15 +311,15 @@ public class Tester {
             aVmateria2.CreateDocumentInDB(lib.id);
             av2Id = aVmateria2.id;
 
-            Patron  patron1 = new Patron(names[0], "1", phoneNumbers[0], addresses[0], isFaculty[0], 0);
+            Patron  patron1 = new Patron(names[0], "1", phoneNumbers[0], addresses[0], isFaculty[0], 0, PatronType.student);
             patron1.CreateUserDB();
             user1ID = patron1.id;
 
-            Patron patron2 = new Patron(names[1], "1", phoneNumbers[1], addresses[1], isFaculty[1], 0);
+            Patron patron2 = new Patron(names[1], "1", phoneNumbers[1], addresses[1], isFaculty[1], 0, PatronType.student);
             patron2.CreateUserDB();
             user2ID = patron2.id;
 
-            Patron patron3 = new Patron(names[2], "1", phoneNumbers[2], addresses[2], isFaculty[2], 0);
+            Patron patron3 = new Patron(names[2], "1", phoneNumbers[2], addresses[2], isFaculty[2], 0, PatronType.student);
             patron3.CreateUserDB();
             user3ID = patron3.id;
 
