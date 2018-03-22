@@ -10,5 +10,6 @@ public class LibTask {
         this.document = document;
         this.user = user;
         this.type = type;
+        unic_key = Document.getUnicKey(document);
     }
 }

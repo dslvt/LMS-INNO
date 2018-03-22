@@ -86,6 +86,8 @@ public class Patron extends User {
             patronType = PatronType.ta;
         }else if(t.equals("professor") || t.equals("professors") || t.equals("Professor") || t.equals("Professors")){
             patronType = PatronType.professor;
+        }else{
+            patronType = PatronType.lib;
         }
 
         return patronType;
@@ -139,6 +141,9 @@ public class Patron extends User {
                 break;
             case professor:
                 ans = 1;
+                break;
+            default:
+                ans = -1;
                 break;
         }
         return ans;

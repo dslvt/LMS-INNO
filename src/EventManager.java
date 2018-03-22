@@ -14,7 +14,7 @@ public class EventManager {
         }
     }
 
-    public ArrayList<LibTask> GetElements(){
+    public ArrayList<LibTask> GetElements(boolean withZeros){
         ArrayList<LibTask> libTasks = new ArrayList<LibTask>();
         try{
             String query = "select * from libtasks order by id";
@@ -24,9 +24,12 @@ public class EventManager {
                 int doc_id = rs.getInt("id_document");
                 int user_id = rs.getInt("id_user");
                 String taskType = rs.getString("type");
+                int queue = rs.getInt("queue");
                 LibTask libTask = new LibTask(Database.getDocumentById(doc_id), Database.getPatronById(user_id), taskType);
                 libTask.id = rs.getInt("id");
-                libTasks.add(libTask);
+                libTask.queue = queue;
+                if(queue < 0 || withZeros)
+                    libTasks.add(libTask);
             }
         }catch (Exception e){
             System.out.println("EventManager, GetElements: " + e.toString());
@@ -38,25 +41,43 @@ public class EventManager {
     public int CreateQuery(LibTask libTask){
         int id = 0;
         try{
-            PreparedStatement preparedStatement = Database.connection.prepareStatement("insert into libtasks(id_user, id_document, type, queue, unic_key) values(?, ?, ?, ?, ?)");
-            preparedStatement.setInt(1, libTask.user.id);
-            preparedStatement.setInt(2, libTask.document.id);
-            preparedStatement.setString(3, libTask.type);
-            preparedStatement.setInt(4, getCorrectPosInQueue(libTask));
-            preparedStatement.setString(5, Document.getUnicKey(libTask.document));
-            preparedStatement.executeUpdate();
+            if(!libTask.type.equals("checkout") || isCanCreateTask(libTask)) {
+                PreparedStatement preparedStatement = Database.connection.prepareStatement("insert into libtasks(id_user, id_document, type, queue, unic_key) values(?, ?, ?, ?, ?)");
+                preparedStatement.setInt(1, libTask.user.id);
+                preparedStatement.setInt(2, libTask.document.id);
+                preparedStatement.setString(3, libTask.type);
+                int pos = getCorrectPosInQueue(libTask);
+                if(!libTask.type.equals("checkout"))
+                    pos = -1;
+                preparedStatement.setInt(4, pos);
+                preparedStatement.setString(5, Document.getUnicKey(libTask.document));
+                preparedStatement.executeUpdate();
 
-            int globalID = 0;
-            statement = Database.connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
-            if (resultSet.next()) {
-                globalID = resultSet.getInt(1);
+                int globalID = 0;
+                statement = Database.connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
+                if (resultSet.next()) {
+                    globalID = resultSet.getInt(1);
+                }
+                id = globalID;
             }
-            id = globalID;
         }catch (Exception e){
             System.out.println("EventManager, CreateQuery: " + e.toString());
         }
         return id;
+    }
+
+    public boolean isCanCreateTask(LibTask libTask){
+        boolean ans = false;
+        try{
+            ResultSet rs = Database.SelectFromDB("select * from libtasks where id_user=" + Integer.toString(libTask.user.id) + " and unic_key='"+
+                libTask.unic_key + "';");
+            ans = !rs.next();
+        }catch (Exception e){
+            System.out.println("EventManager, isCanCreateTask: " + e.toString());
+
+        }
+        return ans;
     }
 
     private int getCorrectPosInQueue(LibTask libTask){
@@ -81,7 +102,7 @@ public class EventManager {
             }else{
                 int locPos = libTasks.size()-1;
                 for (int i = 0; i < libTasks.size(); i++) {
-                    if(Patron.isTypeBigger(patron.type, libTasks.get(i).user.type) < 0){
+                    if(Patron.isTypeBigger(patron.type, libTasks.get(i).user.type) < 0 && libTasks.get(i).queue > -1){
                         locPos = i;
                         break;
                     }
@@ -105,16 +126,50 @@ public class EventManager {
                 booking.checkOut(libTask.document, libTask.user);
             } else if (libTask.type.equals("return")) {
                 booking.returnBook(libTask.document, libTask.user);
+
+                int currentAmountOfDoc = Database.getAmountOfCurrentDocument(libTask.document);
+                int shift = currentAmountOfDoc - shiftOrderLeft(libTask.unic_key);
+                moveOrder(-shift, libTask.unic_key);
             }
         }catch (Exception e){
             System.out.println("EventManager executeQuery: " + e.toString());
         }
     }
 
+    private int shiftOrderLeft(String unic){
+        ArrayList<Integer> ids = new ArrayList<>();
+        int ans = -1;
+        try {
+            ResultSet rs = Database.SelectFromDB("select * from libtasks where unic_key='"+unic+"' and queue < 0 order by queue;");
+            while (rs.next()) {
+                ids.add(rs.getInt("id"));
+            }
+            for (int i = 0; i < ids.size(); i++) {
+                Database.ExecuteQuery("update libtasks set `queue` = " + Integer.toString(-ids.size()+i) + " where id = " + Integer.toString(rs.getInt("id")));
+            }
+            ans = ids.size();
+
+        }catch (Exception e){
+            System.out.println("EventManager shiftOrderLeft: " + e.toString());
+        }
+        return ans;
+    }
+
+    private void moveOrder(int a, String unic){
+        try{
+            ResultSet rs = Database.SelectFromDB("select * from libtasks where unic_key="+unic+" order by queue;");
+            while (rs.next()){
+                Database.ExecuteQuery("update libtasks set `queue` = `queue` + " + Integer.toString(a) +" where id = " +
+                        Integer.toString(rs.getInt("id")));
+            }
+        }catch (Exception e){
+            System.out.println("EventManager moveOrder: " + e.toString());
+        }
+    }
+
     public void DeleteQuery(LibTask libTask){
         try{
-            Database db = new Database();
-            PreparedStatement ps = db.connection.prepareStatement("delete from libtasks where id = ?");
+            PreparedStatement ps = Database.connection.prepareStatement("delete from libtasks where id = ?");
             ps.setInt(1, libTask.id);
             ps.executeUpdate();
         }catch (Exception e){

@@ -8,9 +8,9 @@ import java.util.List;
 
 public class Database {
 
-    private static final String url = "jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11226818?useSSL=false";
-    private static final String user = "sql11226818";
-    private static final String password = "4thNzgwctD";
+    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
+    private static final String user = "admin";
+    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
     //private static final String password = "333999333tima";
 //    String user = "root";
 //    String password = "enaca2225";
