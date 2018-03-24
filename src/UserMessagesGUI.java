@@ -22,15 +22,16 @@ public class UserMessagesGUI extends JFrame{
             Container containerTB = tasks.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
-            String[] columnNames = {"Messages"};
+            String[] columnNames = {"Name", "Author", "Message"};
 
             Patron patron = (Patron) CurrentSession.user;
-            ArrayList<Document> documents = patron.getAllRequests();
+            ArrayList<Request> requests = patron.getAllRequests();
 
-            Object[][] tasksA = new Object[documents.size()][];
-            for (int i = 0; i < documents.size(); i++) {
-                tasksA[i] = new Object[1];
-                tasksA[i][0] = documents.get(i).name;
+            Object[][] tasksA = new Object[requests.size()][3];
+            for (int i = 0; i < requests.size(); i++) {
+                tasksA[i][0] = requests.get(i).document.name;
+                tasksA[i][1] = requests.get(i).document.authors;
+                tasksA[i][2] = requests.get(i).message;
             }
 
             JTable table = new JTable(tasksA, columnNames);

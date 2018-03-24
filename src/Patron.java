@@ -58,13 +58,13 @@ public class Patron extends User {
     }
 
 
-    public ArrayList<Document> getAllRequests(){
-        ArrayList<Document> requests = new ArrayList<>();
+    public ArrayList<Request> getAllRequests(){
+        ArrayList<Request> requests = new ArrayList<>();
         try {
             Statement statement = Database.connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT id_document from request WHERE id_user = " + this.id);
+            ResultSet resultSet = statement.executeQuery("SELECT * from request WHERE id_user = " + this.id);
             while (resultSet.next()){
-                requests.add(Database.getDocumentById(resultSet.getInt(1)));
+                requests.add(new Request(Database.getDocumentById(resultSet.getInt("id_document")), resultSet.getString("message")));
             }
 
             return requests;
