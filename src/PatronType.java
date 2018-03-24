@@ -1,3 +1,3 @@
 public enum  PatronType {
-    student, instructor, ta, professor, lib
+    student, instructor, ta, professor, lib, visitingProf
 }

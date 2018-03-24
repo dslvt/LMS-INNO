@@ -139,6 +139,14 @@ public class Booking {
             isRenew = rec.getBoolean("is_renew");
         }
 
+        //Get line from Users
+        String typeUser = "";
+        statement.executeQuery("SELECT type FROM users WHERE id = "+ user.id);
+        rec = statement.getResultSet();
+        while (rec.next()){
+            typeUser = rec.getString("1");
+        }
+
         //Current date
         java.util.Date date = new java.util.Date();
         java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
@@ -152,7 +160,11 @@ public class Booking {
         java.sql.Timestamp timestamp1 = new java.sql.Timestamp(returnDay.getTime());
 
         //Renew document
-        if (!isRenew) {
+        if (!(isRenew && typeUser.equals("visitingProf"))) {
+            statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "', returnTime = '"+ timestamp + "' WHERE document_id = '" + document.id + "'");
+        }
+        //Renew for Visiting Professor
+        if(typeUser.equals("visitingProf")){
             statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "', returnTime = '"+ timestamp + "' WHERE document_id = '" + document.id + "'");
         }
 
@@ -260,34 +272,41 @@ public class Booking {
         statement.executeQuery("SELECT*FROM users WHERE id = '" + user.id + "'");
         rec = statement.getResultSet();
         boolean isFaculty = false;
+        String typeUser = "";
         if (rec.next()) {
             isFaculty = rec.getBoolean("isFacultyMember");
+            typeUser = rec.getString("type");
         }
 
         int term;
-        if (type.equals("books")) {
-            int id_books = Database.getCorrectIdInLocalDatabase(document.id);
-            statement.executeQuery("SELECT*FROM books WHERE id = '" + id_books + "'");
-            rec = statement.getResultSet();
-            boolean isBestSeller = false;
-            if (rec.next()) {
-                isBestSeller = rec.getBoolean("isBestSeller");
-            }
-            if (isBestSeller) {
-                if (isFaculty) {
-                    term = 28;
+        if(!typeUser.equals("visitingProf")) {
+            if (type.equals("books")) {
+                int id_books = Database.getCorrectIdInLocalDatabase(document.id);
+                statement.executeQuery("SELECT*FROM books WHERE id = '" + id_books + "'");
+                rec = statement.getResultSet();
+                boolean isBestSeller = false;
+                if (rec.next()) {
+                    isBestSeller = rec.getBoolean("isBestSeller");
+                }
+                if (isBestSeller) {
+                    if (isFaculty) {
+                        term = 28;
+                    } else {
+                        term = 14;
+                    }
                 } else {
-                    term = 14;
+                    if (isFaculty) {
+                        term = 28;
+                    } else {
+                        term = 21;
+                    }
                 }
             } else {
-                if (isFaculty) {
-                    term = 28;
-                } else {
-                    term = 21;
-                }
+                term = 14;
             }
-        } else {
-            term = 14;
+        }
+        else{
+            term = 7;
         }
         return term;
     }

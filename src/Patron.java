@@ -58,44 +58,46 @@ public class Patron extends User {
     }
 
 
-    public ArrayList<Request> getAllRequests(){
+    public ArrayList<Request> getAllRequests() {
         ArrayList<Request> requests = new ArrayList<>();
         try {
             Statement statement = Database.connection.createStatement();
             ResultSet resultSet = statement.executeQuery("SELECT * from request WHERE id_user = " + this.id);
-            while (resultSet.next()){
+            while (resultSet.next()) {
                 requests.add(new Request(Database.getDocumentById(resultSet.getInt("id_document")), resultSet.getString("message")));
             }
 
             return requests;
 
         } catch (SQLException e) {
-            System.out.println("Error in getRequest: "+e.toString());
+            System.out.println("Error in getRequest: " + e.toString());
         }
 
         return requests;
     }
 
-    public static PatronType getCorrectPatronType(String t){
+    public static PatronType getCorrectPatronType(String t) {
         PatronType patronType = null;
-        if(t.equals("Students") || t.equals("Student") || t.equals("students") || t.equals("student")){
+        if (t.equals("Students") || t.equals("Student") || t.equals("students") || t.equals("student")) {
             patronType = PatronType.student;
-        }else if(t.equals("instructor") || t.equals("instructors") || t.equals("Instructor") || t.equals("Instructors")){
+        } else if (t.equals("instructor") || t.equals("instructors") || t.equals("Instructor") || t.equals("Instructors")) {
             patronType = PatronType.instructor;
-        }else if(t.equals("TA") || t.equals("ta") || t.equals("TAs") || t.equals("tas")){
+        } else if (t.equals("TA") || t.equals("ta") || t.equals("TAs") || t.equals("tas")) {
             patronType = PatronType.ta;
-        }else if(t.equals("professor") || t.equals("professors") || t.equals("Professor") || t.equals("Professors")){
+        } else if (t.equals("professor") || t.equals("professors") || t.equals("Professor") || t.equals("Professors")) {
             patronType = PatronType.professor;
-        }else{
+        } else if (t.equals("visitingProf") || t.equals("visitingProfs") || t.equals("VisitingProf") || t.equals("VisitingProfs")) {
+            patronType = PatronType.professor;
+        } else {
             patronType = PatronType.lib;
         }
 
         return patronType;
     }
 
-    public static String getParsedPatronType(PatronType pt){
+    public static String getParsedPatronType(PatronType pt) {
         String ans = "";
-        switch (pt){
+        switch (pt) {
             case student:
                 ans = "student";
                 break;
@@ -108,6 +110,9 @@ public class Patron extends User {
             case instructor:
                 ans = "instructor";
                 break;
+            case visitingProf:
+                ans = "visitingProf";
+                break;
             default:
                 ans = "lib";
                 break;
@@ -116,27 +121,30 @@ public class Patron extends User {
         return ans;
     }
 
-    public static int isTypeBigger(PatronType a, PatronType b){
+    public static int isTypeBigger(PatronType a, PatronType b) {
         int at = parsePatronTypeToInt(a);
         int bt = parsePatronTypeToInt(b);
-        if(at > bt)
+        if (at > bt)
             return 1;
-        else if(at == bt)
+        else if (at == bt)
             return 0;
         else
             return -1;
     }
 
-    private static int parsePatronTypeToInt(PatronType patronType){
+    private static int parsePatronTypeToInt(PatronType patronType) {
         int ans = 0;
-        switch (patronType){
+        switch (patronType) {
             case student:
-                ans = 4;
+                ans = 5;
                 break;
             case instructor:
-                ans = 3;
+                ans = 4;
                 break;
             case ta:
+                ans = 3;
+                break;
+            case visitingProf:
                 ans = 2;
                 break;
             case professor:
