@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,6 +52,24 @@ public class Librarian extends User {
         }
     }
 
+    public void sendOutstandingRequest(Document document) {
+        try {
+            ResultSet resultSet = Database.SelectFromDB("SELECT*FROM libtasks WHERE id_document = " + Integer.toString(document.id) + "and type = 'checkout'");
+            while (resultSet.next()) {
+                Database.ExecuteQuery("INSERT INTO request SET id_user = " + resultSet.getInt("id_user") + ", id_document = " + resultSet.getInt("id_document") + ", message = 'Your request was deleted because of outstanding request'");
+            }
+            Database.ExecuteQuery("DELETE FROM libtasks WHERE id_document = " + Integer.toString(document.id) + "and type = 'checkout'");
+
+            resultSet = Database.SelectFromDB("SELECT*FROM booking WHERE document_id = " + Integer.toString(document.id));
+            while (resultSet.next()) {
+                Database.ExecuteQuery("INSERT INTO request SET id_user = " + resultSet.getInt("id_user") + ", id_document = " + resultSet.getInt("id_document") + ", message = 'Outstanding request: you should immediately return this book'");
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error in sendOutstandingRequest: " + e.toString());
+        }
+    }
+
     public ArrayList<Patron> getDebtors() {
         ArrayList<Patron> debtors = new ArrayList<>();
         try {
@@ -82,7 +101,7 @@ public class Librarian extends User {
             while (resultSet.next()) {
                 java.util.Date bookingDate = new java.util.Date();
                 bookingDate = resultSet.getDate("returnTime");
-                if(!date.before(bookingDate)){
+                if (!date.before(bookingDate)) {
                     overdueDocuments.add(Database.getDocumentById(resultSet.getInt("document_id")));
                 }
             }
