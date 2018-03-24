@@ -6,32 +6,11 @@ import java.util.Date;
 public class Booking {
 
     Statement statement;
-//    String userName = "root";
-//    String password = "enaca2225";
-//    String connectionUrl = "jdbc:mysql://localhost:3306/project?useSSL=false";
-
-
-//    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-//        Booking booking = new Booking();
-//        Document document = new Book();
-//        document.id = 19;
-//        document.localId = 1;
-//        User user = new Patron();
-//        user.id = 5;
-//        //booking.checkOut(document, user);
-//        //booking.renewBook(document);
-//        //booking.returnBook(document, user);
-//    }
     public static long setDate = 0L;
     public static boolean useCustomDate = false;
 
 
-    public Booking() throws ClassNotFoundException, SQLException {
-//
-//        Class.forName("com.mysql.jdbc.Driver");
-//        Connection connection = DriverManager.getConnection(connectionUrl, userName, password);
-//        statement = connection.createStatement();
-
+    public Booking() throws SQLException {
         statement = Database.connection.createStatement();
     }
 
@@ -39,13 +18,13 @@ public class Booking {
         try {
 
             if (takeCopy(document, user) && document.isCanBeTaken()) {
-                //Crete current date
+                //Create current date
                 java.util.Date date = new java.util.Date();
                 if(useCustomDate)
                     date.setTime(setDate);
                 java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 
-                //Crete date of returning
+                //Create date of returning
                 java.util.Date returnDay = new java.util.Date();
                 if(useCustomDate)
                     returnDay.setTime(setDate);
@@ -55,7 +34,7 @@ public class Booking {
                 returnDay = day.getTime();
                 java.sql.Timestamp timestamp1 = new java.sql.Timestamp(returnDay.getTime());
 
-                //Crete line in Booking
+                //Create line in Booking
                 statement.executeUpdate("INSERT into booking(document_id, user_id, time, returnTime) values(" + Integer.toString(document.id) +", " + Integer.toString(user.id) +", '"+
                    timestamp + "', '" + timestamp1 +"');" );
 

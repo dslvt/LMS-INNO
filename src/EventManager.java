@@ -1,6 +1,7 @@
 import javax.xml.crypto.Data;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class EventManager {
 
@@ -140,12 +141,43 @@ public class EventManager {
         }
     }
 
+    public void checkRequest(){
+        try{
+            java.util.Date currentDay = new java.util.Date();
+
+            ResultSet resultSet = Database.SelectFromDB("SELECT*FROM request WHERE time IS NOT NULL");
+            while (resultSet.next()){
+                java.util.Date returnDay = resultSet.getDate("time");
+                Calendar day = Calendar.getInstance();
+                day.setTime(returnDay);
+                day.add(Calendar.DATE, 1);
+                returnDay = day.getTime();
+                if(currentDay.after(returnDay)){
+                    ResultSet rs = Database.SelectFromDB("SELECT unic_key FROM libtasks WHERE id_document = " +resultSet.getInt("id_document")+ " and id_user = "+ resultSet.getInt("id_user"));
+                    rs.next();
+
+                    Database.ExecuteQuery("DELETE FROM libtasks WHERE id_user = "+ resultSet.getInt("id_user") + " and id_document = " +resultSet.getInt("id_document"));
+
+                    int currentAmountOfDoc = Database.getAmountOfCurrentDocument(Database.getDocumentById(resultSet.getInt("id_document")));
+                    int shift = currentAmountOfDoc - shiftOrderLeft(rs.getString("unic_key"));
+                    moveOrder(-shift, rs.getString("unic_key"));
+
+                    sentGetRequests(rs.getString("unic_key"));
+                }
+            }
+        }catch (Exception e){
+            System.out.println("Error in checkRequest: "+ e.toString());
+        }
+    }
+
     private void sentGetRequests(String libTaskUnicKey) {
         try {
             ResultSet rs = Database.SelectFromDB("select * from libtasks where unic_key = '" + libTaskUnicKey + "' order by queue");
             while (rs.next()) {
                 if (rs.getInt("queue") < 0) {
-                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + rs.getInt("id_user") + ", id_document = " + rs.getInt("id_document") + ", message = 'You can get this book now'");
+                    java.util.Date date = new java.util.Date();
+                    java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
+                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + rs.getInt("id_user") + ", id_document = " + rs.getInt("id_document") + ", message = 'You can get this book now', time = "+ timestamp);
                 }
             }
         } catch (SQLException e) {
