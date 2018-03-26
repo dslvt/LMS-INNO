@@ -86,7 +86,7 @@ public class Librarian extends User {
         return debtors;
     }
 
-    private ArrayList<Document> getOverdueDocuments() {
+    public ArrayList<Document> getOverdueDocuments() {
         ArrayList<Document> overdueDocuments = new ArrayList<>();
         try {
             Statement statement = Database.connection.createStatement();
@@ -112,6 +112,26 @@ public class Librarian extends User {
             System.out.println("Error in getOverdueDocuments: " + e.toString());
         }
         return overdueDocuments;
+    }
+
+    public ArrayList<LibTask> getQueue(Document document) {
+        ArrayList<LibTask> libTasks = new ArrayList<>();
+        try {
+            ResultSet resultSet = Database.SelectFromDB("SELECT*FROM libtasks WHERE id_document = " + document.id + " and queue > -1");
+            while (resultSet.next()) {
+                int doc_id = resultSet.getInt("id_document");
+                int user_id = resultSet.getInt("id_user");
+                String taskType = resultSet.getString("type");
+                int queue = resultSet.getInt("queue");
+                LibTask libTask = new LibTask(Database.getDocumentById(doc_id), Database.getPatronById(user_id), taskType);
+                libTask.id = resultSet.getInt("id");
+                libTask.queue = queue;
+                libTasks.add(libTask);
+            }
+        } catch (Exception e) {
+            System.out.println("Error in getQueue: " + e.toString());
+        }
+        return libTasks;
     }
 
 }
