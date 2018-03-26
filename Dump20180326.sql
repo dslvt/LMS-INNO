@@ -1,6 +1,6 @@
--- MySQL dump 10.13  Distrib 5.7.21, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.17, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: mydbtest
+-- Host: localhost    Database: project
 -- ------------------------------------------------------
 -- Server version	5.7.21-log
 
@@ -40,7 +40,7 @@ CREATE TABLE `av_materials` (
 
 LOCK TABLES `av_materials` WRITE;
 /*!40000 ALTER TABLE `av_materials` DISABLE KEYS */;
-INSERT INTO `av_materials` VALUES (510,'Null References: The Billion Dollar Mistake','[Tony Hoare]',0,'[]',0,'\0'),(511,'Information Entropy','[Claude Shannon]',0,'[]',1,'\0');
+INSERT INTO `av_materials` VALUES (510,'Null References: The Billion Dollar Mistake','[Tony Hoare]',0,'[]',1,'\0'),(511,'Information Entropy','[Claude Shannon]',0,'[]',1,'\0');
 /*!40000 ALTER TABLE `av_materials` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -63,7 +63,7 @@ CREATE TABLE `booking` (
   KEY `user_id_idx` (`user_id`),
   CONSTRAINT `document_id` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=675 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=689 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,7 +72,7 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES (673,2025,741,'2018-02-05 00:00:00',0,'2018-02-26 00:00:00'),(674,2030,741,'2018-02-17 00:00:00',0,'2018-03-03 00:00:00');
+INSERT INTO `booking` VALUES (673,2025,741,'2018-02-05 00:00:00',0,'2018-02-26 00:00:00');
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -224,7 +224,7 @@ CREATE TABLE `libtasks` (
   CONSTRAINT `document` FOREIGN KEY (`id_document`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `librarian` FOREIGN KEY (`id_librarian`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,6 +233,7 @@ CREATE TABLE `libtasks` (
 
 LOCK TABLES `libtasks` WRITE;
 /*!40000 ALTER TABLE `libtasks` DISABLE KEYS */;
+INSERT INTO `libtasks` VALUES (31,740,2030,'checkout',NULL,-1,'av_materials 510');
 /*!40000 ALTER TABLE `libtasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -247,12 +248,14 @@ CREATE TABLE `request` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_user` int(11) NOT NULL,
   `id_document` int(11) NOT NULL,
+  `message` varchar(100) NOT NULL,
+  `time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_user_idx` (`id_user`),
   KEY `id_document_idx` (`id_document`),
   CONSTRAINT `id_document` FOREIGN KEY (`id_document`) REFERENCES `documents` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `id_user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -261,7 +264,7 @@ CREATE TABLE `request` (
 
 LOCK TABLES `request` WRITE;
 /*!40000 ALTER TABLE `request` DISABLE KEYS */;
-INSERT INTO `request` VALUES (3,741,2025);
+INSERT INTO `request` VALUES (3,741,2025,'',NULL),(4,740,2030,'You can get this book now',NULL);
 /*!40000 ALTER TABLE `request` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -292,7 +295,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'All cash','1','1',0,'\0','1','','lib'),(740,'Sergey Afonso','30001','Via Margutta, 3',0,'','1','\0','student'),(741,'Elvira Espindola','30002','Via Sacra, 13',0,'\0','1','\0','ta'),(742,'Nadia Teixeira','30003','Via del Corso, 22',0,'\0','1','\0','student');
+INSERT INTO `users` VALUES (1,'All cash','1','1',0,'\0','1','','lib'),(740,'Sergey Afonso','30001','Via Margutta, 3',0,'','1','\0','student'),(741,'Elvira Espindola','30002','Via Sacra, 13',0,'\0','1','\0','student'),(742,'Nadia Teixeira','30003','Via del Corso, 22',0,'\0','1','\0','student');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -305,4 +308,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-03-26 20:09:30
+-- Dump completed on 2018-03-26 20:17:11
