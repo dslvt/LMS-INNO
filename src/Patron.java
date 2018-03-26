@@ -97,22 +97,22 @@ public class Patron extends User {
 
     public static String getParsedPatronType(PatronType pt) {
         String ans = "";
-        switch (pt) {
-            case student:
-                ans = "student";
-                break;
-            case ta:
-                ans = "ta";
-                break;
-            case professor:
-                ans = "professor";
-                break;
-            case instructor:
-                ans = "instructor";
-                break;
-            case visitingProf:
-                ans = "visitingProf";
-                break;
+            switch (pt) {
+                case student:
+                    ans = "student";
+                    break;
+                case ta:
+                    ans = "ta";
+                    break;
+                case professor:
+                    ans = "professor";
+                    break;
+                case instructor:
+                    ans = "instructor";
+                    break;
+                case visitingProf:
+                    ans = "visitingProf";
+                    break;
             default:
                 ans = "lib";
                 break;
