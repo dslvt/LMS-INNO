@@ -14,8 +14,10 @@ public class Database {
 //    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
     //private static final String password = "333999333tima";
     String user = "root";
-    String password = "enaca2225";
-    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
+//    String password = "enaca2225";
+//    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
+    String password = "123123123Aa";
+    String url = "jdbc:mysql://localhost:3306/db?useSSL=false";
 
     public static Connection connection;
     private static Statement statement;
