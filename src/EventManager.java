@@ -87,7 +87,7 @@ public class EventManager {
     private int getCorrectPosInQueue(LibTask libTask) {
         int ans = -1;
         try {
-            Patron patron = (Patron) libTask.user;
+            Patron patron = libTask.user;
             int amountOfDocuments = Database.getAmountOfCurrentDocument(libTask.document);
             int amountOfQuery = -1;
             ResultSet rs = Database.SelectFromDB("select * from libtasks where unic_key='" + Document.getUnicKey(libTask.document)
@@ -112,6 +112,10 @@ public class EventManager {
                     }
                 }
                 ans = libTasks.get(locPos).queue;
+                if (ans < 0){
+                    ans = 0;
+                    locPos++;
+                }
                 for (int i = locPos; i < libTasks.size(); i++) {
                     Database.ExecuteQuery("update libtasks set `queue` = `queue` + 1 where id = " + Integer.toString(libTasks.get(i).id));
                 }
