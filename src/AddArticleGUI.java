@@ -60,6 +60,7 @@ class AddArticleGUI extends JFrame {
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                CurrentSession.editDocument = null;
                 ArticleWindow.setVisible(false);
             }
         });

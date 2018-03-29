@@ -36,6 +36,18 @@ public class AddJournalGUI extends JFrame {
     private JButton add = new JButton("ADD");
 
     public AddJournalGUI(){
+        Journal journal = (Journal) CurrentSession.editDocument;
+        if(journal != null) {
+            Reference.setState(journal.isReference);
+            textFieldNameSU.setText(journal.name);
+            textFieldAuthor.setText(journal.authors.toString());
+            textFieldPrice.setText(Integer.toString(journal.price));
+            textFieldKeywords.setText(journal.keywords.toString());
+            textFieldLocation.setText(journal.location);
+            textFieldPublishYear.setText(journal.publicationDate);
+            textFieldIssue.setText(journal.issue);
+            textFieldEditor.setText(journal.editor);
+        }
         JFrame JournalWindow = new JFrame("Journal");
         JournalWindow.setBounds(100, 100, 250, 450);
         JournalWindow.setLocationRelativeTo(null);
@@ -66,12 +78,19 @@ public class AddJournalGUI extends JFrame {
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Journal journal = new Journal(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))),
-                Integer.parseInt(textFieldPrice.getText()), new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))),
-                Reference.getState(), textFieldPublishYear.getText(), textFieldIssue.getText(), textFieldEditor.getText(), true, textFieldLocation.getText());
+                if(journal != null){
+                    journal.ModifyInDB(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))),
+                            Integer.parseInt(textFieldPrice.getText()), new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))),
+                            Reference.getState(), textFieldPublishYear.getText(), textFieldIssue.getText(), textFieldEditor.getText(),  textFieldLocation.getText(), CurrentSession.user.id);
+                }else {
+                    Journal journal = new Journal(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))),
+                            Integer.parseInt(textFieldPrice.getText()), new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))),
+                            Reference.getState(), textFieldPublishYear.getText(), textFieldIssue.getText(), textFieldEditor.getText(), true, textFieldLocation.getText());
+                }
 
                 journal.CreateDocumentInDB(CurrentSession.user.id);
 
+                CurrentSession.editDocument = null;
                 JournalWindow.setVisible(false);
             }
         });

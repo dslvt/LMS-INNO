@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AddBookGUI extends JFrame {
+    Book book = (Book) CurrentSession.editDocument;
     private JLabel labelName = new JLabel("Name");
     private JTextField textFieldNameSU = new JTextField("", 5);
 
@@ -36,6 +37,19 @@ public class AddBookGUI extends JFrame {
     private JButton add = new JButton("ADD");
 
     public AddBookGUI(){
+        if(book != null) {
+            Bestseller.setState(book.isBestseller);
+            Reference.setState(book.isReference);
+            textFieldNameSU.setText(book.name);
+            textFieldAuthor.setText(book.authors.toString());
+            textFieldPrice.setText(Integer.toString(book.price));
+            textFieldKeywords.setText(book.keywords.toString());
+            textFieldPublisher.setText(book.publisher);
+            textFieldEdition.setText(book.edition);
+            textFieldPublishYear.setText(Integer.toString(book.publishYear));
+            textFieldLocation.setText(book.location);
+        }
+
         JFrame BookWindow = new JFrame("Book");
         BookWindow.setBounds(100, 100, 250, 450);
         BookWindow.setLocationRelativeTo(null);
@@ -66,11 +80,18 @@ public class AddBookGUI extends JFrame {
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Book book = new Book(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
-                        new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(), textFieldPublisher.getText(), textFieldEdition.getText(),
-                        Integer.parseInt(textFieldPublishYear.getText()), Bestseller.getState(), textFieldLocation.getText(), true);
-                book.CreateDocumentInDB(CurrentSession.user.id);
+                if(CurrentSession.editDocument!=null) {
+                    book.ModifyInDB(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
+                            new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(), textFieldPublisher.getText(), textFieldEdition.getText(),
+                            Integer.parseInt(textFieldPublishYear.getText()), Bestseller.getState(), textFieldLocation.getText(), CurrentSession.user.id);
+                }else {
+                    Book book = new Book(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
+                            new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(), textFieldPublisher.getText(), textFieldEdition.getText(),
+                            Integer.parseInt(textFieldPublishYear.getText()), Bestseller.getState(), textFieldLocation.getText(), true);
+                    book.CreateDocumentInDB(CurrentSession.user.id);
+                }
 
+                CurrentSession.editDocument = null;
                 BookWindow.setVisible(false);
             }
         });

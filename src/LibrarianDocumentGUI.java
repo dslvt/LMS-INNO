@@ -71,7 +71,8 @@ class LibrarianDocumentGUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int index = table.getSelectedRow();
-                if (index > 0) {
+                if (index >= 0) {
+                    CurrentSession.editDocument = documents.get(index);
                     if (documents.get(index).type == DocumentType.book) {
                         AddBookGUI book = new AddBookGUI();
                     } else if (documents.get(index).type == DocumentType.journal) {

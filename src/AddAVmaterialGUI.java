@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AddAVmaterialGUI extends JFrame {
+    AVmaterial material = (AVmaterial) CurrentSession.editDocument;
+
     private JLabel labelName = new JLabel("Name");
     private JTextField textFieldNameSU = new JTextField("", 5);
 
@@ -27,11 +29,19 @@ public class AddAVmaterialGUI extends JFrame {
     private JButton add = new JButton("ADD");
 
     public AddAVmaterialGUI(){
-        JFrame AVmaterialWindow = new JFrame("Book");
+        if(material != null) {
+            Reference.setState(material.isReference);
+            textFieldNameSU.setText(material.name);
+            textFieldAuthor.setText(material.authors.toString());
+            textFieldPrice.setText(Integer.toString(material.price));
+            textFieldKeywords.setText(material.keywords.toString());
+            textFieldLocation.setText(material.location);
+        }
+        JFrame AVmaterialWindow = new JFrame("AV material");
         AVmaterialWindow.setBounds(100, 100, 250, 450);
         AVmaterialWindow.setLocationRelativeTo(null);
         AVmaterialWindow.setResizable(false);
-        this.setTitle("Book");
+        this.setTitle("AV material");
         AVmaterialWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         Container containerSU = AVmaterialWindow.getContentPane();
         containerSU.setLayout(new GridLayout(6, 2, 2, 2));
@@ -52,10 +62,17 @@ public class AddAVmaterialGUI extends JFrame {
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AVmaterial aVmaterial = new AVmaterial(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
-                    new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(), true, textFieldLocation.getText());
+                if(CurrentSession.editDocument != null){
+                    material.ModifyInDB(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
+                            new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(),  textFieldLocation.getText(), CurrentSession.user.id);
+                }else {
+                    AVmaterial aVmaterial = new AVmaterial(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
+                            new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(), true, textFieldLocation.getText());
+                    aVmaterial.CreateDocumentInDB(CurrentSession.user.id);
+                }
 
-                aVmaterial.CreateDocumentInDB(CurrentSession.user.id);
+                CurrentSession.editDocument = null;
+
                 AVmaterialWindow.setVisible(false);
             }
         });
