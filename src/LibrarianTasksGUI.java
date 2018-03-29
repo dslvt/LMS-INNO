@@ -48,7 +48,6 @@ public class LibrarianTasksGUI extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if(index != -1){
-
                         eventManager.ExecuteQuery(libTasks.get(index));
                     }
                     else{

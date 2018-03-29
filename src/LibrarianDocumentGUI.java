@@ -10,8 +10,10 @@ class LibrarianDocumentGUI extends JFrame{
     private JButton AddBook = new JButton("Add Book");
     private JButton Create = new JButton("Create Copy");
     private JButton AllDocuments = new JButton("All Documents");
+    private JTable table;
+    private JScrollPane listScroller;
 
-    public LibrarianDocumentGUI(){
+    public LibrarianDocumentGUI() {
         JFrame menuWindow = new JFrame();
         menuWindow.setBounds(100, 100, 250, 385);
         menuWindow.setLocationRelativeTo(null);
@@ -34,10 +36,10 @@ class LibrarianDocumentGUI extends JFrame{
 
         String[] columnNames = {"Name", "Authors", "Location", "Price"};
 
-        JTable table = new JTable(books, columnNames);
-        JScrollPane listScroller = new JScrollPane(table);
+        table = new JTable(books, columnNames);
+        listScroller = new JScrollPane(table);
         table.setFillsViewportHeight(true);
-        listScroller.setPreferredSize(new Dimension(240,118));
+        listScroller.setPreferredSize(new Dimension(240, 118));
         containerM.add(listScroller);
         EditBook.setPreferredSize(new Dimension(240, 40));
         containerM.add(EditBook);
@@ -67,9 +69,9 @@ class LibrarianDocumentGUI extends JFrame{
 
         EditBook.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e){
+            public void actionPerformed(ActionEvent e) {
                 int index = table.getSelectedRow();
-                if(index > 0) {
+                if (index > 0) {
                     if (documents.get(index).type == DocumentType.book) {
                         AddBookGUI book = new AddBookGUI();
                     } else if (documents.get(index).type == DocumentType.journal) {
@@ -77,8 +79,7 @@ class LibrarianDocumentGUI extends JFrame{
                     } else if (documents.get(index).type == DocumentType.avmaterial) {
                         AddAVmaterialGUI AVmaterial = new AddAVmaterialGUI();
                     }
-                }
-                else{
+                } else {
                     String message = "No row is selected\n" + "You need to select one to edit";
                     JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
                 }
@@ -88,7 +89,15 @@ class LibrarianDocumentGUI extends JFrame{
         DeleteBook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DeleteDocumentGUI books = new DeleteDocumentGUI();
+                int index = table.getSelectedRow();
+                if (index > 0) {
+                    documents.get(index).DeleteFromDB(CurrentSession.user.id);
+                    String message = "Book succesfully deleted!";
+                    JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    String message = "Select a book!\n";
+                    JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                }
             }
         });
 
