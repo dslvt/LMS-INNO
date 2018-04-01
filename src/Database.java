@@ -786,8 +786,10 @@ public class Database {
             //Check can we renew book
             boolean isRenew = false;
             ResultSet rec = statement.getResultSet();
+            java.util.Date returnDate = new java.util.Date();
             if (rec.next()) {
                 isRenew = rec.getBoolean("is_renew");
+                returnDate = rec.getDate("returnTime");
             }
 
             //Get line from Users
@@ -797,11 +799,19 @@ public class Database {
             while (rec.next()){
                 typeUser = rec.getString("1");
             }
-            if (!(isRenew && typeUser.equals("visitingProf") && !Database.hasQueue(document))){
-                isCanRenew = true;
-            }
-            if(typeUser.equals("visitingProf")&& !Database.hasQueue(document)) {
-                isCanRenew = true;
+
+            //Current date
+            java.util.Date date = new java.util.Date();
+
+            if(!returnDate.before(date)) {
+                if (!(isRenew && typeUser.equals("visitingProf") && !Database.hasQueue(document))) {
+                    isCanRenew = true;
+                }
+                else {
+                    if (typeUser.equals("visitingProf") && !Database.hasQueue(document)) {
+                        isCanRenew = true;
+                    }
+                }
             }
 
         }catch (Exception e){
