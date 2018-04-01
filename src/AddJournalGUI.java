@@ -33,7 +33,7 @@ public class AddJournalGUI extends JFrame {
 
     private Checkbox Reference = new Checkbox("Reference");
 
-    private JButton add = new JButton("ADD");
+    private JButton add = new JButton("Accept");
 
     public AddJournalGUI(){
         Journal journal = (Journal) CurrentSession.editDocument;
@@ -89,9 +89,9 @@ public class AddJournalGUI extends JFrame {
                 }
 
                 journal.CreateDocumentInDB(CurrentSession.user.id);
-
                 CurrentSession.editDocument = null;
                 JournalWindow.setVisible(false);
+                LibrarianDocumentGUI restart = new LibrarianDocumentGUI();
             }
         });
         containerSU.add(add);

@@ -26,7 +26,7 @@ public class AddAVmaterialGUI extends JFrame {
 
     private Checkbox Reference = new Checkbox("Reference");
 
-    private JButton add = new JButton("ADD");
+    private JButton add = new JButton("Accept");
 
     public AddAVmaterialGUI(){
         if(material != null) {
@@ -70,10 +70,10 @@ public class AddAVmaterialGUI extends JFrame {
                             new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(), true, textFieldLocation.getText());
                     aVmaterial.CreateDocumentInDB(CurrentSession.user.id);
                 }
-
                 CurrentSession.editDocument = null;
-
                 AVmaterialWindow.setVisible(false);
+
+                LibrarianDocumentGUI restart = new LibrarianDocumentGUI();
             }
         });
         containerSU.add(add);

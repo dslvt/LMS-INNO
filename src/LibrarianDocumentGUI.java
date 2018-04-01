@@ -15,61 +15,77 @@ class LibrarianDocumentGUI extends JFrame{
 
     public LibrarianDocumentGUI() {
         JFrame menuWindow = new JFrame();
-        menuWindow.setBounds(100, 100, 250, 385);
+        menuWindow.setBounds(100, 100, 300, 345);
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
+        menuWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         Container containerM = menuWindow.getContentPane();
         containerM.setLayout(new FlowLayout());
 
         ArrayList<Document> documents = Database.getAllDocuments();
-
         Object[][] books = new Object[documents.size()][];
 
         for (int i = 0; i < documents.size(); i++) {
-            books[i] = new Object[4];
+            books[i] = new Object[5];
             books[i][0] = documents.get(i).name;
             books[i][1] = documents.get(i).authors;
             books[i][2] = documents.get(i).location;
             books[i][3] = documents.get(i).price;
+            books[i][4] = documents.get(i).type;
         }
 
-        String[] columnNames = {"Name", "Authors", "Location", "Price"};
+        String[] columnNames = {"Name", "Authors", "Location", "Price", "Type"};
 
         table = new JTable(books, columnNames);
         listScroller = new JScrollPane(table);
         table.setFillsViewportHeight(true);
-        listScroller.setPreferredSize(new Dimension(240, 118));
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        listScroller.setPreferredSize(new Dimension(290, 118));
         containerM.add(listScroller);
-        EditBook.setPreferredSize(new Dimension(240, 40));
+        EditBook.setPreferredSize(new Dimension(290, 40));
         containerM.add(EditBook);
-        DeleteBook.setPreferredSize(new Dimension(240, 40));
+        DeleteBook.setPreferredSize(new Dimension(290, 40));
         containerM.add(DeleteBook);
-        AddBook.setPreferredSize(new Dimension(240, 40));
+        AddBook.setPreferredSize(new Dimension(290, 40));
         containerM.add(AddBook);
-        Create.setPreferredSize(new Dimension(240, 40));
+        Create.setPreferredSize(new Dimension(290, 40));
         containerM.add(Create);
-        AllDocuments.setPreferredSize(new Dimension(240, 40));
-        containerM.add(AllDocuments);
-
-//111
-        AllDocuments.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AllDocumentsGUI docs = new AllDocumentsGUI();
-            }
-        });
+//        AllDocuments.setPreferredSize(new Dimension(240, 40));
+//        containerM.add(AllDocuments);
+//
+//        AllDocuments.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                menuWindow.dispose();
+//                AllDocumentsGUI docs = new AllDocumentsGUI();
+//            }
+//        });
 
         Create.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                CreateCopyGUI create = new CreateCopyGUI();
+                menuWindow.dispose();
+                int index = table.getSelectedRow();
+                if(index != -1){
+                    Document document = documents.get(index);
+                    document.location = "its not important";
+                    document.addCopies(1, CurrentSession.user.id);
+                    String message = "You created one copy of document";
+                    JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);
+                }
+                else{
+                    String message = "Select a book!\n";
+                    JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                }
+                LibrarianDocumentGUI restart = new LibrarianDocumentGUI();
             }
         });
 
         EditBook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                menuWindow.dispose();
                 int index = table.getSelectedRow();
                 if (index >= 0) {
                     CurrentSession.editDocument = documents.get(index);
@@ -90,6 +106,7 @@ class LibrarianDocumentGUI extends JFrame{
         DeleteBook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                menuWindow.dispose();
                 int index = table.getSelectedRow();
                 if (index > 0) {
                     documents.get(index).DeleteFromDB(CurrentSession.user.id);
@@ -99,12 +116,14 @@ class LibrarianDocumentGUI extends JFrame{
                     String message = "Select a book!\n";
                     JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
                 }
+                LibrarianDocumentGUI restart = new LibrarianDocumentGUI();
             }
         });
 
         AddBook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                menuWindow.dispose();
                 AddDocumentGUI books = new AddDocumentGUI();
             }
         });
