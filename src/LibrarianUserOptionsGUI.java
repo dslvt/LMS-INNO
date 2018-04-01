@@ -52,13 +52,13 @@ class LibrarianUserOptionsGUI extends JFrame{
         }catch (Exception e){
             System.out.println("Error in deleteuserGUI " + e.toString());
         }
-
         Object[][] usersAr = new Object[users.size()][5];
         for (int i = 0; i < users.size(); i++) {
             for (int j = 0; j < 5; j++) {
                 usersAr[i][j] = users.get(i).get(j);
             }
         }
+
         JTable table = new JTable(usersAr, columnNames);
         JScrollPane listScroller = new JScrollPane(table);
         table.setFillsViewportHeight(true);
@@ -86,21 +86,22 @@ class LibrarianUserOptionsGUI extends JFrame{
         ShowInfo.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                int index = table.getSelectedRow();
-//                if(index != -1){
-//                    ArrayList<Document> docs = Database.getUserDocuments(patrons.get(index));
-//                    String message = "";
-//                    for (int i = 0; i < docs.size(); i++) {
-//                        message += docs.get(i) + "\n";
-//                    }
-//                    if (message.equals("")){
-//                        message = "User has no books";
-//                    }
-//                    JOptionPane.showMessageDialog(null,message, "Info", JOptionPane.PLAIN_MESSAGE);
-//                } else{
-//                    String message = "Select user!\n";
-//                    JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
-//                }
+                int index = table.getSelectedRow();
+                if(index != -1){
+                    Patron patron = Database.getPatronByNumber(users.get(index).get(1));
+                    ArrayList<Document> docs = Database.getUserDocuments(patron);
+                    String message = "";
+                    for (int i = 0; i < docs.size(); i++) {
+                        message += docs.get(i).name + "\n";
+                    }
+                    if (message.equals("")){
+                        message = "User has no books";
+                    }
+                    JOptionPane.showMessageDialog(null,message, "Info", JOptionPane.PLAIN_MESSAGE);
+                } else{
+                    String message = "Select user!\n";
+                    JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                }
             }
         });
 
