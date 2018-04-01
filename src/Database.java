@@ -9,13 +9,13 @@ import java.util.List;
 
 public class Database {
 
-    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
-    private static final String user = "admin";
-    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+//    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
+//    private static final String user = "admin";
+//    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
     //private static final String password = "333999333tima";
-//    String user = "root";
-//    String password = "enaca2225";
-//    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
+    String user = "root";
+    String password = "enaca2225";
+    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
 //    String password = "123123123Aa";
 //    String url = "jdbc:mysql://localhost:3306/db?useSSL=false";
 
@@ -758,6 +758,23 @@ public class Database {
             System.out.println("Error in db, getFirstDocumentWithLocID: " + e.toString());
         }
         return ans;
+    }
+
+    public static boolean hasQueue(Document document){
+        boolean hasQueue = false;
+        try {
+            ResultSet resultSet = Database.SelectFromDB("SELECT*FROM libtasks WHERE id_document = "+ document.id);
+            while (resultSet.next()){
+                if (resultSet.getInt("queue") > -1){
+                    hasQueue = true;
+                    break;
+                }
+            }
+
+        }catch (Exception e){
+            System.out.println("Error in hasQueue: "+ e.toString());
+        }
+        return hasQueue;
     }
 
 }

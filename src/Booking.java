@@ -139,11 +139,11 @@ public class Booking {
         java.sql.Timestamp timestamp1 = new java.sql.Timestamp(returnDay.getTime());
 
         //Renew document
-        if (!(isRenew && typeUser.equals("visitingProf"))) {
+        if (!(isRenew && typeUser.equals("visitingProf") && !Database.hasQueue(document))) {
             statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "', returnTime = '"+ timestamp + "' WHERE document_id = '" + document.id + "'");
         }
         //Renew for Visiting Professor
-        if(typeUser.equals("visitingProf")){
+        if(typeUser.equals("visitingProf")&& !Database.hasQueue(document)){
             statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "', returnTime = '"+ timestamp + "' WHERE document_id = '" + document.id + "'");
         }
 
