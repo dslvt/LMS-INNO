@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="LMS-INNO">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/LMS-INNO.jar!/" />
+      <root url="jar://$PROJECT_DIR$/itp05.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
