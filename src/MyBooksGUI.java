@@ -57,7 +57,7 @@ public class MyBooksGUI extends JFrame{
                     int index = table.getSelectedRow();
                     if(index != -1){
                         EventManager eventManager = new EventManager();
-                        eventManager.CreateQuery(new LibTask(vector.get(index), (Patron)CurrentSession.user, "return"));
+                        eventManager.CreateQuery(new LibTask(vector.get(index), (Patron)CurrentSession.user, "return", true));
 
                         String time = "";
                         JOptionPane.showMessageDialog(null, time, "", JOptionPane.PLAIN_MESSAGE);

@@ -13,7 +13,7 @@ public class Patron extends User {
     /**
      * common constructor
      */
-    public Patron(String name, String password, String phoneNumber, String address, boolean isFacultyMember, int debt, PatronType type) {
+    public Patron(String name, String password, String phoneNumber, String address, boolean isFacultyMember, int debt, PatronType type, boolean isActive) {
         this.name = name;
         this.password = password;
         this.phoneNumber = phoneNumber;
@@ -21,6 +21,7 @@ public class Patron extends User {
         this.debt = debt;
         this.isFacultyMember = isFacultyMember;
         this.type = type;
+        this.isActive = isActive;
     }
 
     /**
@@ -33,7 +34,7 @@ public class Patron extends User {
     public void CreateUserDB() {
         try {
             PreparedStatement preparedStatement;
-            preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian, type) values(?, ?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian, type, isActive) values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setString(1, this.name);
             preparedStatement.setString(2, this.phoneNumber);
             preparedStatement.setString(3, this.address);
@@ -42,6 +43,7 @@ public class Patron extends User {
             preparedStatement.setString(6, this.password);
             preparedStatement.setBoolean(7, false);
             preparedStatement.setString(8, getParsedPatronType(type));
+            preparedStatement.setBoolean(9, this.isActive);
 
             preparedStatement.executeUpdate();
 

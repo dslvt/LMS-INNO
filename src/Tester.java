@@ -311,15 +311,15 @@ public class Tester {
             aVmateria2.CreateDocumentInDB(lib.id);
             av2Id = aVmateria2.id;
 
-            Patron  patron1 = new Patron(names[0], "1", phoneNumbers[0], addresses[0], isFaculty[0], 0, PatronType.student);
+            Patron  patron1 = new Patron(names[0], "1", phoneNumbers[0], addresses[0], isFaculty[0], 0, PatronType.student, true);
             patron1.CreateUserDB();
             user1ID = patron1.id;
 
-            Patron patron2 = new Patron(names[1], "1", phoneNumbers[1], addresses[1], isFaculty[1], 0, PatronType.student);
+            Patron patron2 = new Patron(names[1], "1", phoneNumbers[1], addresses[1], isFaculty[1], 0, PatronType.student, true);
             patron2.CreateUserDB();
             user2ID = patron2.id;
 
-            Patron patron3 = new Patron(names[2], "1", phoneNumbers[2], addresses[2], isFaculty[2], 0, PatronType.student);
+            Patron patron3 = new Patron(names[2], "1", phoneNumbers[2], addresses[2], isFaculty[2], 0, PatronType.student, true);
             patron3.CreateUserDB();
             user3ID = patron3.id;
 
@@ -423,7 +423,7 @@ public class Tester {
             Patron patron = Database.getPatronById(user2ID);
             Book book = (Book)Database.getDocumentById(book1LocId);
             EventManager eventManager = new EventManager();
-            LibTask libTask = new LibTask(book, patron, "checkout");
+            LibTask libTask = new LibTask(book, patron, "checkout", true);
             eventManager.CreateQuery(libTask);
             eventManager.ExecuteQuery(libTask);
 
@@ -453,9 +453,9 @@ public class Tester {
             Book book2 = (Book) Database.getDocumentById(book2LocId);
 
             EventManager eventManager = new EventManager();
-            LibTask libTask1 = new LibTask(book1, p1, "checkout");
-            LibTask libTask2 = new LibTask(book1, p3, "checkout");
-            LibTask libTask3 = new LibTask(book2, p3, "checkout");
+            LibTask libTask1 = new LibTask(book1, p1, "checkout", true);
+            LibTask libTask2 = new LibTask(book1, p3, "checkout", true);
+            LibTask libTask3 = new LibTask(book2, p3, "checkout", true);
             Booking.useCustomDate = true;
             Booking.setDate = March5Date;
             libTask1.id = eventManager.CreateQuery(libTask1);
@@ -501,13 +501,13 @@ public class Tester {
             AVmaterial av2 = (AVmaterial) Database.getDocumentById(av2Id);
 
             EventManager eventManager = new EventManager();
-            LibTask libTask1 = new LibTask(book1, p1, "checkout");
-            LibTask libTask2 = new LibTask(book2, p1, "checkout");
-            LibTask libTask3 = new LibTask(book3, p1, "checkout");
-            LibTask libTask4 = new LibTask(av1, p1, "checkout");
-            LibTask libTask5 = new LibTask(book1Cop, p2, "checkout");
-            LibTask libTask6 = new LibTask(book2Cop, p2, "checkout");
-            LibTask libTask7 = new LibTask(av2, p2, "checkout");
+            LibTask libTask1 = new LibTask(book1, p1, "checkout", true);
+            LibTask libTask2 = new LibTask(book2, p1, "checkout", true);
+            LibTask libTask3 = new LibTask(book3, p1, "checkout", true);
+            LibTask libTask4 = new LibTask(av1, p1, "checkout", true);
+            LibTask libTask5 = new LibTask(book1Cop, p2, "checkout", true);
+            LibTask libTask6 = new LibTask(book2Cop, p2, "checkout", true);
+            LibTask libTask7 = new LibTask(av2, p2, "checkout",true);
 
             Booking.setDate = March5Date;
             Booking.useCustomDate = true;
@@ -558,19 +558,19 @@ public class Tester {
             Booking.useCustomDate = true;
             EventManager eventManager = new EventManager();
 
-            LibTask libTask1 = new LibTask(book1, patron1, "checkout");
+            LibTask libTask1 = new LibTask(book1, patron1, "checkout", true);
             eventManager.ExecuteQuery(libTask1);
 
             Booking.setDate = February2Date;
-            LibTask libTask2 = new LibTask(book2, patron1, "checkout");
+            LibTask libTask2 = new LibTask(book2, patron1, "checkout", true);
             eventManager.ExecuteQuery(libTask2);
 
             Booking.setDate = February5Date;
-            LibTask libTask3 = new LibTask(book1Cop, patron2, "checkout");
+            LibTask libTask3 = new LibTask(book1Cop, patron2, "checkout", true);
             eventManager.ExecuteQuery(libTask3);
 
             Booking.setDate = February17Date;
-            LibTask libTask4 = new LibTask(av1, patron2, "checkout");
+            LibTask libTask4 = new LibTask(av1, patron2, "checkout", true);
             eventManager.ExecuteQuery(libTask4);
 
             Booking booking = new Booking();

@@ -6,10 +6,13 @@ public class LibTask {
     public int queue;
     public String unic_key;
 
-    public LibTask(Document document, Patron user, String type){
+    public LibTask(Document document, Patron user, String type, boolean isHasUnicKey){
         this.document = document;
         this.user = user;
         this.type = type;
-        unic_key = Document.getUnicKey(document);
+        if(isHasUnicKey)
+            unic_key = Document.getUnicKey(document);
+        else
+            unic_key = "";
     }
 }

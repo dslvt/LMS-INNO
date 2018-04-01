@@ -26,7 +26,7 @@ public class EventManager {
                 int user_id = rs.getInt("id_user");
                 String taskType = rs.getString("type");
                 int queue = rs.getInt("queue");
-                LibTask libTask = new LibTask(Database.getDocumentById(doc_id), Database.getPatronById(user_id), taskType);
+                LibTask libTask = new LibTask(Database.getDocumentById(doc_id), Database.getPatronById(user_id), taskType, true);
                 libTask.id = rs.getInt("id");
                 libTask.queue = queue;
                 if (queue < 0 || withZeros)
@@ -54,7 +54,7 @@ public class EventManager {
                     pos = getCorrectPosInQueue(libTask);
                 }
                 preparedStatement.setInt(4, pos);
-                preparedStatement.setString(5, Document.getUnicKey(libTask.document));
+                preparedStatement.setString(5, libTask.unic_key);
                 preparedStatement.executeUpdate();
 
                 int globalID = 0;
@@ -139,6 +139,11 @@ public class EventManager {
                 int shift = currentAmountOfDoc - shiftOrderLeft(libTask.unic_key);
                 moveOrder(-shift, libTask.unic_key);
                 sentGetRequests(libTask.unic_key);
+            } else if (libTask.type.equals("registration")){
+                PreparedStatement preparedStatement = Database.connection.prepareStatement("UPDATE users SET isActive = ? WHERE id = ?");
+                preparedStatement.setBoolean(1, true);
+                preparedStatement.setInt(2, libTask.user.id);
+                preparedStatement.executeUpdate();
             }
         } catch (Exception e) {
             System.out.println("EventManager executeQuery: " + e.toString());

@@ -64,7 +64,7 @@ public class TakeBook extends JFrame{
 //
 //
                         EventManager eventManager = new EventManager();
-                        eventManager.CreateQuery(new LibTask(doc, (Patron) CurrentSession.user, "checkout"));
+                        eventManager.CreateQuery(new LibTask(doc, (Patron) CurrentSession.user, "checkout", true));
                         time = "Wait, your decision has been sent";
 //                        }
 

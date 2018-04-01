@@ -1,6 +1,8 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 import javax.swing.*;
+import javax.xml.crypto.Data;
 
 class RegisterWindow extends JFrame implements ActionListener {
     private JLabel labelNameSU = new JLabel("Name");
@@ -51,8 +53,12 @@ class RegisterWindow extends JFrame implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //nado ispravit'
-                Patron patron = new Patron(textFieldNameSU.getText(), fieldPasswordSU.getText(), textFieldPhoneNumberSU.getText(), textFieldAdressSU.getText(), radioFacultyMember.isSelected(), 0, Patron.getCorrectPatronType(choices[dropDownChoice.getSelectedIndex()]));
+                Patron patron = new Patron(textFieldNameSU.getText(), fieldPasswordSU.getText(), textFieldPhoneNumberSU.getText(), textFieldAdressSU.getText(), radioFacultyMember.isSelected(), 0, Patron.getCorrectPatronType(choices[dropDownChoice.getSelectedIndex()]), false);
                 patron.CreateUserDB();
+                ArrayList<Document> d = Database.getAllDocuments();
+                LibTask libTask = new LibTask(d.get(0), patron, "registration", false);
+                EventManager ev = new EventManager();
+                ev.CreateQuery(libTask);
                 signUp.setVisible(false);
             }
         });

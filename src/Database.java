@@ -9,13 +9,13 @@ import java.util.List;
 
 public class Database {
 
-//    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
-//    private static final String user = "admin";
-//    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
+    private static final String user = "admin";
+    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
     //private static final String password = "333999333tima";
-    String user = "root";
-    String password = "enaca2225";
-    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
+//    String user = "root";
+//    String password = "enaca2225";
+//    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
 //    String password = "123123123Aa";
 //    String url = "jdbc:mysql://localhost:3306/db?useSSL=false";
 
@@ -198,7 +198,7 @@ public class Database {
             rs.next();
 
             Patron patron = new Patron(rs.getString(2), rs.getString(7),
-                    rs.getString(3), rs.getString(4), rs.getBoolean(6), rs.getInt(5),  Patron.getCorrectPatronType(rs.getString("type")));
+                    rs.getString(3), rs.getString(4), rs.getBoolean(6), rs.getInt(5),  Patron.getCorrectPatronType(rs.getString("type")), rs.getBoolean("isActive"));
 
             patron.id = rs.getInt("id");
 
@@ -521,7 +521,7 @@ public class Database {
             if(rs.next()) {
 
                 user = new Patron(rs.getString("name"), rs.getString("password"), rs.getString("phoneNumber"),
-                        rs.getString("address"), rs.getBoolean("isFacultyMember"), rs.getInt("debt"), Patron.getCorrectPatronType(rs.getString("type")));
+                        rs.getString("address"), rs.getBoolean("isFacultyMember"), rs.getInt("debt"), Patron.getCorrectPatronType(rs.getString("type")), rs.getBoolean("isActive"));
                 user.id = id;
             }
         }catch (Exception e){
@@ -555,7 +555,7 @@ public class Database {
             while(resultSet.next()){
                 int userid = resultSet.getInt("id_user");
                 String libType = resultSet.getString("type");
-                ans.add(new LibTask(getDocumentById(resultSet.getInt("id_document")), getPatronById(userid), libType));
+                ans.add(new LibTask(getDocumentById(resultSet.getInt("id_document")), getPatronById(userid), libType, true));
             }
         }catch (Exception e){
             System.out.println("Error in database, getAllLibTasks: " + e.toString());
@@ -571,7 +571,7 @@ public class Database {
             String libType = rs.getString("type");
             int id = rs.getInt("id");
 
-            libTask = new LibTask(getDocumentById(rs.getInt("id_document")), getPatronById(userid), libType);
+            libTask = new LibTask(getDocumentById(rs.getInt("id_document")), getPatronById(userid), libType, true);
             libTask.id = id;
         }catch (Exception e){
             System.out.println("Error in database, getLibtaskByResultSet: " + e.toString());

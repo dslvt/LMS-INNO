@@ -30,24 +30,27 @@ class LibrarianUserOptionsGUI extends JFrame{
 
             int count = 0;
             while (rs.next()){
-                users.add(new ArrayList<String>());
-                users.get(count).add(rs.getString("name"));
-                users.get(count).add(rs.getString("phoneNumber"));
-                users.get(count).add(rs.getString("debt"));
+                boolean isActive = rs.getBoolean("isActive");
+                if(isActive) {
+                    users.add(new ArrayList<String>());
+                    users.get(count).add(rs.getString("name"));
+                    users.get(count).add(rs.getString("phoneNumber"));
+                    users.get(count).add(rs.getString("debt"));
 
-                String userType = "";
-                if(rs.getBoolean("isLibrarian")){
-                    userType = "Librarian";
-                }else if(rs.getBoolean("isFacultyMember")){
-                    userType = "Faculty Member";
-                }else{
-                    userType = "Patron";
+                    String userType = "";
+                    if (rs.getBoolean("isLibrarian")) {
+                        userType = "Librarian";
+                    } else if (rs.getBoolean("isFacultyMember")) {
+                        userType = "Faculty Member";
+                    } else {
+                        userType = "Patron";
+                    }
+
+                    users.get(count).add(userType);
+                    users.get(count).add(rs.getString("address"));
+
+                    count++;
                 }
-
-                users.get(count).add(userType);
-                users.get(count).add(rs.getString("address"));
-
-                count++;
             }
         }catch (Exception e){
             System.out.println("Error in deleteuserGUI " + e.toString());

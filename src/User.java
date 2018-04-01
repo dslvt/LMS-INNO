@@ -10,6 +10,7 @@ public abstract class User {
     public String address;
     public int id;
     public String password;
+    public boolean isActive;
 
     /**
      * add new user in database

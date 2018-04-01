@@ -123,7 +123,7 @@ public class Librarian extends User {
                 int user_id = resultSet.getInt("id_user");
                 String taskType = resultSet.getString("type");
                 int queue = resultSet.getInt("queue");
-                LibTask libTask = new LibTask(Database.getDocumentById(doc_id), Database.getPatronById(user_id), taskType);
+                LibTask libTask = new LibTask(Database.getDocumentById(doc_id), Database.getPatronById(user_id), taskType, true);
                 libTask.id = resultSet.getInt("id");
                 libTask.queue = queue;
                 libTasks.add(libTask);
