@@ -25,7 +25,7 @@ class AddDocumentGUI  extends JFrame{
         AddBook.setLocationRelativeTo(null);
         AddBook.setResizable(false);
         AddBook.setTitle("Sign Up");
-        AddBook.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        AddBook.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         Container containerM = AddBook.getContentPane();
         containerM.setLayout(new GridLayout(3, 2, 2, 2));
         groupButton();

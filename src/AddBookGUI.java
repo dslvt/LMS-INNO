@@ -34,7 +34,7 @@ public class AddBookGUI extends JFrame {
 
     private Checkbox Bestseller = new Checkbox("Bestseller");
     private Checkbox Reference = new Checkbox("Reference");
-    private JButton add = new JButton("ADD");
+    private JButton add = new JButton("Accept");
 
     public AddBookGUI(){
         if(book != null) {
@@ -90,9 +90,9 @@ public class AddBookGUI extends JFrame {
                             Integer.parseInt(textFieldPublishYear.getText()), Bestseller.getState(), textFieldLocation.getText(), true);
                     book.CreateDocumentInDB(CurrentSession.user.id);
                 }
-
                 CurrentSession.editDocument = null;
                 BookWindow.setVisible(false);
+                LibrarianDocumentGUI restart = new LibrarianDocumentGUI();
             }
         });
         containerSU.add(add);

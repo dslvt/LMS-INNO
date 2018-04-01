@@ -47,7 +47,7 @@ public class CreateCopyGUI extends JFrame{
                     int index = table.getSelectedRow();
                     if(index != -1){
                         Document document = documents.get(index).first;
-                        document.location = "its dont important";
+                        document.location = "its not important";
                         document.addCopies(1, CurrentSession.user.id);
 
                         takeBook.setVisible(false);

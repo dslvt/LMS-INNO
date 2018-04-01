@@ -98,26 +98,23 @@ public class AVmaterial extends Document {
             if (lastId != -1) {
                 try {
                     for (int i = 0; i < copies; i++) {
-                        preparedStatement = Database.connection.prepareStatement("insert into av_materials(title, author, cost, keywords, number, reference) values(?, ?, ?, ?, ?, ?)");
-                        preparedStatement.setString(1, this.name);
-                        preparedStatement.setString(2, this.authors.toString());
-                        preparedStatement.setInt(3, price);
-                        preparedStatement.setString(4, this.keywords.toString());
-                        preparedStatement.setInt(5, 1);
-                        preparedStatement.setBoolean(6, this.isReference);
+                        preparedStatement = Database.connection.prepareStatement("update av_materials set number = number + 1 where id = " + lastId);
                         preparedStatement.executeUpdate();
-
+                        preparedStatement = Database.connection.prepareStatement("insert into documents(id_av_materials, location, type, isActive) values(?, ?, ?, ?)");
+                        preparedStatement.setInt(1, lastId);
+                        preparedStatement.setString(2, location);
+                        preparedStatement.setString(3, "av_materials");
+                        preparedStatement.setBoolean(4, this.isActive);
+                        preparedStatement.executeUpdate();
                         int globalID = 0;
                         statement = Database.connection.createStatement();
                         resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
                         if (resultSet.next()) {
-                            globalID = resultSet.getInt("id");
+                            globalID = resultSet.getInt(1);
                         }
-
-//                        AVmaterial newCopy = this;
-//                        newCopy.id = globalID;
-//                        newCopies.add(newCopy);
-                        id = globalID;
+                        AVmaterial newCopy = this;
+                        newCopy.id = globalID;
+                        newCopies.add(newCopy);
                     }
                 } catch (SQLException e) {
                     System.out.println("Error add copies of  AV material: " + e.toString());

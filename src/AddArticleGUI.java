@@ -28,7 +28,7 @@ class AddArticleGUI extends JFrame {
     private Checkbox Bestseller = new Checkbox("Bestseller");
     private Checkbox Reference = new Checkbox("Reference");
 
-    private JButton add = new JButton("ADD");
+    private JButton add = new JButton("Accept");
 
     public AddArticleGUI(){
         JFrame ArticleWindow = new JFrame("Book");
@@ -62,6 +62,7 @@ class AddArticleGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 CurrentSession.editDocument = null;
                 ArticleWindow.setVisible(false);
+
             }
         });
         containerSU.add(add);
