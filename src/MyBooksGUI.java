@@ -74,10 +74,17 @@ public class MyBooksGUI extends JFrame{
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if (index != -1){
-                        //if less than a day than take
-                        //else
-                        String message = "To renew the book time of your book should be one day!\n";
-                        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                        if (Database.isCanRenew((Patron)CurrentSession.user, Database.getDocumentById(table.getSelectedRow()))) {
+                            try {
+                                Booking booking = new Booking();
+                                booking.renewBook(Database.getDocumentById(table.getSelectedRow()), (Patron) CurrentSession.user);
+                            } catch (Exception w){
+                                System.out.println("Error in renewBook " + e.toString());
+                            }
+                        } else {
+                            String message = "To renew the book time of your book should be one day!\n";
+                            JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                        }
                     }
                     else {
                         String message = "Select a book!\n";
@@ -91,7 +98,7 @@ public class MyBooksGUI extends JFrame{
             containerTB.add(renewBook);
             takeBook.setVisible(true);
         }catch (Exception e){
-            System.out.println("Error in takebook " + e.toString());
+            System.out.println("Error in takeBook " + e.toString());
         }
     }
 

@@ -9,13 +9,13 @@ class LibrarianDocumentGUI extends JFrame{
     private JButton DeleteBook = new JButton("Delete Book");
     private JButton AddBook = new JButton("Add Book");
     private JButton Create = new JButton("Create Copy");
-    private JButton AllDocuments = new JButton("All Documents");
+    private JButton Queue = new JButton("Queue");
     private JTable table;
     private JScrollPane listScroller;
 
     public LibrarianDocumentGUI() {
         JFrame menuWindow = new JFrame();
-        menuWindow.setBounds(100, 100, 300, 345);
+        menuWindow.setBounds(100, 100, 300, 385);
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
@@ -51,16 +51,18 @@ class LibrarianDocumentGUI extends JFrame{
         containerM.add(AddBook);
         Create.setPreferredSize(new Dimension(290, 40));
         containerM.add(Create);
-//        AllDocuments.setPreferredSize(new Dimension(240, 40));
-//        containerM.add(AllDocuments);
-//
-//        AllDocuments.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                menuWindow.dispose();
-//                AllDocumentsGUI docs = new AllDocumentsGUI();
-//            }
-//        });
+        Queue.setPreferredSize(new Dimension(290, 40));
+        containerM.add(Queue);
+
+        Queue.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuWindow.dispose();
+                int index = table.getSelectedRow();
+                CurrentSession.editDocument = documents.get(index);
+                DocumentQueueGUI queue = new DocumentQueueGUI();
+            }
+        });
 
         Create.addActionListener(new ActionListener() {
             @Override
