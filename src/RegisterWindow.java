@@ -14,6 +14,7 @@ class RegisterWindow extends JFrame implements ActionListener {
     private JRadioButton radioStudent = new JRadioButton("Student");
     private JRadioButton radioFacultyMember = new JRadioButton("Faculty Member");
     private JButton submit = new JButton("Submit");
+    private JComboBox<String> dropDownChoice;
 
     /**
      * creating register GUI
@@ -36,17 +37,21 @@ class RegisterWindow extends JFrame implements ActionListener {
         containerSU.add(fieldPasswordSU);
         containerSU.add(labelAdressSU);
         containerSU.add(textFieldAdressSU);
-        ButtonGroup groupIsFacultyMember = new ButtonGroup();
-        groupIsFacultyMember.add(radioStudent);
-        groupIsFacultyMember.add(radioFacultyMember);
-        containerSU.add(radioStudent);
-        radioStudent.setSelected(true);
-        containerSU.add(radioFacultyMember);
+//        ButtonGroup groupIsFacultyMember = new ButtonGroup();
+//        groupIsFacultyMember.add(radioStudent);
+//        groupIsFacultyMember.add(radioFacultyMember);
+//        containerSU.add(radioStudent);
+//        radioStudent.setSelected(true);
+//        containerSU.add(radioFacultyMember);
+        String[] choices = {"Student", "Professor", "Teacher Assistant", "Visiting Professor", "Instructor"};
+        dropDownChoice = new JComboBox<>(choices);
+        containerSU.add(dropDownChoice);
+        dropDownChoice.setSelectedIndex(0);
         submit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //nado ispravit'
-                Patron patron = new Patron(textFieldNameSU.getText(), fieldPasswordSU.getText(), textFieldPhoneNumberSU.getText(), textFieldAdressSU.getText(), radioFacultyMember.isSelected(), 0, PatronType.student);
+                Patron patron = new Patron(textFieldNameSU.getText(), fieldPasswordSU.getText(), textFieldPhoneNumberSU.getText(), textFieldAdressSU.getText(), radioFacultyMember.isSelected(), 0, Patron.getCorrectPatronType(choices[dropDownChoice.getSelectedIndex()]));
                 patron.CreateUserDB();
                 signUp.setVisible(false);
             }

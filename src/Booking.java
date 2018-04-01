@@ -120,10 +120,24 @@ public class Booking {
         returnDay = day.getTime();
         java.sql.Timestamp timestamp1 = new java.sql.Timestamp(returnDay.getTime());
 
+        //Get line from Users
+        String typeUser = "";
+        statement.executeQuery("SELECT type FROM users WHERE id = "+ user.id);
+        ResultSet rec = statement.getResultSet();
+        while (rec.next()){
+            typeUser = rec.getString("1");
+        }
+
         //Renew document
-        if (Database.isCanRenew((Patron) user,document)) {
+        if (Database.isCanRenew((Patron) user,document) && !typeUser.equals("visitingProf") ) {
             statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "', returnTime = '"+ timestamp + "' WHERE document_id = '" + document.id + "'");
         }
+
+        //Renew for Visiting Professor
+        if (Database.isCanRenew((Patron) user,document) && typeUser.equals("visitingProf") ) {
+            statement.executeUpdate("UPDATE booking set time = '" + timestamp1 + "', is_renew = '" + 1 + "', returnTime = '"+ timestamp + "' WHERE document_id = '" + document.id + "'");
+        }
+
     }
 
     private String getType(Document document) throws SQLException {

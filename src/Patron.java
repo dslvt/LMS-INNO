@@ -82,11 +82,11 @@ public class Patron extends User {
             patronType = PatronType.student;
         } else if (t.equals("instructor") || t.equals("instructors") || t.equals("Instructor") || t.equals("Instructors")) {
             patronType = PatronType.instructor;
-        } else if (t.equals("TA") || t.equals("ta") || t.equals("TAs") || t.equals("tas")) {
+        } else if (t.equals("TA") || t.equals("ta") || t.equals("TAs") || t.equals("tas") || t.equals("Teacher Assistant")) {
             patronType = PatronType.ta;
         } else if (t.equals("professor") || t.equals("professors") || t.equals("Professor") || t.equals("Professors")) {
             patronType = PatronType.professor;
-        } else if (t.equals("visitingProf") || t.equals("visitingProfs") || t.equals("VisitingProf") || t.equals("VisitingProfs")) {
+        } else if (t.equals("visitingProf") || t.equals("visitingProfs") || t.equals("VisitingProf") || t.equals("VisitingProfs") || t.equals(("Visiting Professor"))) {
             patronType = PatronType.professor;
         } else {
             patronType = PatronType.lib;

@@ -13,22 +13,21 @@ public class MyBooksGUI extends JFrame{
     private JList<String> allBooks;
     private Vector<Document> vector;
     private JButton takingBook = new JButton("Return book");
+    private JButton renewBook = new JButton("Renew book");
 
     /**
      * creating take book menu GUI
      */
     public MyBooksGUI() {
-
         try {
-
             JFrame takeBook = new JFrame();
-            takeBook.setBounds(100, 100, 250, 200);
+            takeBook.setBounds(100, 100, 250, 250);
             takeBook.setLocationRelativeTo(null);
             takeBook.setResizable(false);
             takeBook.setTitle("My books");
             takeBook.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
             Container containerTB = takeBook.getContentPane();
-            containerTB.setLayout(new BorderLayout());
+            containerTB.setLayout(new FlowLayout());
 
             //spisk books
             vector = new Vector(Database.getUserDocuments((Patron) CurrentSession.user));
@@ -50,7 +49,7 @@ public class MyBooksGUI extends JFrame{
             JTable table = new JTable(docs, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             listScroller.setPreferredSize(new Dimension(100,100));
-            containerTB.add(listScroller, BorderLayout.CENTER);
+            containerTB.add(listScroller);
 
             takingBook.addActionListener(new ActionListener() {
                 @Override
@@ -70,11 +69,36 @@ public class MyBooksGUI extends JFrame{
                     }
                 }
             });
+            renewBook.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int index = table.getSelectedRow();
+                    if (index != -1){
+                        if (Database.isCanRenew((Patron)CurrentSession.user, Database.getDocumentById(table.getSelectedRow()))) {
+                            try {
+                                Booking booking = new Booking();
+                                booking.renewBook(Database.getDocumentById(table.getSelectedRow()), (Patron) CurrentSession.user);
+                            } catch (Exception w){
+                                System.out.println("Error in renewBook " + e.toString());
+                            }
+                        } else {
+                            String message = "To renew the book time of your book should be one day!\n";
+                            JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                        }
+                    }
+                    else {
+                        String message = "Select a book!\n";
+                        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                    }
+                }
+            });
             takingBook.setPreferredSize(new Dimension(250, 40));
-            containerTB.add(takingBook, BorderLayout.SOUTH);
+            renewBook.setPreferredSize(new Dimension(250, 40));
+            containerTB.add(takingBook);
+            containerTB.add(renewBook);
             takeBook.setVisible(true);
         }catch (Exception e){
-            System.out.println("Error in takebook " + e.toString());
+            System.out.println("Error in takeBook " + e.toString());
         }
     }
 
