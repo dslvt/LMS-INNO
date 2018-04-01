@@ -777,4 +777,37 @@ public class Database {
         return hasQueue;
     }
 
+    public static boolean isCanRenew(Patron patron, Document document){
+        boolean isCanRenew = false;
+        try{
+            //Get line from Booking
+            statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
+
+            //Check can we renew book
+            boolean isRenew = false;
+            ResultSet rec = statement.getResultSet();
+            if (rec.next()) {
+                isRenew = rec.getBoolean("is_renew");
+            }
+
+            //Get line from Users
+            String typeUser = "";
+            statement.executeQuery("SELECT type FROM users WHERE id = "+ patron.id);
+            rec = statement.getResultSet();
+            while (rec.next()){
+                typeUser = rec.getString("1");
+            }
+            if (!(isRenew && typeUser.equals("visitingProf") && !Database.hasQueue(document))){
+                isCanRenew = true;
+            }
+            if(typeUser.equals("visitingProf")&& !Database.hasQueue(document)) {
+                isCanRenew = true;
+            }
+
+        }catch (Exception e){
+            System.out.println("Error in isCanRenew: "+ e.toString());
+        }
+        return isCanRenew;
+    }
+
 }

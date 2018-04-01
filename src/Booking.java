@@ -108,24 +108,6 @@ public class Booking {
     }
 
     public void renewBook(Document document, User user) throws SQLException {
-        //Get line from Booking
-        statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
-
-        //Check can we renew book
-        boolean isRenew = false;
-        ResultSet rec = statement.getResultSet();
-        if (rec.next()) {
-            isRenew = rec.getBoolean("is_renew");
-        }
-
-        //Get line from Users
-        String typeUser = "";
-        statement.executeQuery("SELECT type FROM users WHERE id = "+ user.id);
-        rec = statement.getResultSet();
-        while (rec.next()){
-            typeUser = rec.getString("1");
-        }
-
         //Current date
         java.util.Date date = new java.util.Date();
         java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
@@ -139,14 +121,9 @@ public class Booking {
         java.sql.Timestamp timestamp1 = new java.sql.Timestamp(returnDay.getTime());
 
         //Renew document
-        if (!(isRenew && typeUser.equals("visitingProf") && !Database.hasQueue(document))) {
+        if (Database.isCanRenew((Patron) user,document)) {
             statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "', returnTime = '"+ timestamp + "' WHERE document_id = '" + document.id + "'");
         }
-        //Renew for Visiting Professor
-        if(typeUser.equals("visitingProf")&& !Database.hasQueue(document)){
-            statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "', returnTime = '"+ timestamp + "' WHERE document_id = '" + document.id + "'");
-        }
-
     }
 
     private String getType(Document document) throws SQLException {
