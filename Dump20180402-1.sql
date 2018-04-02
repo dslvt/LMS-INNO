@@ -224,7 +224,7 @@ CREATE TABLE `libtasks` (
   CONSTRAINT `document` FOREIGN KEY (`id_document`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `librarian` FOREIGN KEY (`id_librarian`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,6 +233,7 @@ CREATE TABLE `libtasks` (
 
 LOCK TABLES `libtasks` WRITE;
 /*!40000 ALTER TABLE `libtasks` DISABLE KEYS */;
+INSERT INTO `libtasks` VALUES (7,740,2024,'checkout',NULL,-1,'books 777');
 /*!40000 ALTER TABLE `libtasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -247,6 +248,8 @@ CREATE TABLE `request` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `id_user` int(11) NOT NULL,
   `id_document` int(11) NOT NULL,
+  `message` varchar(140) NOT NULL,
+  `time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_user_idx` (`id_user`),
   KEY `id_document_idx` (`id_document`),
@@ -261,7 +264,7 @@ CREATE TABLE `request` (
 
 LOCK TABLES `request` WRITE;
 /*!40000 ALTER TABLE `request` DISABLE KEYS */;
-INSERT INTO `request` VALUES (3,741,2025);
+INSERT INTO `request` VALUES (3,741,2025,'',NULL);
 /*!40000 ALTER TABLE `request` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,7 +296,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'All cash','1','1',0,'\0','1','','lib',NULL),(740,'Sergey Afonso','30001','Via Margutta, 3',0,'','1','\0','student',NULL),(741,'Elvira Espindola','30002','Via Sacra, 13',0,'\0','1','\0','ta',NULL),(742,'Nadia Teixeira','30003','Via del Corso, 22',0,'\0','1','\0','student',NULL),(743,'lfjl','123','wjkflkf',0,'\0','1','\0','professor','\0'),(744,'df','123','1',0,'\0','1','\0','student','\0'),(745,'11','123','123',0,'\0','123','\0','student','\0'),(746,'1','123','123',0,'\0','123','\0','student','\0'),(747,'1','12','1',0,'\0','1','\0','student','\0'),(748,'1','12','12344',0,'\0','123','\0','student','');
+INSERT INTO `users` VALUES (1,'All cash','1','1',0,'\0','1','','lib',NULL),(740,'Sergey Afonso','30001','Via Margutta, 3',0,'','1','\0','student',''),(741,'Elvira Espindola','30002','Via Sacra, 13',0,'\0','1','\0','ta',''),(742,'Nadia Teixeira','30003','Via del Corso, 22',0,'\0','1','\0','student','');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -306,4 +309,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-04-02  9:20:52
+-- Dump completed on 2018-04-02 11:46:08

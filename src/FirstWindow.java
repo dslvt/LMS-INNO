@@ -38,6 +38,9 @@ public class FirstWindow extends JFrame{
                     }else{
                         MenuWindow menuWindow = new MenuWindow();
                     }
+
+                    CurrentSession.CurrentWork();
+
                 }
                 else {
                 String message = "User does not exist\n" + "You need to Sign Up";
