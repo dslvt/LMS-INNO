@@ -54,15 +54,26 @@ public class Librarian extends User {
 
     public void sendOutstandingRequest(Document document) {
         try {
-            ResultSet resultSet = Database.SelectFromDB("SELECT*FROM libtasks WHERE id_document = " + Integer.toString(document.id) + "and type = 'checkout'");
+            ResultSet resultSet = Database.SelectFromDB("SELECT*FROM libtasks WHERE id_document = " + Integer.toString(document.id) + " and type = 'checkout'");
+            Integer id_user;
+            Integer id_document;
+            boolean mark = true;
             while (resultSet.next()) {
-                Database.ExecuteQuery("INSERT INTO request SET id_user = " + resultSet.getInt("id_user") + ", id_document = " + resultSet.getInt("id_document") + ", message = 'Your request was deleted because of outstanding request'");
+                id_user = resultSet.getInt("id_user");
+                id_document = resultSet.getInt("id_document");
+                if (id_user != null && id_document != null) {
+                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + id_user + ", id_document = " + id_document + ", message = 'Your request was deleted because of outstanding request'");
+                } else {
+                    mark = false;
+                }
             }
-            Database.ExecuteQuery("DELETE FROM libtasks WHERE id_document = " + Integer.toString(document.id) + "and type = 'checkout'");
+            if(mark) {
+                Database.ExecuteQuery("DELETE FROM libtasks WHERE id_document = " + Integer.toString(document.id) + " and type = 'checkout'");
 
-            resultSet = Database.SelectFromDB("SELECT*FROM booking WHERE document_id = " + Integer.toString(document.id));
-            while (resultSet.next()) {
-                Database.ExecuteQuery("INSERT INTO request SET id_user = " + resultSet.getInt("id_user") + ", id_document = " + resultSet.getInt("id_document") + ", message = 'Outstanding request: you should immediately return this book'");
+                resultSet = Database.SelectFromDB("SELECT*FROM booking WHERE document_id = " + Integer.toString(document.id));
+                while (resultSet.next()) {
+                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + resultSet.getInt("id_user") + ", id_document = " + resultSet.getInt("id_document") + ", message = 'Outstanding request: you should immediately return this book'");
+                }
             }
 
         } catch (Exception e) {

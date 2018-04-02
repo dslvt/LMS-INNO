@@ -138,15 +138,15 @@ class LibrarianDocumentGUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 int index = table.getSelectedRow();
                 if(index != -1){
-                    if (Database.hasQueue(documents.get(index))){
+//                    if (Database.hasQueue(documents.get(index))){
                         Librarian librarian = (Librarian)CurrentSession.user;
                         librarian.sendOutstandingRequest(documents.get(index));
                         String message = "Done!\n";
                         JOptionPane.showMessageDialog(null, message, "SUCCESS", JOptionPane.PLAIN_MESSAGE);
-                    } else{
-                        String message = "Book has no queue!\n";
-                        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
-                    }
+//                    } else{
+//                        String message = "Book has no queue!\n";
+//                        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+//                    }
 
                 }
             }

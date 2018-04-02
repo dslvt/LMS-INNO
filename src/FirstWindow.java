@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.sql.ResultSet;
 import javax.swing.*;
 
 public class FirstWindow extends JFrame{
@@ -31,11 +32,20 @@ public class FirstWindow extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(Database.isCorrectAuthorization(textFieldPhoneNumber.getText(), fieldPassword.getText())){
-                    CurrentSession.user = Database.getPatronByNumber(textFieldPhoneNumber.getText());
+                    int user_id = -1;
+                    try {
+                        ResultSet rs = Database.SelectFromDB("SELECT id FROM users WHERE phoneNumber =" + textFieldPhoneNumber.getText());
+                        rs.next();
+                        user_id = rs.getInt(1);
+                    }catch (Exception h){
+                        System.out.println("Error in FirstWindow: "+h.toString());
+                    }
                     closeFirstWindow();
-                    if(Database.isLibrarian(CurrentSession.user.id)){
+                    if(Database.isLibrarian(user_id)){
+                        CurrentSession.user = Database.getLibrarianByNumber(textFieldPhoneNumber.getText());
                         LibrarianGUI librarianGUI = new LibrarianGUI();
                     }else{
+                        CurrentSession.user = Database.getPatronByNumber(textFieldPhoneNumber.getText());
                         MenuWindow menuWindow = new MenuWindow();
                     }
                 }
