@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,12 +11,13 @@ class LibrarianDocumentGUI extends JFrame{
     private JButton AddBook = new JButton("Add Book");
     private JButton Create = new JButton("Create Copy");
     private JButton Queue = new JButton("Queue");
+    private JButton outstandingRequest = new JButton("Outstanding Request");
     private JTable table;
     private JScrollPane listScroller;
 
     public LibrarianDocumentGUI() {
         JFrame menuWindow = new JFrame();
-        menuWindow.setBounds(100, 100, 300, 385);
+        menuWindow.setBounds(100, 100, 300, 430);
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
@@ -53,6 +55,8 @@ class LibrarianDocumentGUI extends JFrame{
         containerM.add(Create);
         Queue.setPreferredSize(new Dimension(290, 40));
         containerM.add(Queue);
+        outstandingRequest.setPreferredSize(new Dimension(290, 40));
+        containerM.add(outstandingRequest);
 
         Queue.addActionListener(new ActionListener() {
             @Override
@@ -89,7 +93,7 @@ class LibrarianDocumentGUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 menuWindow.dispose();
                 int index = table.getSelectedRow();
-                if (index >= 0) {
+                if (index != -1) {
                     CurrentSession.editDocument = documents.get(index);
                     if (documents.get(index).type == DocumentType.book) {
                         AddBookGUI book = new AddBookGUI();
@@ -110,7 +114,7 @@ class LibrarianDocumentGUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 menuWindow.dispose();
                 int index = table.getSelectedRow();
-                if (index > 0) {
+                if (index != -1) {
                     documents.get(index).DeleteFromDB(CurrentSession.user.id);
                     String message = "Book succesfully deleted!";
                     JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);
@@ -127,6 +131,24 @@ class LibrarianDocumentGUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 menuWindow.dispose();
                 AddDocumentGUI books = new AddDocumentGUI();
+            }
+        });
+        outstandingRequest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = table.getSelectedRow();
+                if(index != -1){
+                    if (Database.hasQueue(documents.get(index))){
+                        Librarian librarian = (Librarian)CurrentSession.user;
+                        librarian.sendOutstandingRequest(documents.get(index));
+                        String message = "Done!\n";
+                        JOptionPane.showMessageDialog(null, message, "SUCCESS", JOptionPane.PLAIN_MESSAGE);
+                    } else{
+                        String message = "Book has no queue!\n";
+                        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                    }
+
+                }
             }
         });
         menuWindow.setVisible(true);
