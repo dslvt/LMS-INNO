@@ -53,7 +53,7 @@ public class Database {
                 int id=0;
                 if(resultSet.getInt("id_av_materials") != 0){
                     id = resultSet.getInt("id_av_materials");
-                }else if(resultSet.getInt("id_books") != 0){
+;                }else if(resultSet.getInt("id_books") != 0){
                     id = resultSet.getInt("id_books");
                 }else if(resultSet.getInt("id_journals") != 0){
                     id = resultSet.getInt("id_journals");
@@ -775,6 +775,19 @@ public class Database {
             System.out.println("Error in hasQueue: "+ e.toString());
         }
         return hasQueue;
+    }
+
+    public static ArrayList<Patron> getDocumentQueue(Document document){
+        ArrayList<Patron> patrons = new ArrayList<>();
+        try{
+            ResultSet rs = SelectFromDB("select * from libtasks where type = 'checkout' and id_document = " + Integer.toString(document.id) + " order by id");
+            while (rs.next()){
+                patrons.add(getPatronById(rs.getInt("id_user")));
+            }
+        }catch (Exception e){
+            System.out.println("Error in getDocumentQueue: "+ e.toString());
+        }
+        return patrons;
     }
 
     public static boolean isCanRenew(Patron patron, Document document){

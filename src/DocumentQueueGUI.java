@@ -8,6 +8,7 @@ public class DocumentQueueGUI extends JFrame {
 
     public DocumentQueueGUI() {
         Document document = CurrentSession.editDocument;
+        CurrentSession.editDocument = null;
         JFrame menuWindow = new JFrame();
         menuWindow.setBounds(100, 100, 300, 200);
         menuWindow.setLocationRelativeTo(null);
@@ -17,12 +18,12 @@ public class DocumentQueueGUI extends JFrame {
         Container containerM = menuWindow.getContentPane();
         containerM.setLayout(new FlowLayout());
 
-        //ArrayList<User> users =
-        Object[][] usersQueue = new Object[3][3];
-        for (int i = 0; i < 3; ++i){
-            usersQueue[i][0] = "Name";
-            usersQueue[i][1] = "Phone Number";
-            usersQueue[i][2] = "Type";
+        ArrayList<Patron> users = Database.getDocumentQueue(document);
+        Object[][] usersQueue = new Object[users.size()][3];
+        for (int i = 0; i < usersQueue.length; i++){
+            usersQueue[i][0] = users.get(i).name;
+            usersQueue[i][1] = users.get(i).phoneNumber;
+            usersQueue[i][2] = users.get(i).type;
         }
 
         String []columnNames = {"Name","Phone Number","Type"};
