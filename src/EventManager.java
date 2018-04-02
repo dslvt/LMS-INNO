@@ -176,6 +176,8 @@ public class EventManager {
             }
         }catch (Exception e){
             System.out.println("Error in checkRequest: "+ e.toString());
+
+
         }
     }
 
