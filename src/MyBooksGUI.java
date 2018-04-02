@@ -21,7 +21,7 @@ public class MyBooksGUI extends JFrame{
     public MyBooksGUI() {
         try {
             JFrame takeBook = new JFrame();
-            takeBook.setBounds(100, 100, 250, 250);
+            takeBook.setBounds(100, 100, 250, 233);
             takeBook.setLocationRelativeTo(null);
             takeBook.setResizable(false);
             takeBook.setTitle("My books");
@@ -48,7 +48,7 @@ public class MyBooksGUI extends JFrame{
 
             JTable table = new JTable(docs, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
-            listScroller.setPreferredSize(new Dimension(100,100));
+            listScroller.setPreferredSize(new Dimension(240,100));
             containerTB.add(listScroller);
 
             takingBook.addActionListener(new ActionListener() {
@@ -78,11 +78,14 @@ public class MyBooksGUI extends JFrame{
                             try {
                                 Booking booking = new Booking();
                                 booking.renewBook(Database.getDocumentById(table.getSelectedRow()), (Patron) CurrentSession.user);
+                                takeBook.dispose();
+                                String message = "Book was successfully renewed!\n";
+                                JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
                             } catch (Exception w){
                                 System.out.println("Error in renewBook " + e.toString());
                             }
                         } else {
-                            String message = "To renew the book time of your book should be one day!\n";
+                            String message = "Can't renew!\n";
                             JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
                         }
                     }
