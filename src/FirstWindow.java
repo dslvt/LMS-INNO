@@ -46,6 +46,7 @@ public class FirstWindow extends JFrame{
                 }
             }
         });
+        this.getRootPane().setDefaultButton(buttonSingIn);
         container.add(buttonSingIn);
         buttonSignUp.addActionListener(new RegisterWindow());
         container.add(buttonSignUp);
