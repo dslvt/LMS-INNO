@@ -9,15 +9,15 @@ import java.util.List;
 
 public class Database {
 
-    //private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
-    //private static final String user = "admin";
-    //private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+//    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
+//    private static final String user = "admin";
+//    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
     //private static final String password = "333999333tima";
     String user = "root";
-//    String password = "enaca2225";
-//    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
-    String password = "123123123Aa";
-    String url = "jdbc:mysql://localhost:3306/db?useSSL=false";
+    String password = "enaca2225";
+    String url = "jdbc:mysql://localhost:3306/project?useSSL=false";
+//    String password = "123123123Aa";
+//    String url = "jdbc:mysql://localhost:3306/db?useSSL=false";
 
     public static Connection connection;
     private static Statement statement;
@@ -44,6 +44,8 @@ public class Database {
     public static int isDocumentExist(Document document){
         int localId = -1;
         try {
+            int isDocExist = -1;
+
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select id_av_materials, id_books, id_journals, id from documents");
 
@@ -756,6 +758,56 @@ public class Database {
             System.out.println("Error in db, getFirstDocumentWithLocID: " + e.toString());
         }
         return ans;
+    }
+
+    public static boolean hasQueue(Document document){
+        boolean hasQueue = false;
+        try {
+            ResultSet resultSet = Database.SelectFromDB("SELECT*FROM libtasks WHERE id_document = "+ document.id);
+            while (resultSet.next()){
+                if (resultSet.getInt("queue") > -1){
+                    hasQueue = true;
+                    break;
+                }
+            }
+
+        }catch (Exception e){
+            System.out.println("Error in hasQueue: "+ e.toString());
+        }
+        return hasQueue;
+    }
+
+    public static boolean isCanRenew(Patron patron, Document document){
+        boolean isCanRenew = false;
+        try{
+            //Get line from Booking
+            statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
+
+            //Check can we renew book
+            boolean isRenew = false;
+            ResultSet rec = statement.getResultSet();
+            if (rec.next()) {
+                isRenew = rec.getBoolean("is_renew");
+            }
+
+            //Get line from Users
+            String typeUser = "";
+            statement.executeQuery("SELECT type FROM users WHERE id = "+ patron.id);
+            rec = statement.getResultSet();
+            while (rec.next()){
+                typeUser = rec.getString("1");
+            }
+            if (!(isRenew && typeUser.equals("visitingProf") && !Database.hasQueue(document))){
+                isCanRenew = true;
+            }
+            if(typeUser.equals("visitingProf")&& !Database.hasQueue(document)) {
+                isCanRenew = true;
+            }
+
+        }catch (Exception e){
+            System.out.println("Error in isCanRenew: "+ e.toString());
+        }
+        return isCanRenew;
     }
 
 }
