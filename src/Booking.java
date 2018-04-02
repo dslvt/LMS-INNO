@@ -150,7 +150,7 @@ public class Booking {
         return type;
     }
 
-    private int countOverdueCost(Document document) throws SQLException {
+    public int countOverdueCost(Document document) throws SQLException {
         int days = countOverdue(document);
         int overdue = days * 100;
 
