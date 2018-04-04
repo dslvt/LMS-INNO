@@ -89,7 +89,7 @@ public class Patron extends User {
         } else if (t.equals("professor") || t.equals("professors") || t.equals("Professor") || t.equals("Professors")) {
             patronType = PatronType.professor;
         } else if (t.equals("visitingProf") || t.equals("visitingProfs") || t.equals("VisitingProf") || t.equals("VisitingProfs") || t.equals(("Visiting Professor"))) {
-            patronType = PatronType.professor;
+            patronType = PatronType.visitingProf;
         } else {
             patronType = PatronType.lib;
         }

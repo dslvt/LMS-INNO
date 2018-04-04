@@ -1,3 +1,3 @@
 public enum DocumentType{
-    book, journal, avmaterial, article;
+    book, journal, av_material, article;
 }

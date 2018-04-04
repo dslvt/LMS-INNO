@@ -48,7 +48,7 @@ public abstract class Document {
             case journal:
                 ans = "journals";
                 break;
-            case avmaterial:
+            case av_material:
                 ans = "av_materials";
                 break;
             case article:

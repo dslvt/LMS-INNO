@@ -59,6 +59,7 @@ class LibrarianGUI extends JFrame{
                 CurrentSession.user = null;
                 CurrentSession.editUser = null;
                 CurrentSession.editDocument = null;
+                CurrentSession.setDate = 0L;
                 menuWindow.dispose();
                 FirstWindow restartFirstWindow = new FirstWindow();
                 restartFirstWindow.setVisible(true);

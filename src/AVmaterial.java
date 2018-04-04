@@ -29,7 +29,7 @@ public class AVmaterial extends Document {
     public AVmaterial(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, boolean isActive, String location) {
         CreateDocument(name, cost, keywords, authors, isReference, isActive, location);
 
-        type = DocumentType.avmaterial;
+        type = DocumentType.av_material;
     }
 
     /**

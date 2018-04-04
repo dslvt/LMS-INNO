@@ -104,17 +104,21 @@ public class EventManager {
                     ans = libTasks.get(0).queue - 1;
                 }
             } else {
-                int locPos = libTasks.size() - 1;
+                int locPos = libTasks.size();
                 for (int i = 0; i < libTasks.size(); i++) {
-                    if (Patron.isTypeBigger(patron.type, libTasks.get(i).user.type) < 0 && libTasks.get(i).queue > -1) {
+                    if (Patron.isTypeBigger(patron.type, libTasks.get(i).user.type) > 0 && libTasks.get(i).queue > -1) {
                         locPos = i;
                         break;
                     }
                 }
-                ans = libTasks.get(locPos).queue;
-                if (ans < 0){
-                    ans = 0;
-                    locPos++;
+
+//                ans = libTasks.get(locPos).queue;
+//                if (ans < 0){
+//                    ans = 0;
+//                    locPos++;
+//                }
+                if(locPos == libTasks.size()){
+                    ans = libTasks.get(libTasks.size() - 1).queue + 1;
                 }
                 for (int i = locPos; i < libTasks.size(); i++) {
                     Database.ExecuteQuery("update libtasks set `queue` = `queue` + 1 where id = " + Integer.toString(libTasks.get(i).id));
@@ -128,22 +132,37 @@ public class EventManager {
 
     public void ExecuteQuery(LibTask libTask) {
         try {
+            boolean isCanExecureQuery = false;
             Booking booking = new Booking();
-            this.DeleteQuery(libTask);
             if (libTask.type.equals("checkout")) {
-                booking.checkOut(libTask.document, libTask.user);
+                int currentAmountOfDoc = Database.getAmountOfCurrentDocument(libTask.document);
+                if(currentAmountOfDoc > 0) {
+                    this.DeleteQuery(libTask);
+                    booking.checkOut(libTask.document, libTask.user);
+                    currentAmountOfDoc += -1;
+                    int shift = currentAmountOfDoc - shiftOrderLeft(libTask.unic_key);
+                    moveOrder(-shift, libTask.unic_key);
+                    isCanExecureQuery = false;
+                }
             } else if (libTask.type.equals("return")) {
                 booking.returnBook(libTask.document, libTask.user);
-
                 int currentAmountOfDoc = Database.getAmountOfCurrentDocument(libTask.document);
                 int shift = currentAmountOfDoc - shiftOrderLeft(libTask.unic_key);
                 moveOrder(-shift, libTask.unic_key);
                 sentGetRequests(libTask.unic_key);
+                isCanExecureQuery = true;
             } else if (libTask.type.equals("registration")){
                 PreparedStatement preparedStatement = Database.connection.prepareStatement("UPDATE users SET isActive = ? WHERE id = ?");
                 preparedStatement.setBoolean(1, true);
                 preparedStatement.setInt(2, libTask.user.id);
                 preparedStatement.executeUpdate();
+                isCanExecureQuery = true;
+            } else if (libTask.type.equals("renew")){
+                booking.renewBook(libTask.document, libTask.user);
+                isCanExecureQuery = true;
+            }
+            if (isCanExecureQuery){
+                this.DeleteQuery(libTask);
             }
         } catch (Exception e) {
             System.out.println("EventManager executeQuery: " + e.toString());
@@ -183,12 +202,12 @@ public class EventManager {
 
     private void sentGetRequests(String libTaskUnicKey) {
         try {
-            ResultSet rs = Database.SelectFromDB("select * from libtasks where unic_key = '" + libTaskUnicKey + "' order by queue");
+            ResultSet rs = Database.SelectFromDB("select * from libtasks where unic_key = '" + libTaskUnicKey + "' and type = 'checkout' order by queue");
             while (rs.next()) {
                 if (rs.getInt("queue") < 0) {
                     java.util.Date date = new java.util.Date();
                     java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
-                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + rs.getInt("id_user") + ", id_document = " + rs.getInt("id_document") + ", message = 'You can get this book now', time = "+ timestamp);
+                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + rs.getInt("id_user") + ", id_document = " + rs.getInt("id_document") + ", message = '"+ RequestsText.get_book_en +"', time = '"+ timestamp + "';");
                 }
             }
         } catch (SQLException e) {
@@ -200,12 +219,12 @@ public class EventManager {
         ArrayList<Integer> ids = new ArrayList<>();
         int ans = -1;
         try {
-            ResultSet rs = Database.SelectFromDB("select * from libtasks where unic_key = '" + unic + "' and queue < 0 order by queue");
+            ResultSet rs = Database.SelectFromDB("select * from libtasks where unic_key = '" + unic + "' and queue < 0 and type = 'checkout' order by queue");
             while (rs.next()) {
                 ids.add(rs.getInt("id"));
             }
             for (int i = 0; i < ids.size(); i++) {
-                Database.ExecuteQuery("update libtasks set `queue` = " + Integer.toString(-ids.size() + i) + " where id = " + Integer.toString(rs.getInt("id")));
+                Database.ExecuteQuery("update libtasks set `queue` = " + Integer.toString(-ids.size() + i) + " where id = " + Integer.toString(ids.get(i)));
             }
             ans = ids.size();
 

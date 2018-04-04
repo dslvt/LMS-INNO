@@ -12,10 +12,15 @@ public class Database {
 //    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
 //    private static final String user = "admin";
 //    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+
+    private static final String url = "jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11230608?useSSL=false";
+    private static final String user = "sql11230608";
+    private static final String password = "m7dRhGgCmP";
+
     //private static final String password = "333999333tima";
-    String user = "root";
-    String password = "enaca2225";
-    String url = "jdbc:mysql://localhost:3306/project_new?useSSL=false";
+//    String user = "root";
+//    String password = "enaca2225";
+//    String url = "jdbc:mysql://localhost:3306/project_new?useSSL=false";
 //    String password = "123123123Aa";
 //    String url = "jdbc:mysql://localhost:3306/db?useSSL=false";
 
@@ -232,7 +237,7 @@ public class Database {
                     res.next();
                     currentDoc = createAVMaterialByResultSet(res, resultSet.getInt("id"), resultSet.getString("location"));
                     currentDoc.localId = res.getInt("id");
-                    currentDoc.type = DocumentType.avmaterial;
+                    currentDoc.type = DocumentType.av_material;
                 }else if(resultSet.getInt(3) != 0){
                     findInCurrentDBQuery += "books where id="+Integer.toString(resultSet.getInt(3));
                     ResultSet res = tconnection.executeQuery(findInCurrentDBQuery);
@@ -340,6 +345,8 @@ public class Database {
                     rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
                     rs.getBoolean("reference"), true, location);
             aVmaterial.id = id;
+            aVmaterial.localId = rs.getInt("id");
+
         }catch (Exception e){
             System.out.println("Error in createAVMaterialByResultSet: " + e.toString());
         }
@@ -355,6 +362,7 @@ public class Database {
                     rs.getBoolean("reference"), rs.getString("publisher"), rs.getString("edition"),
                     rs.getInt("publish_year"), rs.getBoolean("isBestSeller"), location, true);
             book.id = id;
+            book.localId = rs.getInt("id");
         }catch (Exception e){
             System.out.println("Error in createBookByResultSet: " + e.toString());
         }
@@ -369,8 +377,9 @@ public class Database {
                     rs.getInt("cost"), new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", "))),
                     rs.getBoolean("reference"), "-1", rs.getString("issue"), rs.getString("editor"),true, location);
             journal.id = id;
+            journal.localId = rs.getInt("id");
         }catch (Exception e){
-            System.out.println("Error in createBookByResultSet: " + e.toString());
+            System.out.println("Error in createJournalByResultSet: " + e.toString());
         }
 
         return journal;
@@ -380,7 +389,7 @@ public class Database {
         try{
             Statement st = connection.createStatement();
             String type = Document.getParsedType(document.type);
-            String query = "select number from " + type + " where id ="+Integer.toString(document.localId);
+            String query = "select number from " + type + " where id = "+Integer.toString(document.localId);
             ResultSet rs = st.executeQuery(query);
             rs.next();
             ans = rs.getInt("number");
@@ -808,14 +817,14 @@ public class Database {
             statement.executeQuery("SELECT type FROM users WHERE id = "+ patron.id);
             rec = statement.getResultSet();
             while (rec.next()){
-                typeUser = rec.getString("1");
+                typeUser = rec.getString("type");
             }
-            if (!(isRenew && typeUser.equals("visitingProf") && !Database.hasQueue(document))){
+            if (!isRenew){
                 isCanRenew = true;
             }
-            if(typeUser.equals("visitingProf")&& !Database.hasQueue(document)) {
-                isCanRenew = true;
-            }
+//            if(typeUser.equals("visitingProf")&& !Database.hasQueue(document)) {
+//                isCanRenew = true;
+//            }
 
         }catch (Exception e){
             System.out.println("Error in isCanRenew: "+ e.toString());
@@ -840,5 +849,65 @@ public class Database {
             return new Librarian();
         }
     }
+
+    public static ArrayList<Document> findDocuments(String searchGoal, String colomn){
+        ArrayList <Document> docs = new ArrayList<>();
+        try{
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("select * from books where " + colomn +" = '" + searchGoal + "';");
+//            ResultSet rs = st.executeQuery("IF COL_LENGTH('mydbtest.books', '"+colomn+"') IS NOT NULL " +
+//                    "BEGIN select * from books where " + colomn + " = '" + searchGoal + "'; END");
+            while (rs.next()){
+                Statement nst = connection.createStatement();
+                ResultSet nrs = nst.executeQuery("select * from documents where id_books = " + Integer.toString(rs.getInt("id")));
+
+                while(nrs.next()) {
+                    docs.add(createBookByResultSet(rs, nrs.getInt("id"), ""));
+                }
+            }
+            rs.close();
+
+            rs = st.executeQuery("select * from journals where " + colomn +" = '" + searchGoal + "';");
+            while (rs.next()){
+                Statement nst = connection.createStatement();
+                ResultSet nrs = nst.executeQuery("select * from documents where id_journals = " + Integer.toString(rs.getInt("id")));
+
+                while(nrs.next()) {
+                    docs.add(createJournalByResultSet(rs, nrs.getInt("id"), ""));
+                }
+            }
+            rs.close();
+
+            rs = st.executeQuery("select * from av_materials where " + colomn +" = '" + searchGoal + "';");
+            while (rs.next()){
+                Statement nst = connection.createStatement();
+                ResultSet nrs = nst.executeQuery("select * from documents where id_av_materials = " + Integer.toString(rs.getInt("id")));
+
+                while(nrs.next()) {
+                    docs.add(createAVMaterialByResultSet(rs, nrs.getInt("id"), ""));
+                }
+            }
+            rs.close();
+        }catch (Exception e){
+            System.out.println("Error in findDocument: " + e.toString());
+        }
+
+        return docs;
+    }
+
+    public static Patron findPatronBy(String searchGoal, String colomn){
+        Patron patron = null;
+        try{
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("select * from users where " + colomn + " = '" + searchGoal + "';");
+            rs.next();
+            patron = getPatronById(rs.getInt("id"));
+        }catch (Exception e){
+            System.out.println("Error in findPatronBy: " + e.toString());
+        }
+        return patron;
+    }
+
+
 
 }

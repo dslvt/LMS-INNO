@@ -16,18 +16,21 @@ public class Booking {
 
     public int checkOut(Document document, User user) {
         try {
+            setDate = CurrentSession.setDate;
 
             if (takeCopy(document, user) && document.isCanBeTaken()) {
                 //Create current date
                 java.util.Date date = new java.util.Date();
-                if(useCustomDate)
+                if(useCustomDate) {
                     date.setTime(setDate);
+                }
                 java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 
                 //Create date of returning
                 java.util.Date returnDay = new java.util.Date();
-                if(useCustomDate)
+                if(useCustomDate) {
                     returnDay.setTime(setDate);
+                }
                 Calendar day = Calendar.getInstance();
                 day.setTime(returnDay);
                 day.add(Calendar.DATE, bookingTerm(document,user));
@@ -61,11 +64,15 @@ public class Booking {
     }
 
     public void returnBook(Document document, User user) throws SQLException {
+        setDate = CurrentSession.setDate;
         //Get line from Booking
         statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
 
         //Current date
         java.util.Date date = new java.util.Date();
+        if(useCustomDate) {
+            date.setTime(setDate);
+        }
 
         //Get date of booking
         java.util.Date bookingDate = new java.util.Date();
@@ -108,20 +115,40 @@ public class Booking {
     }
 
     public void renewBook(Document document, User user) throws SQLException {
+        setDate = CurrentSession.setDate;
         //Current date
         java.util.Date date = new java.util.Date();
+        if(useCustomDate) {
+            date.setTime(setDate);
+        }
         java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 
         //Create new date of returning
         java.util.Date returnDay = new java.util.Date();
+        if(useCustomDate) {
+            returnDay.setTime(setDate);
+        }
         Calendar day = Calendar.getInstance();
         day.setTime(returnDay);
         day.add(Calendar.DATE, bookingTerm(document,user));
         returnDay = day.getTime();
         java.sql.Timestamp timestamp1 = new java.sql.Timestamp(returnDay.getTime());
 
+        //Get line from Users
+        String typeUser = "";
+        statement.executeQuery("SELECT type FROM users WHERE id = "+ user.id);
+        ResultSet rec = statement.getResultSet();
+        while (rec.next()){
+            typeUser = rec.getString("type");
+        }
+
         //Renew document
-        if (Database.isCanRenew((Patron) user,document) ) {
+        if (Database.isCanRenew((Patron) user,document) && !typeUser.equals("visitingProf") ) {
+            statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "', returnTime = '"+ timestamp1 + "' WHERE document_id = '" + document.id + "'");
+        }
+
+        //Renew for Visiting Professor
+        if (Database.isCanRenew((Patron) user,document) && typeUser.equals("visitingProf") ) {
             statement.executeUpdate("UPDATE booking set time = '" + timestamp + "', is_renew = '" + 1 + "', returnTime = '"+ timestamp1 + "' WHERE document_id = '" + document.id + "'");
         }
 
@@ -169,14 +196,16 @@ public class Booking {
     }
 
     public int countOverdue(Document document){
+        setDate = CurrentSession.setDate;
         //Get line from Booking
         try {
             statement.executeQuery("SELECT*FROM booking WHERE document_id = '" + document.id + "'");
 
         //Current date
         java.util.Date date = new java.util.Date();
-        if(useCustomDate)
+        if(useCustomDate) {
             date.setTime(setDate);
+        }
 
         //Get date of booking
         java.util.Date bookingDate = new java.util.Date();
@@ -269,7 +298,7 @@ public class Booking {
     }
 
     public boolean takeCopy(Document document, User user) throws SQLException {
-        statement.executeQuery("SELECT*FROM booking WHERE user_id = '" + user.id + "'");
+        statement.executeQuery("SELECT * FROM booking WHERE user_id = '" + user.id + "'");
         ResultSet rec = statement.getResultSet();
         int id = 0;
         int localId = 0;

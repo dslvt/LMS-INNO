@@ -62,7 +62,7 @@ public class Librarian extends User {
                 id_user = resultSet.getInt("id_user");
                 id_document = resultSet.getInt("id_document");
                 if (id_user != null && id_document != null) {
-                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + id_user + ", id_document = " + id_document + ", message = 'Your request was deleted because of outstanding request'");
+                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + id_user + ", id_document = " + id_document + ", message = '" + RequestsText.removed_queue_en +"'");
                 } else {
                     mark = false;
                 }
@@ -72,8 +72,25 @@ public class Librarian extends User {
 
                 resultSet = Database.SelectFromDB("SELECT*FROM booking WHERE document_id = " + Integer.toString(document.id));
                 while (resultSet.next()) {
-                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + resultSet.getInt("id_user") + ", id_document = " + resultSet.getInt("id_document") + ", message = 'Outstanding request: you should immediately return this book'");
+                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + resultSet.getInt("user_id") + ", id_document = " + resultSet.getInt("document_id") + ", message = '"+RequestsText.return_book_en+"'");
                 }
+            }
+
+            ArrayList<Integer> documentIds = new ArrayList<>();
+            ResultSet rs = Database.SelectFromDB("select * from documents where id_" + document.type.toString() + "s = " + Integer.toString(document.localId));
+            while (rs.next()){
+                documentIds.add(rs.getInt("id"));
+            }
+
+            Statement st = Database.connection.createStatement();
+
+            java.util.Date date = new java.util.Date();
+            if(CurrentSession.setDate != 0L)
+                date.setTime(CurrentSession.setDate);
+            java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
+
+            for (int i = 0; i < documentIds.size(); i++) {
+                st.executeUpdate("UPDATE booking set returnTime = '" + timestamp + "', is_renew = '" + 1 + "' WHERE document_id = '" + documentIds.get(i) + "'");
             }
 
         } catch (Exception e) {

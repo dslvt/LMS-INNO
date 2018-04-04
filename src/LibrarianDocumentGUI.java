@@ -99,7 +99,7 @@ class LibrarianDocumentGUI extends JFrame{
                         AddBookGUI book = new AddBookGUI();
                     } else if (documents.get(index).type == DocumentType.journal) {
                         AddJournalGUI journal = new AddJournalGUI();
-                    } else if (documents.get(index).type == DocumentType.avmaterial) {
+                    } else if (documents.get(index).type == DocumentType.av_material) {
                         AddAVmaterialGUI AVmaterial = new AddAVmaterialGUI();
                     }
                 } else {

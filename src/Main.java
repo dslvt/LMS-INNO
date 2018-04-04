@@ -17,7 +17,7 @@ public class Main {
         /**
          * if want test program incomment need test
          */
-//        Tester tester = new Tester();
+        Tester tester = new Tester();
 //        tester.tc1();
 //        tester.tc2();
 //        tester.tc3();
@@ -37,6 +37,20 @@ public class Main {
 //        tester.test8();
 //        tester.test9();
 //        tester.test10();
+
+//        tester.init3();
+//        tester.findUsersAndBooks();
+//        tester.clearHistory();
+        tester.t1();
+        tester.t2();
+        tester.t3();
+        tester.t4();
+        tester.t5();
+        tester.t6();
+        tester.t7();
+        tester.t8();
+        tester.t9();
+        tester.t10();
     }
 
     /**
