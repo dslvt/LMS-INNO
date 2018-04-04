@@ -31,7 +31,7 @@ CREATE TABLE `av_materials` (
   `number` int(11) NOT NULL,
   `reference` bit(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=512 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=703 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `av_materials` (
 
 LOCK TABLES `av_materials` WRITE;
 /*!40000 ALTER TABLE `av_materials` DISABLE KEYS */;
-INSERT INTO `av_materials` VALUES (510,'Null References: The Billion Dollar Mistake','[Tony Hoare]',0,'[]',0,'\0'),(511,'Information Entropy','[Claude Shannon]',0,'[]',1,'\0');
+INSERT INTO `av_materials` VALUES (702,'Null References: The Billion Dollar Mistake','[Tony Hoare]',700,'[]',2,'\0');
 /*!40000 ALTER TABLE `av_materials` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -63,7 +63,7 @@ CREATE TABLE `booking` (
   KEY `user_id_idx` (`user_id`),
   CONSTRAINT `document_id` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=675 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1097 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -72,7 +72,7 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES (673,2025,741,'2018-02-05 00:00:00',0,'2018-02-26 00:00:00'),(674,2030,741,'2018-02-17 00:00:00',0,'2018-03-03 00:00:00');
+INSERT INTO `booking` VALUES (1095,3553,1699,'2018-03-29 03:00:00',1,'2018-04-26 03:00:00'),(1096,3554,1703,'2018-03-29 03:00:00',1,'2018-04-05 03:00:00');
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -96,7 +96,7 @@ CREATE TABLE `books` (
   `reference` bit(1) NOT NULL,
   `isBestSeller` bit(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=781 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1163 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -105,7 +105,7 @@ CREATE TABLE `books` (
 
 LOCK TABLES `books` WRITE;
 /*!40000 ALTER TABLE `books` DISABLE KEYS */;
-INSERT INTO `books` VALUES (777,'Introduction to Algorithms','[[[Thomas, H., Cormen,, Charles, E., Leiserson,, Ronald, L., Rivest, and, Clifford, Stein]]]','MIT Press','Third edition',2009,0,'[[[]]]',2,'\0','\0'),(778,'Design Patterns: Elements of Reusable Object-Oriented Software','[Erich Gamma, Ralph Johnson, John Vlissides, Richard Helm]','Addison-Wesley Professional','First edition',2003,0,'[]',2,'\0',''),(779,'The Mythical Man-month','[Brooks,Jr., Frederick P]','Addison-Wesley Longman Publishing Co., Inc.','Second edition',1995,0,'[]',1,'','\0'),(780,'Design Patterns: Elements of Reusable Object-Oriented Software','[Erich,, Gamma,,, Ralph,, Johnson,,, John,, Vlissides,, Richar,, Helm]','Addison-Wesley Professional','First edition',2003,0,'[]',1,'\0','');
+INSERT INTO `books` VALUES (1161,'Introduction to Algorithms','[Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest and Clifford Stein]','MIT Press','Third edition',2009,5000,'[]',1,'\0','\0'),(1162,'Design Patterns: Elements of Reusable Object-Oriented Software','[Erich Gamma, Ralph Johnson, John Vlissides, Richard Helm]','Addison-Wesley Professional','First edition',2003,1700,'[]',3,'\0','');
 /*!40000 ALTER TABLE `books` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -131,7 +131,7 @@ CREATE TABLE `documents` (
   CONSTRAINT `id_av_materials` FOREIGN KEY (`id_av_materials`) REFERENCES `av_materials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_books` FOREIGN KEY (`id_books`) REFERENCES `books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_journals` FOREIGN KEY (`id_journals`) REFERENCES `journals` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2033 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3561 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -140,7 +140,7 @@ CREATE TABLE `documents` (
 
 LOCK TABLES `documents` WRITE;
 /*!40000 ALTER TABLE `documents` DISABLE KEYS */;
-INSERT INTO `documents` VALUES (2024,NULL,777,NULL,'books','lib',''),(2025,NULL,777,NULL,'books','lib',''),(2026,NULL,777,NULL,'books','lib',''),(2027,NULL,778,NULL,'books','lib',''),(2028,NULL,778,NULL,'books','lib',''),(2029,NULL,779,NULL,'books','lib',''),(2030,510,NULL,NULL,'av_materials','loc',''),(2031,511,NULL,NULL,'av_materials','loc',''),(2032,NULL,780,NULL,'books','lib','');
+INSERT INTO `documents` VALUES (3553,NULL,1161,NULL,'books','lib',''),(3554,NULL,1161,NULL,'books','lib',''),(3555,NULL,1161,NULL,'books','lib',''),(3556,NULL,1162,NULL,'books','lib',''),(3557,NULL,1162,NULL,'books','lib',''),(3558,NULL,1162,NULL,'books','lib',''),(3559,702,NULL,NULL,'av_materials','loc',''),(3560,702,NULL,NULL,'av_materials','loc','');
 /*!40000 ALTER TABLE `documents` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -224,7 +224,7 @@ CREATE TABLE `libtasks` (
   CONSTRAINT `document` FOREIGN KEY (`id_document`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `librarian` FOREIGN KEY (`id_librarian`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=565 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,7 +233,6 @@ CREATE TABLE `libtasks` (
 
 LOCK TABLES `libtasks` WRITE;
 /*!40000 ALTER TABLE `libtasks` DISABLE KEYS */;
-INSERT INTO `libtasks` VALUES (7,740,2024,'checkout',NULL,-1,'books 777');
 /*!40000 ALTER TABLE `libtasks` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -253,9 +252,9 @@ CREATE TABLE `request` (
   PRIMARY KEY (`id`),
   KEY `id_user_idx` (`id_user`),
   KEY `id_document_idx` (`id_document`),
-  CONSTRAINT `id_document` FOREIGN KEY (`id_document`) REFERENCES `documents` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `id_document` FOREIGN KEY (`id_document`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=87 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -264,7 +263,6 @@ CREATE TABLE `request` (
 
 LOCK TABLES `request` WRITE;
 /*!40000 ALTER TABLE `request` DISABLE KEYS */;
-INSERT INTO `request` VALUES (3,741,2025,'',NULL);
 /*!40000 ALTER TABLE `request` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -287,7 +285,7 @@ CREATE TABLE `users` (
   `type` varchar(45) DEFAULT NULL,
   `isActive` bit(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=749 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1704 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -296,7 +294,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'All cash','1','1',0,'\0','1','','lib',NULL),(740,'Sergey Afonso','30001','Via Margutta, 3',0,'','1','\0','student',''),(741,'Elvira Espindola','30002','Via Sacra, 13',0,'\0','1','\0','ta',''),(742,'Nadia Teixeira','30003','Via del Corso, 22',0,'\0','1','\0','student','');
+INSERT INTO `users` VALUES (1,'All cash','1','1',0,'\0','1','','lib',NULL),(1699,'Sergey Afonso','30001','Via Margutta, 3',0,'','1','\0','professor',''),(1700,'Nadia Teixeira','30002','Via Sacra, 13',0,'','1','\0','professor',''),(1701,'Elvira Espindola','30003','Via del Corso, 22',0,'','1','\0','professor',''),(1702,'Andrey Velo','30004','Avenida Mazatlan 250',0,'\0','1','\0','student',''),(1703,'Veronika Rama','30005','Stret Atocha, 27',0,'\0','1','\0','visitingProf','');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -309,4 +307,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-04-02 11:46:08
+-- Dump completed on 2018-04-04 11:59:23
