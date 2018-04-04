@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -12,6 +13,7 @@ public class Main {
         sc = new Scanner(System.in);
 
         boolean isTesting = false;
+        Database.DeleteAllFromDBAndCreateLibrarian();
 
         /**
          * if want test program set isTesting true

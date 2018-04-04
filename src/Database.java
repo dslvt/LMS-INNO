@@ -908,6 +908,17 @@ public class Database {
         return patron;
     }
 
+    public static void DeleteAllFromDBAndCreateLibrarian(){
+        try{
+            String[] tables = {"av_materials",  "books", "journal_articles", "journals", "libtasks", "request", "users", "documents", "booking"};
+            for (int i = 0; i < tables.length; i++) {
+                DeleteAllInTable(tables[i]);
+            }
+            Database.ExecuteQuery("INSERT INTO `users` (`id`, `name`, `phoneNumber`, `address`, `debt`, `isFacultyMember`, `password`, `isLibrarian`, `type`) VALUES ('1', 'All cash', '1', '1', '0', b'0', '1', b'1', 'lib');");
 
-
+            System.out.println("All deleted");
+        }catch (Exception e){
+            System.out.println("Error in DeleteAllFromDBAndCreateLibrarian: " + e.toString());
+        }
+    }
 }
