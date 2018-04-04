@@ -22,5 +22,8 @@ https://dev.mysql.com/downloads/connector/j/
 Import it to your project
 If you use IntelliJ IDEA, go to File -> Project Structure -> Libraries -> Click green plus -> find .jar file
 
+5 step(not necessary)
+If you want run third delivery tests, go to Run -> Edit Configurations -> Write to "VM options:" -ea
+
 ------------------
 If something dont work, please write me("@d_slvt")
