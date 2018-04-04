@@ -10,6 +10,8 @@ Download our database file
 In class database write your url, user and password.
 ![alt text](https://cdn.pbrd.co/images/Hawx15Z.png)
 
+If host == sql11.freemysqlhosting.net, then all works in our host
+
 3 step 
 
 Download JDBC Driver and unzip it to somewhere
