@@ -11,7 +11,7 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-        boolean isTesting = true;
+        boolean isTesting = false;
 
         /**
          * if want test program set isTesting true
@@ -52,6 +52,7 @@ public class Main {
             tester.t9();
             tester.t10();
         }else{
+            CurrentSession.setDate = 0L;
             FirstWindow window = new FirstWindow();
             window.setVisible(true);
         }
