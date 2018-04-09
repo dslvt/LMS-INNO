@@ -545,9 +545,7 @@ public class Database {
             statement = connection.createStatement();
             resultSet = statement.executeQuery("SELECT * FROM users WHERE id =" + id);
             resultSet.next();
-            boolean isLibrarian = resultSet.getBoolean("isLibrarian");
-
-            return isLibrarian;
+            return resultSet.getBoolean("isLibrarian");
 
         } catch (SQLException e) {
             System.out.println("Error is in isLibrarian method: " + e.toString());
@@ -592,12 +590,7 @@ public class Database {
         try {
             resultSet = statement.executeQuery("SELECT Count(*) AS total FROM request WHERE id_document ="+document.id);
             resultSet.next();
-            if(resultSet.getInt("total")>0){
-                return true;
-            }
-            else {
-                return false;
-            }
+            return resultSet.getInt("total")>0;
         } catch (SQLException e) {
             System.out.println("Error in isRequestDocument: "+ e.toString());
         }
