@@ -1,3 +1,4 @@
+import javax.xml.crypto.Data;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -11,13 +12,14 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-        FirstWindow window = new FirstWindow();
-        window.setVisible(true);
+        boolean isTesting = false;
+        Database.DeleteAllFromDBAndCreateLibrarian();
 
         /**
-         * if want test program incomment need test
+         * if want test program set isTesting true
          */
-        Tester tester = new Tester();
+        if(isTesting) {
+            Tester tester = new Tester();
 //        tester.tc1();
 //        tester.tc2();
 //        tester.tc3();
@@ -41,16 +43,21 @@ public class Main {
 //        tester.init3();
 //        tester.findUsersAndBooks();
 //        tester.clearHistory();
-        tester.t1();
-        tester.t2();
-        tester.t3();
-        tester.t4();
-        tester.t5();
-        tester.t6();
-        tester.t7();
-        tester.t8();
-        tester.t9();
-        tester.t10();
+            tester.t1();
+            tester.t2();
+            tester.t3();
+            tester.t4();
+            tester.t5();
+            tester.t6();
+            tester.t7();
+            tester.t8();
+            tester.t9();
+            tester.t10();
+        }else{
+            CurrentSession.setDate = 0L;
+            FirstWindow window = new FirstWindow();
+            window.setVisible(true);
+        }
     }
 
     /**

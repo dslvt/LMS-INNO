@@ -45,7 +45,7 @@ public class Librarian extends User {
     public void sendRequest(Document document, Patron patron) {
         try {
             Statement statement = Database.connection.createStatement();
-            statement.executeUpdate("INSERT INTO request SET id_user = " + patron.id + ", id_document = " + document.id + "message = 'You should return this book'");
+            statement.executeUpdate("INSERT INTO request SET id_user = " + patron.id + ", id_document = " + document.id + ", message = 'You should return this book';");
 
         } catch (SQLException e) {
             System.out.println("Error in sendRequest: " + e.toString());
