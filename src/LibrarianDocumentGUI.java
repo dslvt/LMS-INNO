@@ -71,9 +71,9 @@ class LibrarianDocumentGUI extends JFrame{
         Create.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                menuWindow.dispose();
                 int index = table.getSelectedRow();
                 if(index != -1){
+                    menuWindow.dispose();
                     Document document = documents.get(index);
                     document.location = "its not important";
                     document.addCopies(1, CurrentSession.user.id);
@@ -91,9 +91,9 @@ class LibrarianDocumentGUI extends JFrame{
         EditBook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                menuWindow.dispose();
                 int index = table.getSelectedRow();
                 if (index != -1) {
+                    menuWindow.dispose();
                     CurrentSession.editDocument = documents.get(index);
                     if (documents.get(index).type == DocumentType.book) {
                         AddBookGUI book = new AddBookGUI();
@@ -112,9 +112,9 @@ class LibrarianDocumentGUI extends JFrame{
         DeleteBook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                menuWindow.dispose();
                 int index = table.getSelectedRow();
                 if (index != -1) {
+                    menuWindow.dispose();
                     documents.get(index).DeleteFromDB(CurrentSession.user.id);
                     String message = "Book succesfully deleted!";
                     JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);

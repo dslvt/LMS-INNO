@@ -113,6 +113,7 @@ class LibrarianUserOptionsGUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 int index = table.getSelectedRow();
                 if(index != -1){
+                    menuWindow.dispose();
                     CurrentSession.editUser = Database.getPatronByNumber(users.get(index).get(1));
                     EditUserGUI edit =  new EditUserGUI();
                     CurrentSession.editUser.ModifyUserDB(CurrentSession.editUser.name, CurrentSession.editUser.password, CurrentSession.editUser.phoneNumber,
@@ -141,6 +142,12 @@ class LibrarianUserOptionsGUI extends JFrame{
         });
 
         AddUser.addActionListener(new RegisterWindow());
+        AddUser.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                menuWindow.dispose();
+            }
+        });
         menuWindow.setVisible(true);
     }
 }

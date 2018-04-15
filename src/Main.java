@@ -12,7 +12,7 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-        boolean isTesting = false;
+        boolean isTesting = true;
         Database.DeleteAllFromDBAndCreateLibrarian();
 
         /**
@@ -58,6 +58,9 @@ public class Main {
             FirstWindow window = new FirstWindow();
             window.setVisible(true);
         }
+        CurrentSession.setDate = 0L;
+        FirstWindow window = new FirstWindow();
+        window.setVisible(true);
     }
 
     /**

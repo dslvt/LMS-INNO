@@ -30,7 +30,7 @@ class RegisterWindow extends JFrame implements ActionListener {
         this.setTitle("Sign Up");
         signUp.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         Container containerSU = signUp.getContentPane();
-        containerSU.setLayout(new GridLayout(6, 2, 2, 2));
+        containerSU.setLayout(new GridLayout(5, 2, 2, 2));
         containerSU.add(labelNameSU);
         containerSU.add(textFieldNameSU);
         containerSU.add(labelPhoneNumberSU);

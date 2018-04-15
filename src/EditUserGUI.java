@@ -59,6 +59,7 @@ public class EditUserGUI extends JFrame{
                     CurrentSession.editUser.isFacultyMember = false;
                 }
                 signUp.setVisible(false);
+                LibrarianUserOptionsGUI librarianUserOptionsGUI = new LibrarianUserOptionsGUI();
             }
         });
         containerSU.add(submit);
