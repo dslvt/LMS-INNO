@@ -12,7 +12,7 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-        boolean isTesting = true;
+        boolean isTesting = false;
         Database.DeleteAllFromDBAndCreateLibrarian();
 
         /**
@@ -53,14 +53,14 @@ public class Main {
             tester.t8();
             tester.t9();
             tester.t10();
+//            CurrentSession.setDate = 0L;
+//            FirstWindow window = new FirstWindow();
+//            window.setVisible(true);
         }else{
             CurrentSession.setDate = 0L;
             FirstWindow window = new FirstWindow();
             window.setVisible(true);
         }
-        CurrentSession.setDate = 0L;
-        FirstWindow window = new FirstWindow();
-        window.setVisible(true);
     }
 
     /**

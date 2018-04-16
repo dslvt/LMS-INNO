@@ -1,4 +1,9 @@
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,10 +17,14 @@ class LibrarianUserOptionsGUI extends JFrame{
     private JButton AddUser = new JButton("Add User");
     private JButton ShowInfo = new JButton("Show Info");
     private JButton Debtors = new JButton("Debtors");
+    private TableRowSorter<TableModel> rowSorter;
+    private JTextField jtfFilter = new JTextField();
+    private JButton jbtFilter = new JButton("Filter");
+    private JLabel jLabel = new JLabel("Search");
 
     public LibrarianUserOptionsGUI(){
         JFrame menuWindow = new JFrame();
-        menuWindow.setBounds(100, 100, 300, 368);
+        menuWindow.setBounds(100, 100, 300, 400);
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
@@ -61,11 +70,22 @@ class LibrarianUserOptionsGUI extends JFrame{
                 usersAr[i][j] = users.get(i).get(j);
             }
         }
-
-        JTable table = new JTable(usersAr, columnNames);
+        DefaultTableModel model = new DefaultTableModel(usersAr, columnNames);
+        JTable table = new JTable(model);
         JScrollPane listScroller = new JScrollPane(table);
         table.setFillsViewportHeight(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        rowSorter = new TableRowSorter<>(table.getModel());
+        table.setRowSorter(rowSorter);
+        jtfFilter.setPreferredSize(new Dimension(220, 20));
+        jLabel.setPreferredSize(new Dimension(50, 20));
+        JPanel panel = new JPanel(new FlowLayout());
+        panel.add(jLabel);
+        panel.add(jtfFilter);
+        panel.setPreferredSize(new Dimension(290, 25));
+        containerM.add(panel);
+
+//        containerM.add(jtfFilter);
         listScroller.setPreferredSize(new Dimension(290,100));
         containerM.add(listScroller);
         EditUser.setPreferredSize(new Dimension(290, 40));
@@ -78,6 +98,30 @@ class LibrarianUserOptionsGUI extends JFrame{
         containerM.add(ShowInfo);
         Debtors.setPreferredSize(new Dimension(290, 40));
         containerM.add(Debtors);
+        jtfFilter.getDocument().addDocumentListener(new DocumentListener(){
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                String text = jtfFilter.getText();
+                if (text.trim().length() == 0) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+            }
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                String text = jtfFilter.getText();
+                if (text.trim().length() == 0) {
+                    rowSorter.setRowFilter(null);
+                } else {
+                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                }
+            }
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
+            }
+        });
         Debtors.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
