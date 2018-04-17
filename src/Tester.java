@@ -299,7 +299,7 @@ public class Tester {
             for (int i = 0; i < tables.length; i++) {
                 Database.DeleteAllInTable(tables[i]);
             }
-            Database.ExecuteQuery("INSERT INTO `users` (`id`, `name`, `phoneNumber`, `address`, `debt`, `isFacultyMember`, `password`, `isLibrarian`, `type`) VALUES ('1', 'All cash', '1', '1', '0', b'0', '1', b'1', 'lib');");
+            Database.ExecuteQuery("INSERT INTO `users` (`id`, `name`, `phoneNumber`, `address`, `debt`, `isFacultyMember`, `password`, `isLibrarian`, `type`) VALUES ('1', 'All cash', '1', '1', '0', b'0', '1', b'1', 'admin');");
             lib = Database.getPatronById(1);
 
             Book book1 = new Book("Introduction to Algorithms", new ArrayList(Arrays.asList(authors[0])), 0, new ArrayList<>(), false, "MIT Press", "Third edition", 2009, false, "lib", true);
@@ -653,7 +653,7 @@ public class Tester {
             for (int i = 0; i < tables.length; i++) {
                 Database.DeleteAllInTable(tables[i]);
             }
-            Database.ExecuteQuery("INSERT INTO `users` (`id`, `name`, `phoneNumber`, `address`, `debt`, `isFacultyMember`, `password`, `isLibrarian`, `type`) VALUES ('1', 'All cash', '1', '1', '0', b'0', '1', b'1', 'lib');");
+            Database.ExecuteQuery("INSERT INTO `users` (`id`, `name`, `phoneNumber`, `address`, `debt`, `isFacultyMember`, `password`, `isLibrarian`, `type`) VALUES ('1', 'All cash', '1', '1', '0', b'0', '1', b'1', 'admin');");
             lib = Database.getPatronById(1);
 
             Book book1 = new Book(title[0], new ArrayList(Arrays.asList(authors[0])), price[0], new ArrayList<>(), false, publisher[0], edition[0], year[0], false, "lib", true);
@@ -890,7 +890,7 @@ public class Tester {
 
             CurrentSession.setDate = April2Date;
             Librarian librarian = new Librarian();
-            librarian.sendOutstandingRequest(booksIds.get(3));
+            Database.sendOutstandingRequest(booksIds.get(3),librarian);
 
             Booking.setDate = April2Date;
             ArrayList<LibTask> renewLibTasks = new ArrayList<>();
@@ -986,7 +986,7 @@ public class Tester {
             t6();
 
             Librarian librarian = new Librarian();
-            librarian.sendOutstandingRequest(booksIds.get(6));
+            Database.sendOutstandingRequest(booksIds.get(6), librarian);
 
             ArrayList<Patron> patrons = Database.getDocumentQueue(booksIds.get(6));
             ArrayList<String> messages = new ArrayList<>();

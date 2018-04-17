@@ -72,7 +72,7 @@ public class EditUserSelectGUI extends JFrame {
                         CurrentSession.editUser = Database.getPatronByNumber(users.get(index).get(1));
                         EditUserGUI edit =  new EditUserGUI();
                         CurrentSession.editUser.ModifyUserDB(CurrentSession.editUser.name, CurrentSession.editUser.password, CurrentSession.editUser.phoneNumber,
-                                CurrentSession.editUser.address, CurrentSession.editUser.isFacultyMember, CurrentSession.editUser.debt, false, CurrentSession.user.id);
+                                CurrentSession.editUser.address, CurrentSession.editUser.isFacultyMember, CurrentSession.editUser.debt, Patron.getParsedPatronType(CurrentSession.editUser.type), false, CurrentSession.user.id);
                     }
                     else{
                         String message = "Select a student!\n";

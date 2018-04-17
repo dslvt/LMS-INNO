@@ -29,7 +29,7 @@ public class Journal extends Document {
      */
     @Override
     public void CreateDocumentInDB(int idLibrarian) {
-        if (Database.isLibrarian(idLibrarian)) {
+        if (Database.isLibrarianPriv2(idLibrarian)) {
             Statement statement;
             ResultSet resultSet;
             PreparedStatement preparedStatement;
@@ -83,7 +83,7 @@ public class Journal extends Document {
 
     public ArrayList<Document> addCopies(int copies, int idLibrarian) {
         ArrayList<Document> newCopies = new ArrayList<>();
-        if (Database.isLibrarian(idLibrarian)) {
+        if (Database.isLibrarianPriv2(idLibrarian)) {
             PreparedStatement preparedStatement;
             Statement statement;
             ResultSet resultSet;
@@ -126,7 +126,7 @@ public class Journal extends Document {
 
     public void ModifyInDB(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords,
                            boolean isReference, String publicationDate, String issue, String editor, String location, int idLibrarian) {
-        if (Database.isLibrarian(idLibrarian)) {
+        if (Database.isLibrarianPriv1(idLibrarian)) {
             PreparedStatement preparedStatement;
             try {
                 Integer lastId = Database.isDocumentExist(this);
@@ -162,7 +162,7 @@ public class Journal extends Document {
 
     @Override
     public void DeleteFromDB(int idLibrarian) {
-        if (Database.isLibrarian(idLibrarian)) {
+        if (Database.isLibrarianPriv3(idLibrarian)) {
             Statement statement;
             try {
                 statement = Database.connection.createStatement();
@@ -185,7 +185,7 @@ public class Journal extends Document {
     }
 
     public void deleteCopies(int copies, int idLibrarian) {
-        if (Database.isLibrarian(idLibrarian)) {
+        if (Database.isLibrarianPriv3(idLibrarian)) {
             Statement statement;
             try {
                 statement = Database.connection.createStatement();

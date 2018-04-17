@@ -13,14 +13,14 @@ public class Database {
 //    private static final String user = "admin";
 //    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
 
-    private static final String url = "jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11230608?useSSL=false";
-    private static final String user = "sql11230608";
-    private static final String password = "m7dRhGgCmP";
+//    private static final String url = "jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11230608?useSSL=false";
+//    private static final String user = "sql11230608";
+//    private static final String password = "m7dRhGgCmP";
 
     //private static final String password = "333999333tima";
-//    String user = "root";
-//    String password = "enaca2225";
-//    String url = "jdbc:mysql://localhost:3306/project_new?useSSL=false";
+    String user = "root";
+    String password = "enaca2225";
+    String url = "jdbc:mysql://localhost:3306/project_new?useSSL=false";
 //    String password = "123123123Aa";
 //    String url = "jdbc:mysql://localhost:3306/db?useSSL=false";
 
@@ -553,6 +553,70 @@ public class Database {
         return false;
     }
 
+    public static boolean isLibrarianPriv1(int id){
+        try{
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM users WHERE id =" + id);
+            resultSet.next();
+            String type = resultSet.getString("type");
+            if(Librarian.getCorrectLibrarianType(type).equals(LibrarianType.Priv1)||
+                    Librarian.getCorrectLibrarianType(type).equals(LibrarianType.Priv2)||
+                    Librarian.getCorrectLibrarianType(type).equals(LibrarianType.Priv3)||
+                    type.equals("admin")){
+                return true;
+            }
+        }catch (Exception e){
+            System.out.println("Error in isLibrarianPriv1: "+ e.toString());
+        }
+        return false;
+    }
+
+    public static boolean isLibrarianPriv2(int id){
+        try{
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM users WHERE id =" + id);
+            resultSet.next();
+            String type = resultSet.getString("type");
+            if(Librarian.getCorrectLibrarianType(type).equals(LibrarianType.Priv2)||
+                    Librarian.getCorrectLibrarianType(type).equals(LibrarianType.Priv3)||
+                    type.equals("admin")){
+                return true;
+            }
+        }catch (Exception e){
+            System.out.println("Error in isLibrarianPriv2: "+ e.toString());
+        }
+        return false;
+    }
+
+    public static boolean isLibrarianPriv3(int id){
+        try{
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM users WHERE id =" + id);
+            resultSet.next();
+            String type = resultSet.getString("type");
+            if(Librarian.getCorrectLibrarianType(type).equals(LibrarianType.Priv3)||type.equals("admin")){
+                return true;
+            }
+        }catch (Exception e){
+            System.out.println("Error in isLibrarianPriv3: "+ e.toString());
+        }
+        return false;
+    }
+
+    public static boolean isAdmin(int id){
+        try{
+            statement = connection.createStatement();
+            resultSet = statement.executeQuery("SELECT * FROM users WHERE id =" + id);
+            resultSet.next();
+            if(resultSet.getString("type").equals("admin")){
+                return true;
+            }
+        }catch (Exception e){
+            System.out.println("Error in isAdmin: "+ e.toString());
+        }
+        return false;
+    }
+
     public static ArrayList<LibTask> getAllLibTasks(){
         String query = "select * from libtasks order by id";
         ArrayList<LibTask> ans = new ArrayList<>();
@@ -832,7 +896,7 @@ public class Database {
             rs.next();
 
             Librarian librarian = new Librarian(rs.getString("name"), rs.getString("phoneNumber"),
-                    rs.getString("address"));
+                    rs.getString("address"), Librarian.getCorrectLibrarianType(rs.getString("type")));
 
             librarian.id = rs.getInt("id");
 
@@ -901,17 +965,66 @@ public class Database {
         return patron;
     }
 
-    public static void DeleteAllFromDBAndCreateLibrarian(){
+    public static void DeleteAllFromDBAndCreateAdmin(){
         try{
             String[] tables = {"av_materials",  "books", "journal_articles", "journals", "libtasks", "request", "users", "documents", "booking"};
             for (int i = 0; i < tables.length; i++) {
                 DeleteAllInTable(tables[i]);
             }
-            Database.ExecuteQuery("INSERT INTO `users` (`id`, `name`, `phoneNumber`, `address`, `debt`, `isFacultyMember`, `password`, `isLibrarian`, `type`) VALUES ('1', 'All cash', '1', '1', '0', b'0', '1', b'1', 'lib');");
+            Database.ExecuteQuery("INSERT INTO `users` (`id`, `name`, `phoneNumber`, `address`, `debt`, `isFacultyMember`, `password`, `isLibrarian`, `type`) VALUES ('1', 'All cash', '1', '1', '0', b'0', '1', b'1', 'admin');");
 
             System.out.println("All deleted");
         }catch (Exception e){
             System.out.println("Error in DeleteAllFromDBAndCreateLibrarian: " + e.toString());
         }
     }
+
+    public static void sendOutstandingRequest(Document document, Librarian librarian) {
+        try {
+            if(librarian.type.equals(LibrarianType.Priv2)){
+                ResultSet resultSet = Database.SelectFromDB("SELECT*FROM libtasks WHERE id_document = " + Integer.toString(document.id) + " and type = 'checkout'");
+                Integer id_user;
+                Integer id_document;
+                boolean mark = true;
+                while (resultSet.next()) {
+                    id_user = resultSet.getInt("id_user");
+                    id_document = resultSet.getInt("id_document");
+                    if (id_user != null && id_document != null) {
+                        Database.ExecuteQuery("INSERT INTO request SET id_user = " + id_user + ", id_document = " + id_document + ", message = '" + RequestsText.removed_queue_en + "'");
+                    } else {
+                        mark = false;
+                    }
+                }
+                if (mark) {
+                    Database.ExecuteQuery("DELETE FROM libtasks WHERE id_document = " + Integer.toString(document.id) + " and type = 'checkout'");
+
+                    resultSet = Database.SelectFromDB("SELECT*FROM booking WHERE document_id = " + Integer.toString(document.id));
+                    while (resultSet.next()) {
+                        Database.ExecuteQuery("INSERT INTO request SET id_user = " + resultSet.getInt("user_id") + ", id_document = " + resultSet.getInt("document_id") + ", message = '" + RequestsText.return_book_en + "'");
+                    }
+                }
+
+                ArrayList<Integer> documentIds = new ArrayList<>();
+                ResultSet rs = Database.SelectFromDB("select * from documents where id_" + document.type.toString() + "s = " + Integer.toString(document.localId));
+                while (rs.next()) {
+                    documentIds.add(rs.getInt("id"));
+                }
+
+                Statement st = Database.connection.createStatement();
+
+                java.util.Date date = new java.util.Date();
+                if (CurrentSession.setDate != 0L)
+                    date.setTime(CurrentSession.setDate);
+                java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
+
+                for (int i = 0; i < documentIds.size(); i++) {
+                    st.executeUpdate("UPDATE booking set returnTime = '" + timestamp + "', is_renew = '" + 1 + "' WHERE document_id = '" + documentIds.get(i) + "'");
+                }
+            }
+
+        } catch (Exception e) {
+            System.out.println("Error in sendOutstandingRequest: " + e.toString());
+        }
+    }
+
 }

@@ -13,7 +13,7 @@ public class Main {
         sc = new Scanner(System.in);
 
         boolean isTesting = false;
-        Database.DeleteAllFromDBAndCreateLibrarian();
+        Database.DeleteAllFromDBAndCreateAdmin();
 
         /**
          * if want test program set isTesting true
@@ -46,7 +46,7 @@ public class Main {
             tester.t1();
             tester.t2();
             tester.t3();
-            tester.t4();
+//            tester.t4();
             tester.t5();
             tester.t6();
             tester.t7();

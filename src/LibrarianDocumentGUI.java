@@ -171,8 +171,13 @@ class LibrarianDocumentGUI extends JFrame{
         AddBook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                menuWindow.dispose();
-                AddDocumentGUI books = new AddDocumentGUI();
+                if(Database.isLibrarianPriv2(CurrentSession.user.id)) {
+                    menuWindow.dispose();
+                    AddDocumentGUI books = new AddDocumentGUI();
+                }
+                else{
+                    System.out.println("Error in AddBookGUI: user doesn't have access to add new document");
+                }
             }
         });
         outstandingRequest.addActionListener(new ActionListener() {
@@ -181,7 +186,7 @@ class LibrarianDocumentGUI extends JFrame{
                 int index = table.getSelectedRow();
                 if(index != -1){
                         Librarian librarian = (Librarian)CurrentSession.user;
-                        librarian.sendOutstandingRequest(documents.get(index));
+                        Database.sendOutstandingRequest(documents.get(index), librarian);
                         String message = "Done!\n";
                         JOptionPane.showMessageDialog(null, message, "SUCCESS", JOptionPane.PLAIN_MESSAGE);
 

@@ -11,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-class LibrarianUserOptionsGUI extends JFrame{
+class LibrarianUserOptionsGUI extends JFrame {
     private JButton EditUser = new JButton("Edit User");
     private JButton DeleteUser = new JButton("Delete User");
     private JButton AddUser = new JButton("Add User");
@@ -22,7 +22,7 @@ class LibrarianUserOptionsGUI extends JFrame{
     private JButton jbtFilter = new JButton("Filter");
     private JLabel jLabel = new JLabel("Search");
 
-    public LibrarianUserOptionsGUI(){
+    public LibrarianUserOptionsGUI() {
         JFrame menuWindow = new JFrame();
         menuWindow.setBounds(100, 100, 300, 400);
         menuWindow.setLocationRelativeTo(null);
@@ -33,14 +33,14 @@ class LibrarianUserOptionsGUI extends JFrame{
 
         String[] columnNames = {"Name", "Login", "Debt", "Type", "Address"};
         ArrayList<ArrayList<String>> users = new ArrayList<>();
-        try{
+        try {
             Statement statement = Database.connection.createStatement();
-            ResultSet rs = statement.executeQuery("select * from users order by id");
-
+            ResultSet rs = statement.executeQuery("SELECT * FROM users ORDER BY id");
             int count = 0;
-            while (rs.next()){
+            while (rs.next()) {
                 boolean isActive = rs.getBoolean("isActive");
-                if(isActive) {
+                String type = rs.getString("type");
+                if((!type.equals("admin")&&Database.isAdmin(CurrentSession.user.id)||(isActive&&!Database.isAdmin(CurrentSession.user.id)))){
                     users.add(new ArrayList<String>());
                     users.get(count).add(rs.getString("name"));
                     users.get(count).add(rs.getString("phoneNumber"));
@@ -61,7 +61,7 @@ class LibrarianUserOptionsGUI extends JFrame{
                     count++;
                 }
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             System.out.println("Error in deleteuserGUI " + e.toString());
         }
         Object[][] usersAr = new Object[users.size()][5];
@@ -86,7 +86,7 @@ class LibrarianUserOptionsGUI extends JFrame{
         containerM.add(panel);
 
 //        containerM.add(jtfFilter);
-        listScroller.setPreferredSize(new Dimension(290,100));
+        listScroller.setPreferredSize(new Dimension(290, 100));
         containerM.add(listScroller);
         EditUser.setPreferredSize(new Dimension(290, 40));
         containerM.add(EditUser);
@@ -98,7 +98,7 @@ class LibrarianUserOptionsGUI extends JFrame{
         containerM.add(ShowInfo);
         Debtors.setPreferredSize(new Dimension(290, 40));
         containerM.add(Debtors);
-        jtfFilter.getDocument().addDocumentListener(new DocumentListener(){
+        jtfFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {
                 String text = jtfFilter.getText();
@@ -108,6 +108,7 @@ class LibrarianUserOptionsGUI extends JFrame{
                     rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
                 }
             }
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 String text = jtfFilter.getText();
@@ -117,6 +118,7 @@ class LibrarianUserOptionsGUI extends JFrame{
                     rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
                 }
             }
+
             @Override
             public void changedUpdate(DocumentEvent e) {
                 throw new UnsupportedOperationException("Not supported yet.");
@@ -134,18 +136,18 @@ class LibrarianUserOptionsGUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int index = table.getSelectedRow();
-                if(index != -1){
+                if (index != -1) {
                     Patron patron = Database.getPatronByNumber(users.get(index).get(1));
                     ArrayList<Document> docs = Database.getUserDocuments(patron);
                     String message = "";
                     for (int i = 0; i < docs.size(); i++) {
                         message += docs.get(i).name + "\n";
                     }
-                    if (message.equals("")){
+                    if (message.equals("")) {
                         message = "User has no books";
                     }
-                    JOptionPane.showMessageDialog(null,message, "Info", JOptionPane.PLAIN_MESSAGE);
-                } else{
+                    JOptionPane.showMessageDialog(null, message, "Info", JOptionPane.PLAIN_MESSAGE);
+                } else {
                     String message = "Select user!\n";
                     JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
                 }
@@ -156,14 +158,13 @@ class LibrarianUserOptionsGUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int index = table.getSelectedRow();
-                if(index != -1){
+                if (index != -1) {
                     menuWindow.dispose();
                     CurrentSession.editUser = Database.getPatronByNumber(users.get(index).get(1));
-                    EditUserGUI edit =  new EditUserGUI();
+                    EditUserGUI edit = new EditUserGUI();
                     CurrentSession.editUser.ModifyUserDB(CurrentSession.editUser.name, CurrentSession.editUser.password, CurrentSession.editUser.phoneNumber,
-                            CurrentSession.editUser.address, CurrentSession.editUser.isFacultyMember, CurrentSession.editUser.debt, false, CurrentSession.user.id);
-                }
-                else{
+                            CurrentSession.editUser.address, CurrentSession.editUser.isFacultyMember, CurrentSession.editUser.debt, Patron.getParsedPatronType(CurrentSession.editUser.type), false, CurrentSession.user.id);
+                } else {
                     String message = "Select a student!\n";
                     JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
                 }
@@ -174,11 +175,10 @@ class LibrarianUserOptionsGUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 int index = table.getSelectedRow();
-                if(index != -1){
+                if (index != -1) {
                     Patron patron = Database.getPatronByNumber(users.get(index).get(1));
                     patron.DeleteUserDB(CurrentSession.user.id);
-                }
-                else{
+                } else {
                     String message = "Select a student!\n";
                     JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
                 }
@@ -189,7 +189,12 @@ class LibrarianUserOptionsGUI extends JFrame{
         AddUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                menuWindow.dispose();
+                if(Database.isLibrarianPriv2(CurrentSession.user.id)) {
+                    menuWindow.dispose();
+                }
+                else{
+                    System.out.println("Error in AddUserGUI: user doesn't have access to add new user");
+                }
             }
         });
         menuWindow.setVisible(true);

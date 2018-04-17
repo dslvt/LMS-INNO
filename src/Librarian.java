@@ -6,14 +6,16 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 public class Librarian extends User {
+    public LibrarianType type;
 
     /**
      * common constructor
      */
-    public Librarian(String name, String phoneNumber, String address) {
+    public Librarian(String name, String phoneNumber, String address, LibrarianType type) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        this.type = type;
     }
 
 
@@ -28,7 +30,7 @@ public class Librarian extends User {
         try {
             PreparedStatement preparedStatement;
 
-            preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian) values(?, ?, ?, ?, ?, ?, ?)");
+            preparedStatement = Database.connection.prepareStatement("INSERT INTO users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian, type) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setString(1, this.name);
             preparedStatement.setString(2, this.phoneNumber);
             preparedStatement.setString(3, this.address);
@@ -36,10 +38,52 @@ public class Librarian extends User {
             preparedStatement.setBoolean(5, false);
             preparedStatement.setString(6, this.password);
             preparedStatement.setBoolean(7, true);
+            preparedStatement.setString(8, getParsedLibrarianType(type));
             preparedStatement.executeUpdate();
         } catch (Exception ex) {
             System.out.println("Error create librarian: " + ex.toString());
         }
+    }
+
+    @Override
+    public void ModifyUserDB(String name, String password, String phoneNumber, String address, boolean isFacultyMember, int debt, String type, boolean isLibrarian, int idLibrarian) {
+        if (Database.isAdmin(idLibrarian)) {
+            PreparedStatement preparedStatement;
+            try {
+                preparedStatement = Database.connection.prepareStatement("UPDATE users SET name = ?, phoneNumber = ?, address = ?, debt = ?, isFacultyMember = ?, password = ?, isLibrarian = ?, type = ? WHERE id = ?");
+                preparedStatement.setString(1, name);
+                preparedStatement.setString(2, phoneNumber);
+                preparedStatement.setString(3, address);
+                preparedStatement.setInt(4, debt);
+                preparedStatement.setBoolean(5, isFacultyMember);
+                preparedStatement.setString(6, password);
+                preparedStatement.setBoolean(7, isLibrarian);
+                preparedStatement.setString(8, type);
+                preparedStatement.setInt(9, this.id);
+                preparedStatement.executeUpdate();
+            } catch (SQLException e) {
+                System.out.println("Error in ModifyUserDB: " + e.toString());
+            }
+        } else {
+            System.out.println("Error: User does not have access to modify user");
+        }
+    }
+
+    @Override
+    public int DeleteUserDB(int idLibrarian) {
+        if (Database.isAdmin(idLibrarian)) {
+            try {
+                PreparedStatement ps = Database.connection.prepareStatement("DELETE FROM users WHERE id = ?");
+                ps.setInt(1, this.id);
+                ps.executeUpdate();
+                return 0;
+            } catch (Exception e) {
+                System.out.println("Error in DeleteUSERdb " + e.toString());
+            }
+        } else {
+            System.out.println("Error: User does not have access to delete user");
+        }
+        return -1;
     }
 
     public void sendRequest(Document document, Patron patron) {
@@ -49,52 +93,6 @@ public class Librarian extends User {
 
         } catch (SQLException e) {
             System.out.println("Error in sendRequest: " + e.toString());
-        }
-    }
-
-    public void sendOutstandingRequest(Document document) {
-        try {
-            ResultSet resultSet = Database.SelectFromDB("SELECT*FROM libtasks WHERE id_document = " + Integer.toString(document.id) + " and type = 'checkout'");
-            Integer id_user;
-            Integer id_document;
-            boolean mark = true;
-            while (resultSet.next()) {
-                id_user = resultSet.getInt("id_user");
-                id_document = resultSet.getInt("id_document");
-                if (id_user != null && id_document != null) {
-                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + id_user + ", id_document = " + id_document + ", message = '" + RequestsText.removed_queue_en +"'");
-                } else {
-                    mark = false;
-                }
-            }
-            if(mark) {
-                Database.ExecuteQuery("DELETE FROM libtasks WHERE id_document = " + Integer.toString(document.id) + " and type = 'checkout'");
-
-                resultSet = Database.SelectFromDB("SELECT*FROM booking WHERE document_id = " + Integer.toString(document.id));
-                while (resultSet.next()) {
-                    Database.ExecuteQuery("INSERT INTO request SET id_user = " + resultSet.getInt("user_id") + ", id_document = " + resultSet.getInt("document_id") + ", message = '"+RequestsText.return_book_en+"'");
-                }
-            }
-
-            ArrayList<Integer> documentIds = new ArrayList<>();
-            ResultSet rs = Database.SelectFromDB("select * from documents where id_" + document.type.toString() + "s = " + Integer.toString(document.localId));
-            while (rs.next()){
-                documentIds.add(rs.getInt("id"));
-            }
-
-            Statement st = Database.connection.createStatement();
-
-            java.util.Date date = new java.util.Date();
-            if(CurrentSession.setDate != 0L)
-                date.setTime(CurrentSession.setDate);
-            java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
-
-            for (int i = 0; i < documentIds.size(); i++) {
-                st.executeUpdate("UPDATE booking set returnTime = '" + timestamp + "', is_renew = '" + 1 + "' WHERE document_id = '" + documentIds.get(i) + "'");
-            }
-
-        } catch (Exception e) {
-            System.out.println("Error in sendOutstandingRequest: " + e.toString());
         }
     }
 
@@ -161,5 +159,42 @@ public class Librarian extends User {
         }
         return libTasks;
     }
+
+    public static String getParsedLibrarianType(LibrarianType pt) {
+        String ans = "";
+        switch (pt) {
+            case Priv1:
+                ans = "priv1";
+                break;
+            case Priv2:
+                ans = "priv2";
+                break;
+            case Priv3:
+                ans = "priv3";
+                break;
+            default:
+                ans = "admin";
+                break;
+        }
+
+        return ans;
+    }
+
+    public static LibrarianType getCorrectLibrarianType(String t) {
+        LibrarianType librarianType = null;
+        if (t.equals("priv1")) {
+            librarianType = LibrarianType.Priv1;
+        } else if (t.equals("priv2")) {
+            librarianType = LibrarianType.Priv2;
+        } else if (t.equals("priv3")) {
+            librarianType = LibrarianType.Priv3;
+        }
+        else{
+            librarianType = LibrarianType.admin;
+        }
+
+        return librarianType;
+    }
+
 
 }
