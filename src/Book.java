@@ -89,6 +89,8 @@ public class Book extends Document {
     }
 
     public ArrayList<Document> addCopies(int copies, int idLibrarian) {
+        Logging.CreateLog("addCopies book " + this.name, idLibrarian);
+
         ArrayList<Document> newCopies = new ArrayList<>();
         if (Database.isLibrarianPriv2(idLibrarian)) {
             PreparedStatement preparedStatement;

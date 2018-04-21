@@ -135,6 +135,7 @@ public class EventManager {
             boolean isCanExecureQuery = false;
             Booking booking = new Booking();
             if (libTask.type.equals("checkout")) {
+                Logging.CreateLog("checkout " + libTask.document.name, libTask.user.id);
                 int currentAmountOfDoc = Database.getAmountOfCurrentDocument(libTask.document);
                 if(currentAmountOfDoc > 0) {
                     this.DeleteQuery(libTask);
@@ -145,6 +146,8 @@ public class EventManager {
                     isCanExecureQuery = false;
                 }
             } else if (libTask.type.equals("return")) {
+                Logging.CreateLog("return " + libTask.document.name, libTask.user.id);
+
                 booking.returnBook(libTask.document, libTask.user);
                 int currentAmountOfDoc = Database.getAmountOfCurrentDocument(libTask.document);
                 int shift = currentAmountOfDoc - shiftOrderLeft(libTask.unic_key);
@@ -152,12 +155,16 @@ public class EventManager {
                 sentGetRequests(libTask.unic_key);
                 isCanExecureQuery = true;
             } else if (libTask.type.equals("registration")){
+                Logging.CreateLog("registration ", libTask.user.id);
+
                 PreparedStatement preparedStatement = Database.connection.prepareStatement("UPDATE users SET isActive = ? WHERE id = ?");
                 preparedStatement.setBoolean(1, true);
                 preparedStatement.setInt(2, libTask.user.id);
                 preparedStatement.executeUpdate();
                 isCanExecureQuery = true;
             } else if (libTask.type.equals("renew")){
+                Logging.CreateLog("return " + libTask.document.name, libTask.user.id);
+
                 booking.renewBook(libTask.document, libTask.user);
                 isCanExecureQuery = true;
             }

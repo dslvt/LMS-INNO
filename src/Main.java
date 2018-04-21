@@ -13,7 +13,7 @@ public class Main {
         sc = new Scanner(System.in);
 
         boolean isTesting = false;
-        Database.DeleteAllFromDBAndCreateAdmin();
+//        Database.DeleteAllFromDBAndCreateAdmin();
 
         /**
          * if want test program set isTesting true
