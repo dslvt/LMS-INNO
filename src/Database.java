@@ -49,8 +49,6 @@ public class Database {
     public static int isDocumentExist(Document document){
         int localId = -1;
         try {
-            int isDocExist = -1;
-
             statement = connection.createStatement();
             resultSet = statement.executeQuery("select id_av_materials, id_books, id_journals, id from documents");
 
