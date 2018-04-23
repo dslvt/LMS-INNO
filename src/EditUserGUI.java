@@ -17,7 +17,7 @@ public class EditUserGUI extends JFrame{
     private JButton submit = new JButton("Edit");
 
 
-    public EditUserGUI(){
+    public EditUserGUI(int user_id){
         JFrame signUp = new JFrame("Edit User");
         signUp.setBounds(100, 100, 250, 300);
         signUp.setLocationRelativeTo(null);
@@ -59,7 +59,7 @@ public class EditUserGUI extends JFrame{
                     CurrentSession.editUser.isFacultyMember = false;
                 }
                 signUp.setVisible(false);
-                LibrarianUserOptionsGUI librarianUserOptionsGUI = new LibrarianUserOptionsGUI();
+                LibrarianUserOptionsGUI librarianUserOptionsGUI = new LibrarianUserOptionsGUI(user_id);
             }
         });
         containerSU.add(submit);

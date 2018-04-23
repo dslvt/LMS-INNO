@@ -36,7 +36,7 @@ public class AddBookGUI extends JFrame {
     private Checkbox Reference = new Checkbox("Reference");
     private JButton add = new JButton("Accept");
 
-    public AddBookGUI(){
+    public AddBookGUI(int user_id){
         if(book != null) {
             Bestseller.setState(book.isBestseller);
             Reference.setState(book.isReference);
@@ -92,7 +92,7 @@ public class AddBookGUI extends JFrame {
                 }
                 CurrentSession.editDocument = null;
                 BookWindow.setVisible(false);
-                LibrarianDocumentGUI restart = new LibrarianDocumentGUI();
+                LibrarianDocumentGUI restart = new LibrarianDocumentGUI(user_id);
             }
         });
         containerSU.add(add);

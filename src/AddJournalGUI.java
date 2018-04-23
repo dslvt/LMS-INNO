@@ -35,7 +35,7 @@ public class AddJournalGUI extends JFrame {
 
     private JButton add = new JButton("Accept");
 
-    public AddJournalGUI(){
+    public AddJournalGUI(int user_id){
         Journal journal = (Journal) CurrentSession.editDocument;
         if(journal != null) {
             Reference.setState(journal.isReference);
@@ -91,7 +91,7 @@ public class AddJournalGUI extends JFrame {
                 journal.CreateDocumentInDB(CurrentSession.user.id);
                 CurrentSession.editDocument = null;
                 JournalWindow.setVisible(false);
-                LibrarianDocumentGUI restart = new LibrarianDocumentGUI();
+                LibrarianDocumentGUI restart = new LibrarianDocumentGUI(user_id);
             }
         });
         containerSU.add(add);

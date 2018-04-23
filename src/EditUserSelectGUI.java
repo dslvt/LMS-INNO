@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class EditUserSelectGUI extends JFrame {
     private JButton edit = new JButton("Edit");
 
-    public EditUserSelectGUI() {
+    public EditUserSelectGUI(int user_id) {
         try {
             JFrame tasks = new JFrame();
             tasks.setBounds(100, 100, 500, 400);
@@ -70,7 +70,7 @@ public class EditUserSelectGUI extends JFrame {
                     int index = table.getSelectedRow();
                     if(index != -1){
                         CurrentSession.editUser = Database.getPatronByNumber(users.get(index).get(1));
-                        EditUserGUI edit =  new EditUserGUI();
+                        EditUserGUI edit =  new EditUserGUI(user_id);
                         CurrentSession.editUser.ModifyUserDB(CurrentSession.editUser.name, CurrentSession.editUser.password, CurrentSession.editUser.phoneNumber,
                                 CurrentSession.editUser.address, CurrentSession.editUser.isFacultyMember, CurrentSession.editUser.debt, Patron.getParsedPatronType(CurrentSession.editUser.type), false, CurrentSession.user.id);
                     }

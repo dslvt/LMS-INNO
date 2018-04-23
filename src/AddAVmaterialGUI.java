@@ -8,27 +8,20 @@ import java.util.Arrays;
 
 public class AddAVmaterialGUI extends JFrame {
     AVmaterial material = (AVmaterial) CurrentSession.editDocument;
-
     private JLabel labelName = new JLabel("Name");
     private JTextField textFieldNameSU = new JTextField("", 5);
-
     private JLabel labelAuthor = new JLabel("Author");
     private JTextField textFieldAuthor = new JTextField("", 5);
-
     private JLabel labelPrice = new JLabel("Price");
     private JTextField textFieldPrice = new JTextField("", 5);
-
     private JLabel labelKeywords = new JLabel("Keywords");
     private JTextField textFieldKeywords = new JTextField("", 5);
-
     private JLabel labelLocation = new JLabel("Location");
     private JTextField textFieldLocation = new JTextField("", 5);
-
     private Checkbox Reference = new Checkbox("Reference");
-
     private JButton add = new JButton("Accept");
 
-    public AddAVmaterialGUI(){
+    public AddAVmaterialGUI(int user_id){
         if(material != null) {
             Reference.setState(material.isReference);
             textFieldNameSU.setText(material.name);
@@ -73,7 +66,7 @@ public class AddAVmaterialGUI extends JFrame {
                 CurrentSession.editDocument = null;
                 AVmaterialWindow.setVisible(false);
 
-                LibrarianDocumentGUI restart = new LibrarianDocumentGUI();
+                LibrarianDocumentGUI restart = new LibrarianDocumentGUI(user_id);
             }
         });
         containerSU.add(add);

@@ -15,6 +15,7 @@ public class Main {
         boolean isTesting = false;
 //        Database.DeleteAllFromDBAndCreateAdmin();
 
+
         /**
          * if want test program set isTesting true
          */
@@ -53,9 +54,9 @@ public class Main {
             tester.t8();
             tester.t9();
             tester.t10();
-//            CurrentSession.setDate = 0L;
-//            FirstWindow window = new FirstWindow();
-//            window.setVisible(true);
+            CurrentSession.setDate = 0L;
+            FirstWindow window = new FirstWindow();
+            window.setVisible(true);
         }else{
             CurrentSession.setDate = 0L;
             FirstWindow window = new FirstWindow();

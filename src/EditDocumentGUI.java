@@ -8,7 +8,7 @@ public class EditDocumentGUI  extends JFrame {
     private JButton editingBook = new JButton("Edit Book");
 
 
-    public EditDocumentGUI() {
+    public EditDocumentGUI(int user_id) {
         try {
             JFrame deleteBook = new JFrame();
             deleteBook.setBounds(100, 100, 250, 200);
@@ -45,13 +45,13 @@ public class EditDocumentGUI  extends JFrame {
                     int index = table.getSelectedRow();
 
                     if(documents.get(index).type == DocumentType.book){
-                        AddBookGUI book = new AddBookGUI();
+                        AddBookGUI book = new AddBookGUI(user_id);
                     }
                     else if (documents.get(index).type == DocumentType.journal){
-                        AddJournalGUI journal = new AddJournalGUI();
+                        AddJournalGUI journal = new AddJournalGUI(user_id);
                     }
                     else if (documents.get(index).type == DocumentType.av_material){
-                        AddAVmaterialGUI AVmaterial = new AddAVmaterialGUI();
+                        AddAVmaterialGUI AVmaterial = new AddAVmaterialGUI(user_id);
                     }
                 }
             });

@@ -62,7 +62,6 @@ class AddArticleGUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 CurrentSession.editDocument = null;
                 ArticleWindow.setVisible(false);
-
             }
         });
         containerSU.add(add);

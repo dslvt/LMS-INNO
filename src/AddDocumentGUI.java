@@ -19,7 +19,7 @@ class AddDocumentGUI  extends JFrame{
         Common.add(Journal);
     }
 
-    public AddDocumentGUI() {
+    public AddDocumentGUI(int user_id) {
         JFrame AddBook = new JFrame();
         AddBook.setBounds(100, 100, 200, 150);
         AddBook.setLocationRelativeTo(null);
@@ -37,13 +37,13 @@ class AddDocumentGUI  extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (Book.isSelected()){
-                    AddBookGUI book = new AddBookGUI();
+                    AddBookGUI book = new AddBookGUI(user_id);
                 }
                 else if (Journal.isSelected()){
-                    AddJournalGUI journal =  new AddJournalGUI();
+                    AddJournalGUI journal =  new AddJournalGUI(user_id);
                 }
                 else if (AVmaterial.isSelected()){
-                    AddAVmaterialGUI Avmaterial = new AddAVmaterialGUI();
+                    AddAVmaterialGUI Avmaterial = new AddAVmaterialGUI(user_id);
                 }
                 else if (Article.isSelected()){
                     AddArticleGUI article = new AddArticleGUI();

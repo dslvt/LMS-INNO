@@ -22,11 +22,18 @@ class LibrarianDocumentGUI extends JFrame{
     private TableRowSorter<TableModel> rowSorter;
     private JTextField jtfFilter = new JTextField();
     private JButton jbtFilter = new JButton("Filter");
+    private JLabel jLabel1 = new JLabel("Select search criteria");
+    private JComboBox selectForSearch;
     private JLabel jLabel = new JLabel("Search");
 
-    public LibrarianDocumentGUI() {
+    public LibrarianDocumentGUI(int user_id) {
         JFrame menuWindow = new JFrame();
-        menuWindow.setBounds(100, 100, 300, 460);
+        if(Database.isLibrarianPriv1(user_id))
+            menuWindow.setBounds(100, 100, 300, 410);
+        if(Database.isLibrarianPriv2(user_id))
+            menuWindow.setBounds(100, 100, 300, 450);
+        if(Database.isLibrarianPriv3(user_id) | Database.isAdmin(user_id))
+            menuWindow.setBounds(100, 100, 300, 490);
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
@@ -47,7 +54,16 @@ class LibrarianDocumentGUI extends JFrame{
         }
 
         String[] columnNames = {"Name", "Authors", "Location", "Price", "Type"};
-
+        String[] selecting = {"All","Name", "Authors", "Location", "Price", "Type"};
+        selectForSearch = new JComboBox(selecting);
+        selectForSearch.setSelectedIndex(0);
+        selectForSearch.setPreferredSize(new Dimension(130, 20));
+        jLabel1.setPreferredSize(new Dimension(130, 20));
+        JPanel panel1 = new JPanel(new FlowLayout());
+        panel1.add(jLabel1);
+        panel1.add(selectForSearch);
+        panel1.setPreferredSize(new Dimension(290, 25));
+        containerM.add(panel1);
         DefaultTableModel model = new DefaultTableModel(books, columnNames);
         table = new JTable(model);
         listScroller = new JScrollPane(table);
@@ -64,18 +80,104 @@ class LibrarianDocumentGUI extends JFrame{
         containerM.add(panel);
         listScroller.setPreferredSize(new Dimension(290, 118));
         containerM.add(listScroller);
+
         EditBook.setPreferredSize(new Dimension(290, 40));
         containerM.add(EditBook);
-        DeleteBook.setPreferredSize(new Dimension(290, 40));
-        containerM.add(DeleteBook);
-        AddBook.setPreferredSize(new Dimension(290, 40));
-        containerM.add(AddBook);
-        Create.setPreferredSize(new Dimension(290, 40));
-        containerM.add(Create);
-        Queue.setPreferredSize(new Dimension(290, 40));
-        containerM.add(Queue);
-        outstandingRequest.setPreferredSize(new Dimension(290, 40));
-        containerM.add(outstandingRequest);
+        EditBook.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int index = table.getSelectedRow();
+                if (index != -1) {
+                    menuWindow.dispose();
+                    CurrentSession.editDocument = documents.get(index);
+                    if (documents.get(index).type == DocumentType.book) {
+                        AddBookGUI book = new AddBookGUI(user_id);
+                    } else if (documents.get(index).type == DocumentType.journal) {
+                        AddJournalGUI journal = new AddJournalGUI(user_id);
+                    } else if (documents.get(index).type == DocumentType.av_material) {
+                        AddAVmaterialGUI AVmaterial = new AddAVmaterialGUI(user_id);
+                    }
+                } else {
+                    String message = "No row is selected\n" + "You need to select one to edit";
+                    JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                }
+            }
+        });
+
+        if(Database.isLibrarianPriv2(user_id) | Database.isLibrarianPriv3(user_id) | Database.isAdmin(user_id)) {
+            AddBook.setPreferredSize(new Dimension(290, 40));
+            containerM.add(AddBook);
+            AddBook.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(Database.isLibrarianPriv2(CurrentSession.user.id)) {
+                        menuWindow.dispose();
+                        AddDocumentGUI books = new AddDocumentGUI(user_id);
+                    }
+                    else{
+                        System.out.println("Error in AddBookGUI: user doesn't have access to add new document");
+                    }
+                }
+            });
+            Create.setPreferredSize(new Dimension(290, 40));
+            containerM.add(Create);
+            Create.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int index = table.getSelectedRow();
+                    if(index != -1){
+                        menuWindow.dispose();
+                        Document document = documents.get(index);
+                        document.location = "its not important";
+                        document.addCopies(1, CurrentSession.user.id);
+                        String message = "You created one copy of document";
+                        JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);
+                    }
+                    else{
+                        String message = "Select a book!\n";
+                        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                    }
+                    LibrarianDocumentGUI restart = new LibrarianDocumentGUI(user_id);
+                }
+            });
+            outstandingRequest.setPreferredSize(new Dimension(290, 40));
+            containerM.add(outstandingRequest);
+            outstandingRequest.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int index = table.getSelectedRow();
+                    if(index != -1){
+                        Librarian librarian = (Librarian)CurrentSession.user;
+                        Database.sendOutstandingRequest(documents.get(index), librarian);
+                        String message = "Done!\n";
+                        JOptionPane.showMessageDialog(null, message, "SUCCESS", JOptionPane.PLAIN_MESSAGE);
+
+                    }
+                }
+            });
+        }
+
+        if(Database.isLibrarianPriv3(user_id) | Database.isAdmin(user_id)){
+            DeleteBook.setPreferredSize(new Dimension(290, 40));
+            containerM.add(DeleteBook);
+            DeleteBook.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int index = table.getSelectedRow();
+                    if (index != -1) {
+                        menuWindow.dispose();
+                        documents.get(index).DeleteFromDB(CurrentSession.user.id);
+                        String message = "Book succesfully deleted!";
+                        JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);
+                    } else {
+                        String message = "Select a book!\n";
+                        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                    }
+                    LibrarianDocumentGUI restart = new LibrarianDocumentGUI(user_id);
+                }
+            });
+        }
+
         jtfFilter.getDocument().addDocumentListener(new DocumentListener(){
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -83,7 +185,11 @@ class LibrarianDocumentGUI extends JFrame{
                 if (text.trim().length() == 0) {
                     rowSorter.setRowFilter(null);
                 } else {
-                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                    int no = selectForSearch.getSelectedIndex();
+                    if(no == 0)
+                        rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                    else
+                        rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text, no-1));
                 }
             }
             @Override
@@ -92,7 +198,11 @@ class LibrarianDocumentGUI extends JFrame{
                 if (text.trim().length() == 0) {
                     rowSorter.setRowFilter(null);
                 } else {
-                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                    int no = selectForSearch.getSelectedIndex();
+                    if(no == 0)
+                        rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                    else
+                        rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text, no-1));
                 }
             }
             @Override
@@ -100,6 +210,9 @@ class LibrarianDocumentGUI extends JFrame{
                 throw new UnsupportedOperationException("Not supported yet.");
             }
         });
+
+        Queue.setPreferredSize(new Dimension(290, 40));
+        containerM.add(Queue);
         Queue.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -110,89 +223,6 @@ class LibrarianDocumentGUI extends JFrame{
             }
         });
 
-        Create.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
-                if(index != -1){
-                    menuWindow.dispose();
-                    Document document = documents.get(index);
-                    document.location = "its not important";
-                    document.addCopies(1, CurrentSession.user.id);
-                    String message = "You created one copy of document";
-                    JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);
-                }
-                else{
-                    String message = "Select a book!\n";
-                    JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
-                }
-                LibrarianDocumentGUI restart = new LibrarianDocumentGUI();
-            }
-        });
-
-        EditBook.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
-                if (index != -1) {
-                    menuWindow.dispose();
-                    CurrentSession.editDocument = documents.get(index);
-                    if (documents.get(index).type == DocumentType.book) {
-                        AddBookGUI book = new AddBookGUI();
-                    } else if (documents.get(index).type == DocumentType.journal) {
-                        AddJournalGUI journal = new AddJournalGUI();
-                    } else if (documents.get(index).type == DocumentType.av_material) {
-                        AddAVmaterialGUI AVmaterial = new AddAVmaterialGUI();
-                    }
-                } else {
-                    String message = "No row is selected\n" + "You need to select one to edit";
-                    JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
-                }
-            }
-        });
-
-        DeleteBook.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
-                if (index != -1) {
-                    menuWindow.dispose();
-                    documents.get(index).DeleteFromDB(CurrentSession.user.id);
-                    String message = "Book succesfully deleted!";
-                    JOptionPane.showMessageDialog(null, message, "New Window", JOptionPane.PLAIN_MESSAGE);
-                } else {
-                    String message = "Select a book!\n";
-                    JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
-                }
-                LibrarianDocumentGUI restart = new LibrarianDocumentGUI();
-            }
-        });
-
-        AddBook.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(Database.isLibrarianPriv2(CurrentSession.user.id)) {
-                    menuWindow.dispose();
-                    AddDocumentGUI books = new AddDocumentGUI();
-                }
-                else{
-                    System.out.println("Error in AddBookGUI: user doesn't have access to add new document");
-                }
-            }
-        });
-        outstandingRequest.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
-                if(index != -1){
-                        Librarian librarian = (Librarian)CurrentSession.user;
-                        Database.sendOutstandingRequest(documents.get(index), librarian);
-                        String message = "Done!\n";
-                        JOptionPane.showMessageDialog(null, message, "SUCCESS", JOptionPane.PLAIN_MESSAGE);
-
-                }
-            }
-        });
         menuWindow.setVisible(true);
     }
 }

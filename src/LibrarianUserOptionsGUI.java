@@ -20,17 +20,36 @@ class LibrarianUserOptionsGUI extends JFrame {
     private TableRowSorter<TableModel> rowSorter;
     private JTextField jtfFilter = new JTextField();
     private JButton jbtFilter = new JButton("Filter");
-    private JLabel jLabel = new JLabel("Search");
+    private JLabel jLabel1 = new JLabel("Select search criteria");
+    private JLabel jLabel2 = new JLabel("Search");
+    private JComboBox selectForSearch;
+    private JButton changeType = new JButton("Change type");
 
-    public LibrarianUserOptionsGUI() {
+    public LibrarianUserOptionsGUI(int user_id) {
         JFrame menuWindow = new JFrame();
-        menuWindow.setBounds(100, 100, 300, 400);
+        if (Database.isLibrarianPriv1(user_id))
+            menuWindow.setBounds(100, 100, 300, 347);
+        if (Database.isLibrarianPriv2(user_id))
+            menuWindow.setBounds(100, 100, 300, 387);
+        if(Database.isLibrarianPriv3(user_id))
+            menuWindow.setBounds(100, 100, 300, 427);
+        if (Database.isAdmin(user_id))
+            menuWindow.setBounds(100, 100, 300, 467);
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
         Container containerM = menuWindow.getContentPane();
         containerM.setLayout(new FlowLayout());
-
+        String[] selecting = {"All","Name", "Login", "Debt", "Type", "Address"};
+        selectForSearch = new JComboBox(selecting);
+        selectForSearch.setSelectedIndex(0);
+        selectForSearch.setPreferredSize(new Dimension(130, 20));
+        jLabel1.setPreferredSize(new Dimension(130, 20));
+        JPanel panel1 = new JPanel(new FlowLayout());
+        panel1.add(jLabel1);
+        panel1.add(selectForSearch);
+        panel1.setPreferredSize(new Dimension(290, 25));
+        containerM.add(panel1);
         String[] columnNames = {"Name", "Login", "Debt", "Type", "Address"};
         ArrayList<ArrayList<String>> users = new ArrayList<>();
         try {
@@ -78,59 +97,72 @@ class LibrarianUserOptionsGUI extends JFrame {
         rowSorter = new TableRowSorter<>(table.getModel());
         table.setRowSorter(rowSorter);
         jtfFilter.setPreferredSize(new Dimension(220, 20));
-        jLabel.setPreferredSize(new Dimension(50, 20));
-        JPanel panel = new JPanel(new FlowLayout());
-        panel.add(jLabel);
-        panel.add(jtfFilter);
-        panel.setPreferredSize(new Dimension(290, 25));
-        containerM.add(panel);
-
-//        containerM.add(jtfFilter);
+        jLabel2.setPreferredSize(new Dimension(50, 20));
+        JPanel panel2 = new JPanel(new FlowLayout());
+        panel2.add(jLabel2);
+        panel2.add(jtfFilter);
+        panel2.setPreferredSize(new Dimension(290, 25));
+        containerM.add(panel2);
         listScroller.setPreferredSize(new Dimension(290, 100));
         containerM.add(listScroller);
         EditUser.setPreferredSize(new Dimension(290, 40));
         containerM.add(EditUser);
-        DeleteUser.setPreferredSize(new Dimension(290, 40));
-        containerM.add(DeleteUser);
-        AddUser.setPreferredSize(new Dimension(290, 40));
-        containerM.add(AddUser);
-        ShowInfo.setPreferredSize(new Dimension(290, 40));
-        containerM.add(ShowInfo);
-        Debtors.setPreferredSize(new Dimension(290, 40));
-        containerM.add(Debtors);
-        jtfFilter.getDocument().addDocumentListener(new DocumentListener() {
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                String text = jtfFilter.getText();
-                if (text.trim().length() == 0) {
-                    rowSorter.setRowFilter(null);
-                } else {
-                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
-                }
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                String text = jtfFilter.getText();
-                if (text.trim().length() == 0) {
-                    rowSorter.setRowFilter(null);
-                } else {
-                    rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
-                }
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                throw new UnsupportedOperationException("Not supported yet.");
-            }
-        });
-        Debtors.addActionListener(new ActionListener() {
+        EditUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                DebtorsGUI debtors = new DebtorsGUI();
+                int index = table.getSelectedRow();
+                if (index != -1) {
+                    menuWindow.dispose();
+                    CurrentSession.editUser = Database.getPatronByNumber(users.get(index).get(1));
+                    EditUserGUI edit = new EditUserGUI(user_id);
+                    CurrentSession.editUser.ModifyUserDB(CurrentSession.editUser.name, CurrentSession.editUser.password, CurrentSession.editUser.phoneNumber,
+                            CurrentSession.editUser.address, CurrentSession.editUser.isFacultyMember, CurrentSession.editUser.debt, Patron.getParsedPatronType(CurrentSession.editUser.type), false, CurrentSession.user.id);
+                } else {
+                    String message = "Select a student!\n";
+                    JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                }
             }
         });
-
+        if(Database.isLibrarianPriv2(user_id) | Database.isLibrarianPriv3(user_id) | Database.isAdmin(user_id)) {
+            AddUser.setPreferredSize(new Dimension(290, 40));
+            containerM.add(AddUser);
+            AddUser.addActionListener(new RegisterWindow());
+            AddUser.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    if(Database.isLibrarianPriv2(CurrentSession.user.id)) {
+                        menuWindow.dispose();
+                    }
+                    else{
+                        System.out.println("Error in AddUserGUI: user doesn't have access to add new user");
+                    }
+                }
+            });
+        }
+        if(Database.isLibrarianPriv3(user_id) | Database.isAdmin(user_id)){
+            DeleteUser.setPreferredSize(new Dimension(290, 40));
+            containerM.add(DeleteUser);
+            DeleteUser.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int index = table.getSelectedRow();
+                    if (index != -1) {
+                        Patron patron = Database.getPatronByNumber(users.get(index).get(1));
+                        patron.DeleteUserDB(CurrentSession.user.id);
+                    } else {
+                        String message = "Select a student!\n";
+                        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                    }
+                }
+            });
+        }
+        if(Database.isAdmin(user_id)) {
+            changeType.setPreferredSize(new Dimension(290, 40));
+            containerM.add(changeType);
+            // What it does?
+        }
+        ShowInfo.setPreferredSize(new Dimension(290, 40));
+        containerM.add(ShowInfo);
         // I have changed AllUsers directly to ShowInfo
         ShowInfo.addActionListener(new ActionListener() {
             @Override
@@ -153,50 +185,49 @@ class LibrarianUserOptionsGUI extends JFrame {
                 }
             }
         });
-
-        EditUser.addActionListener(new ActionListener() {
+        Debtors.setPreferredSize(new Dimension(290, 40));
+        containerM.add(Debtors);
+        Debtors.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
-                if (index != -1) {
-                    menuWindow.dispose();
-                    CurrentSession.editUser = Database.getPatronByNumber(users.get(index).get(1));
-                    EditUserGUI edit = new EditUserGUI();
-                    CurrentSession.editUser.ModifyUserDB(CurrentSession.editUser.name, CurrentSession.editUser.password, CurrentSession.editUser.phoneNumber,
-                            CurrentSession.editUser.address, CurrentSession.editUser.isFacultyMember, CurrentSession.editUser.debt, Patron.getParsedPatronType(CurrentSession.editUser.type), false, CurrentSession.user.id);
+                DebtorsGUI debtors = new DebtorsGUI();
+            }
+        });
+        jtfFilter.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                String text = jtfFilter.getText();
+                if (text.trim().length() == 0) {
+                    rowSorter.setRowFilter(null);
                 } else {
-                    String message = "Select a student!\n";
-                    JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                    int no = selectForSearch.getSelectedIndex();
+                    if(no == 0)
+                        rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                    else
+                        rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text, no-1));
                 }
             }
-        });
 
-        DeleteUser.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                int index = table.getSelectedRow();
-                if (index != -1) {
-                    Patron patron = Database.getPatronByNumber(users.get(index).get(1));
-                    patron.DeleteUserDB(CurrentSession.user.id);
+            public void removeUpdate(DocumentEvent e) {
+                String text = jtfFilter.getText();
+                if (text.trim().length() == 0) {
+                    rowSorter.setRowFilter(null);
                 } else {
-                    String message = "Select a student!\n";
-                    JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                    int no = selectForSearch.getSelectedIndex();
+                    if(no == 0)
+                        rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text));
+                    else
+                        rowSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text, no-1));
                 }
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                throw new UnsupportedOperationException("Not supported yet.");
             }
         });
 
-        AddUser.addActionListener(new RegisterWindow());
-        AddUser.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(Database.isLibrarianPriv2(CurrentSession.user.id)) {
-                    menuWindow.dispose();
-                }
-                else{
-                    System.out.println("Error in AddUserGUI: user doesn't have access to add new user");
-                }
-            }
-        });
         menuWindow.setVisible(true);
     }
 }

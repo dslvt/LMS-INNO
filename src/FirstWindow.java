@@ -2,6 +2,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.sql.ResultSet;
 import javax.swing.*;
+import javax.xml.crypto.Data;
 
 public class FirstWindow extends JFrame{
     private JButton buttonSingIn =  new JButton("Sign in");
@@ -43,8 +44,9 @@ public class FirstWindow extends JFrame{
                     closeFirstWindow();
                     if(Database.isLibrarian(user_id)){
                         CurrentSession.user = Database.getLibrarianByNumber(textFieldPhoneNumber.getText());
-                        LibrarianGUI librarianGUI = new LibrarianGUI();
-                    }else{
+                        LibrarianGUI librarianGUI = new LibrarianGUI(user_id);
+                    }
+                    else{
                         CurrentSession.user = Database.getPatronByNumber(textFieldPhoneNumber.getText());
                         MenuWindow menuWindow = new MenuWindow();
                     }
