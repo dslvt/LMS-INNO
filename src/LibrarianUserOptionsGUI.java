@@ -23,7 +23,8 @@ class LibrarianUserOptionsGUI extends JFrame {
     private JLabel jLabel1 = new JLabel("Select search criteria");
     private JLabel jLabel2 = new JLabel("Search");
     private JComboBox selectForSearch;
-    private JButton changeType = new JButton("Change type");
+    private JButton upgrade = new JButton("Upgrade");
+    private JComboBox selectForUpgrade;
 
     public LibrarianUserOptionsGUI(int user_id) {
         JFrame menuWindow = new JFrame();
@@ -157,9 +158,28 @@ class LibrarianUserOptionsGUI extends JFrame {
             });
         }
         if(Database.isAdmin(user_id)) {
-            changeType.setPreferredSize(new Dimension(290, 40));
-            containerM.add(changeType);
-            // What it does?
+            upgrade.setPreferredSize(new Dimension(290, 40));
+            String[] searching = {"priv1", "priv2", "priv3"};
+            selectForUpgrade = new JComboBox(searching);
+            selectForUpgrade.setSelectedIndex(0);
+            JPanel panelka = new JPanel(new GridLayout(1,2,2,2));
+            panelka.add(selectForSearch);
+            panelka.add(upgrade);
+            containerM.add(panelka);
+            upgrade.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int index = table.getSelectedRow();
+                    if (index != -1){
+                        //menuWindow.dispose();
+                        // Function
+                    }
+                    else {
+                        String message = "Select user!\n";
+                        JOptionPane.showMessageDialog(null, message, "ERROR", JOptionPane.PLAIN_MESSAGE);
+                    }
+                }
+            });
         }
         ShowInfo.setPreferredSize(new Dimension(290, 40));
         containerM.add(ShowInfo);
