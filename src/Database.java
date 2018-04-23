@@ -19,10 +19,10 @@ public class Database {
 
     //private static final String password = "333999333tima";
     String user = "root";
-//    String password = "enaca2225";
-//    String url = "jdbc:mysql://localhost:3306/project_new?useSSL=false";
-    String password = "123123123Aa";
-    String url = "jdbc:mysql://localhost:3306/db?useSSL=false";
+    String password = "enaca2225";
+    String url = "jdbc:mysql://localhost:3306/project_new?useSSL=false";
+//    String password = "123123123Aa";
+//    String url = "jdbc:mysql://localhost:3306/db?useSSL=false";
 
     public static Connection connection;
     private static Statement statement;
@@ -538,6 +538,25 @@ public class Database {
         return user;
     }
 
+    public static Librarian getLibrarianById(int id){
+        String query = "select * from users where id="+Integer.toString(id);
+        Librarian user = null;
+        try{
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery(query);
+            if(rs.next()) {
+
+                user = new Librarian(rs.getString("name"), rs.getString("phoneNumber"),
+                        rs.getString("address"), Librarian.getCorrectLibrarianType(rs.getString("type")));
+                user.id = id;
+            }
+        }catch (Exception e){
+            System.out.println("Database get_user_by_id: " + e.toString());
+        }
+
+        return user;
+    }
+
     public static boolean isLibrarian(int id){
         try {
             statement = connection.createStatement();
@@ -1025,4 +1044,31 @@ public class Database {
         }
     }
 
+    public static void upgradeToLibrarian(User user, String type, int idLibrarian) {
+        if(Database.isAdmin(idLibrarian)) {
+            try {
+                if (user instanceof Patron) {
+                    if (Database.getUserDocuments((Patron) user).isEmpty()) {
+                        System.out.println("did patron");
+                        Database.ExecuteQuery("UPDATE users set isFacultyMember = 0, isLibrarian = 1, type = '" + type + "', isActive = 0 WHERE id = '" + user.id + "'");
+                    }
+                    else{
+                        System.out.println("Error in upgradeToLibrarian: user has documents");
+                    }
+                } else {
+                    System.out.println("did librarian");
+                    Database.ExecuteQuery("UPDATE users set type = '" + type + "' WHERE id = '" + user.id + "'");
+                }
+            } catch (Exception e) {
+                System.out.println("Error in upgradeToLibrarian: " + e.toString());
+            }
+        }
+        else
+        {
+            System.out.println("Error in upgradeToLibrarian: user doesn't have access");
+        }
+    }
+
 }
+
+

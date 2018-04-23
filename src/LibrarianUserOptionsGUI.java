@@ -51,7 +51,7 @@ class LibrarianUserOptionsGUI extends JFrame {
         panel1.add(selectForSearch);
         panel1.setPreferredSize(new Dimension(290, 25));
         containerM.add(panel1);
-        String[] columnNames = {"Name", "Login", "Debt", "Type", "Address"};
+        String[] columnNames = {"Name", "Login", "Debt", "Type", "Address", "Id"};
         ArrayList<ArrayList<String>> users = new ArrayList<>();
         try {
             Statement statement = Database.connection.createStatement();
@@ -77,6 +77,8 @@ class LibrarianUserOptionsGUI extends JFrame {
 
                     users.get(count).add(userType);
                     users.get(count).add(rs.getString("address"));
+                    int hah = rs.getInt("id");
+                    users.get(count).add(Integer.toString(hah));
 
                     count++;
                 }
@@ -84,9 +86,9 @@ class LibrarianUserOptionsGUI extends JFrame {
         } catch (Exception e) {
             System.out.println("Error in deleteuserGUI " + e.toString());
         }
-        Object[][] usersAr = new Object[users.size()][5];
+        Object[][] usersAr = new Object[users.size()][6];
         for (int i = 0; i < users.size(); i++) {
-            for (int j = 0; j < 5; j++) {
+            for (int j = 0; j < 6; j++) {
                 usersAr[i][j] = users.get(i).get(j);
             }
         }
@@ -172,7 +174,15 @@ class LibrarianUserOptionsGUI extends JFrame {
                     int index = table.getSelectedRow();
                     if (index != -1){
                         //menuWindow.dispose();
-                        // Function
+                        int userId = Integer.parseInt(users.get(index).get(5));
+                        if(Database.isLibrarian(userId)) {
+                            Database.upgradeToLibrarian(Database.getLibrarianById(userId),(String)selectForUpgrade.getSelectedItem(),CurrentSession.user.id);
+                            System.out.println("librarian");
+                        }
+                        else{
+                            Database.upgradeToLibrarian(Database.getPatronById(userId),(String)selectForUpgrade.getSelectedItem(),CurrentSession.user.id);
+                            System.out.println("patron");
+                        }
                     }
                     else {
                         String message = "Select user!\n";
