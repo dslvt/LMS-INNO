@@ -40,6 +40,14 @@ public class Librarian extends User {
             preparedStatement.setBoolean(7, true);
             preparedStatement.setString(8, getParsedLibrarianType(type));
             preparedStatement.executeUpdate();
+
+            Statement statement = Database.connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
+            int lastId = 0;
+            if (resultSet.next()) {
+                lastId = resultSet.getInt(1);
+            }
+            this.id = lastId;
         } catch (Exception ex) {
             System.out.println("Error create librarian: " + ex.toString());
         }
