@@ -42,7 +42,7 @@ class LibrarianGUI extends JFrame{
         if(Database.isAdmin(user_id))
             containerM.setLayout(new GridLayout(6, 1, 2, 2));
         else
-            containerM.setLayout(new GridLayout(5, 1, 2, 2));
+           containerM.setLayout(new GridLayout(5, 1, 2, 2));
         containerM.add(Books);
         containerM.add(Users);
         containerM.add(Tasks);
@@ -127,7 +127,7 @@ class IntTextField extends JTextField {
         try {
             Integer.parseInt(getText());
             return true;
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -135,7 +135,7 @@ class IntTextField extends JTextField {
     public int getValue() {
         try {
             return Integer.parseInt(getText());
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             return 0;
         }
     }
@@ -150,7 +150,7 @@ class IntTextField extends JTextField {
             try {
                 Integer.parseInt(newString + "0");
                 super.insertString(offs, str, a);
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
             }
         }
     }

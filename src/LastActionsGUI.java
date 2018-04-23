@@ -10,7 +10,7 @@ public class LastActionsGUI extends JFrame {
 
     public LastActionsGUI(int number){
         JFrame menuWindow = new JFrame();
-        menuWindow.setBounds(100, 100, 310, 310);
+        menuWindow.setBounds(100, 100, 250, 250);
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Last actions");
@@ -25,8 +25,7 @@ public class LastActionsGUI extends JFrame {
         table = new JTable(obj, str);
         JScrollPane listScroller = new JScrollPane(table);
         table.setFillsViewportHeight(true);
-        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        listScroller.setPreferredSize(new Dimension(300, 300));
+        listScroller.setPreferredSize(new Dimension(245, 245));
         containerM.add(listScroller);
         menuWindow.setVisible(true);
     }
