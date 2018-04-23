@@ -31,13 +31,13 @@ class LibrarianUserOptionsGUI extends JFrame {
     public LibrarianUserOptionsGUI(int user_id) {
         JFrame menuWindow = new JFrame();
         if (Database.isLibrarianPriv1(user_id))
-            menuWindow.setBounds(100, 100, 300, 347);
+            menuWindow.setBounds(100, 100, 300, 336);
         if (Database.isLibrarianPriv2(user_id))
-            menuWindow.setBounds(100, 100, 300, 387);
+            menuWindow.setBounds(100, 100, 300, 380);
         if(Database.isLibrarianPriv3(user_id))
-            menuWindow.setBounds(100, 100, 300, 427);
+            menuWindow.setBounds(100, 100, 300, 425);
         if (Database.isAdmin(user_id))
-            menuWindow.setBounds(100, 100, 300, 467);
+            menuWindow.setBounds(100, 100, 300, 470);
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
