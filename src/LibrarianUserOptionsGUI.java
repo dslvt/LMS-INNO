@@ -7,6 +7,8 @@ import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -39,9 +41,15 @@ class LibrarianUserOptionsGUI extends JFrame {
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
+        menuWindow.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                menuWindow.dispose();
+            }
+        });
         Container containerM = menuWindow.getContentPane();
         containerM.setLayout(new FlowLayout());
-        String[] selecting = {"All","Name", "Login", "Debt", "Type", "Address"};
+        String[] selecting = {"All","Name", "Authors", "Location", "Price", "Type"};
         selectForSearch = new JComboBox(selecting);
         selectForSearch.setSelectedIndex(0);
         selectForSearch.setPreferredSize(new Dimension(130, 20));
@@ -126,7 +134,7 @@ class LibrarianUserOptionsGUI extends JFrame {
                 }
             }
         });
-        if(Database.isLibrarianPriv2(user_id) | Database.isLibrarianPriv3(user_id) | Database.isAdmin(user_id)) {
+        if(Database.isLibrarianPriv2(user_id) || Database.isLibrarianPriv3(user_id) || Database.isAdmin(user_id)) {
             AddUser.setPreferredSize(new Dimension(290, 40));
             containerM.add(AddUser);
             AddUser.addActionListener(new RegisterWindow());
@@ -142,7 +150,7 @@ class LibrarianUserOptionsGUI extends JFrame {
                 }
             });
         }
-        if(Database.isLibrarianPriv3(user_id) | Database.isAdmin(user_id)){
+        if(Database.isLibrarianPriv3(user_id) || Database.isAdmin(user_id)){
             DeleteUser.setPreferredSize(new Dimension(290, 40));
             containerM.add(DeleteUser);
             DeleteUser.addActionListener(new ActionListener() {
@@ -160,12 +168,12 @@ class LibrarianUserOptionsGUI extends JFrame {
             });
         }
         if(Database.isAdmin(user_id)) {
-            upgrade.setPreferredSize(new Dimension(290, 40));
-            String[] searching = {"priv1", "priv2", "priv3"};
-            selectForUpgrade = new JComboBox(searching);
+            String[] types = {"priv1", "priv2", "priv3"};
+            selectForUpgrade = new JComboBox(types);
             selectForUpgrade.setSelectedIndex(0);
             JPanel panelka = new JPanel(new GridLayout(1,2,2,2));
-            panelka.add(selectForSearch);
+            panelka.setPreferredSize(new Dimension(285, 40));
+            panelka.add(selectForUpgrade);
             panelka.add(upgrade);
             containerM.add(panelka);
             upgrade.addActionListener(new ActionListener() {
@@ -173,16 +181,17 @@ class LibrarianUserOptionsGUI extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if (index != -1){
-                        //menuWindow.dispose();
                         int userId = Integer.parseInt(users.get(index).get(5));
                         if(Database.isLibrarian(userId)) {
                             Database.upgradeToLibrarian(Database.getLibrarianById(userId),(String)selectForUpgrade.getSelectedItem(),CurrentSession.user.id);
-                            System.out.println("librarian");
                         }
                         else{
                             Database.upgradeToLibrarian(Database.getPatronById(userId),(String)selectForUpgrade.getSelectedItem(),CurrentSession.user.id);
-                            System.out.println("patron");
                         }
+                        menuWindow.dispose();
+                        LibrarianUserOptionsGUI librarianUserOptionsGUI = new LibrarianUserOptionsGUI(user_id);
+                        String message = "Successful!\n";
+                        JOptionPane.showMessageDialog(null, message, "SUCCESS", JOptionPane.PLAIN_MESSAGE);
                     }
                     else {
                         String message = "Select user!\n";

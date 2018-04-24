@@ -8,6 +8,8 @@ import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 class LibrarianDocumentGUI extends JFrame{
@@ -37,10 +39,14 @@ class LibrarianDocumentGUI extends JFrame{
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
-        menuWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        menuWindow.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                menuWindow.dispose();
+            }
+        });
         Container containerM = menuWindow.getContentPane();
         containerM.setLayout(new FlowLayout());
-
         ArrayList<Document> documents = Database.getAllDocuments();
         Object[][] books = new Object[documents.size()][];
 
@@ -104,7 +110,7 @@ class LibrarianDocumentGUI extends JFrame{
             }
         });
 
-        if(Database.isLibrarianPriv2(user_id) | Database.isLibrarianPriv3(user_id) | Database.isAdmin(user_id)) {
+        if(Database.isLibrarianPriv2(user_id) || Database.isLibrarianPriv3(user_id) || Database.isAdmin(user_id)) {
             AddBook.setPreferredSize(new Dimension(290, 40));
             containerM.add(AddBook);
             AddBook.addActionListener(new ActionListener() {
@@ -157,7 +163,7 @@ class LibrarianDocumentGUI extends JFrame{
             });
         }
 
-        if(Database.isLibrarianPriv3(user_id) | Database.isAdmin(user_id)){
+        if(Database.isLibrarianPriv3(user_id) || Database.isAdmin(user_id)){
             DeleteBook.setPreferredSize(new Dimension(290, 40));
             containerM.add(DeleteBook);
             DeleteBook.addActionListener(new ActionListener() {
