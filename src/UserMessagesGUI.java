@@ -8,11 +8,18 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Vector;
 
+/**
+ * used to go another windows
+ */
 public class UserMessagesGUI extends JFrame{
     private JButton accept = new JButton("OK!");
 
+    /**
+     * constructor window
+     */
     public UserMessagesGUI() {
         try {
+            //window size
             JFrame tasks = new JFrame();
             tasks.setBounds(100, 100, 300, 400);
             tasks.setLocationRelativeTo(null);
@@ -34,6 +41,7 @@ public class UserMessagesGUI extends JFrame{
                 tasksA[i][2] = requests.get(i).message;
             }
 
+            //set size table
             JTable table = new JTable(tasksA, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             table.setFillsViewportHeight(true);
@@ -54,6 +62,7 @@ public class UserMessagesGUI extends JFrame{
                 }
             });
 
+            //set button size
             accept.setPreferredSize(new Dimension(100, 40));
             containerTB.add(accept, BorderLayout.SOUTH);
             tasks.setVisible(true);

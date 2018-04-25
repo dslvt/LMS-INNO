@@ -9,6 +9,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Vector;
 
+/**
+ * return document menu
+ */
 public class MyBooksGUI extends JFrame{
     private JList<String> allBooks;
     private Vector<Document> vector;
@@ -69,6 +72,8 @@ public class MyBooksGUI extends JFrame{
                     }
                 }
             });
+
+            //renew button
             renewBook.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

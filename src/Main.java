@@ -12,7 +12,7 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-        boolean isTesting = false;
+        boolean isTesting = true;
 
         /**
          * if want test program set isTesting true
