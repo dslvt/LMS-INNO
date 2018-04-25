@@ -11,11 +11,12 @@ public class Librarian extends User {
     /**
      * common constructor
      */
-    public Librarian(String name, String phoneNumber, String address, LibrarianType type) {
+    public Librarian(String name, String pass, String phoneNumber, String address, LibrarianType type) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.type = type;
+        this.password = pass;
     }
 
 
@@ -26,28 +27,31 @@ public class Librarian extends User {
 
     }
 
-    public void CreateUserDB() {
+    public void CreateUserDB(int idLibrarian) {
         try {
-            PreparedStatement preparedStatement;
+            if (Database.isAdmin(idLibrarian)) {
+                Logging.CreateLog("create " + name, idLibrarian);
+                PreparedStatement preparedStatement;
 
-            preparedStatement = Database.connection.prepareStatement("INSERT INTO users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian, type) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement.setString(1, this.name);
-            preparedStatement.setString(2, this.phoneNumber);
-            preparedStatement.setString(3, this.address);
-            preparedStatement.setInt(4, 0);
-            preparedStatement.setBoolean(5, false);
-            preparedStatement.setString(6, this.password);
-            preparedStatement.setBoolean(7, true);
-            preparedStatement.setString(8, getParsedLibrarianType(type));
-            preparedStatement.executeUpdate();
+                preparedStatement = Database.connection.prepareStatement("INSERT INTO users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian, type) VALUES(?, ?, ?, ?, ?, ?, ?, ?)");
+                preparedStatement.setString(1, this.name);
+                preparedStatement.setString(2, this.phoneNumber);
+                preparedStatement.setString(3, this.address);
+                preparedStatement.setInt(4, 0);
+                preparedStatement.setBoolean(5, false);
+                preparedStatement.setString(6, this.password);
+                preparedStatement.setBoolean(7, true);
+                preparedStatement.setString(8, getParsedLibrarianType(type));
+                preparedStatement.executeUpdate();
 
-            Statement statement = Database.connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
-            int lastId = 0;
-            if (resultSet.next()) {
-                lastId = resultSet.getInt(1);
+                Statement statement = Database.connection.createStatement();
+                ResultSet resultSet = statement.executeQuery("SELECT LAST_INSERT_ID();");
+                int lastId = 0;
+                if (resultSet.next()) {
+                    lastId = resultSet.getInt(1);
+                }
+                this.id = lastId;
             }
-            this.id = lastId;
         } catch (Exception ex) {
             System.out.println("Error create librarian: " + ex.toString());
         }

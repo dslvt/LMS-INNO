@@ -31,8 +31,10 @@ public class Patron extends User {
 
     }
 
-    public void CreateUserDB() {
+    public void CreateUserDB(int idLibrarian) {
         try {
+            Logging.CreateLog("created patron " + name, idLibrarian);
+
             PreparedStatement preparedStatement;
             preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian, type, isActive) values(?, ?, ?, ?, ?, ?, ?, ?, ?)");
             preparedStatement.setString(1, this.name);
