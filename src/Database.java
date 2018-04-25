@@ -9,13 +9,13 @@ import java.util.List;
 
 public class Database {
 
-    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
-    private static final String user = "admin";
-    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
+//    private static final String url = "jdbc:mysql://127.0.0.1:3306/mydbtest?useSSL=false";
+//    private static final String user = "admin";
+//    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
 
-//    private static final String url = "jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11230608?useSSL=false";
-//    private static final String user = "sql11230608";
-//    private static final String password = "m7dRhGgCmP";
+            private static final String url = "jdbc:mysql://sql7.freemysqlhosting.net:3306/sql7234613?useSSL=false";
+            private static final String user = "sql7234613";
+            private static final String password = "hgnvQfb4Kk";
 
     //private static final String password = "333999333tima";
 //    String user = "root";
