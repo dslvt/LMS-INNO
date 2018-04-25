@@ -11,6 +11,10 @@ class AddDocumentGUI  extends JFrame{
     private JRadioButton Journal = new JRadioButton("Journal");
     private JButton Choose = new JButton("Choose");
 
+
+    /**
+     * creating group of selectors
+     */
     private void groupButton(){
         ButtonGroup Common = new ButtonGroup();
         Common.add(Book);
@@ -19,6 +23,10 @@ class AddDocumentGUI  extends JFrame{
         Common.add(Journal);
     }
 
+    /**
+     * initialization of addDocumentGUI
+     * @param user_id uses for refresh GUI
+     */
     public AddDocumentGUI(int user_id) {
         JFrame AddBook = new JFrame();
         AddBook.setBounds(100, 100, 200, 150);
@@ -36,6 +44,7 @@ class AddDocumentGUI  extends JFrame{
         Choose.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //select correct GUI
                 if (Book.isSelected()){
                     AddBookGUI book = new AddBookGUI(user_id);
                 }

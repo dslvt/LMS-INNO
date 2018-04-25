@@ -13,6 +13,7 @@ import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 
 class LibrarianDocumentGUI extends JFrame{
+    //init all gui elements
     private JButton EditBook = new JButton("EditBook");
     private JButton DeleteBook = new JButton("Delete Book");
     private JButton AddBook = new JButton("Add Book");
@@ -28,6 +29,10 @@ class LibrarianDocumentGUI extends JFrame{
     private JComboBox selectForSearch;
     private JLabel jLabel = new JLabel("Search");
 
+    /**
+     * init GUI
+     * @param user_id uses to refresh window
+     */
     public LibrarianDocumentGUI(int user_id) {
         JFrame menuWindow = new JFrame();
         if(Database.isLibrarianPriv1(user_id))
@@ -50,6 +55,7 @@ class LibrarianDocumentGUI extends JFrame{
         ArrayList<Document> documents = Database.getAllDocuments();
         Object[][] books = new Object[documents.size()][];
 
+        //parse in table
         for (int i = 0; i < documents.size(); i++) {
             books[i] = new Object[5];
             books[i][0] = documents.get(i).name;
@@ -61,6 +67,8 @@ class LibrarianDocumentGUI extends JFrame{
 
         String[] columnNames = {"Name", "Authors", "Location", "Price", "Type"};
         String[] selecting = {"All","Name", "Authors", "Location", "Price", "Type"};
+
+        //init search and elements in gui box
         selectForSearch = new JComboBox(selecting);
         selectForSearch.setSelectedIndex(0);
         selectForSearch.setPreferredSize(new Dimension(130, 20));
@@ -89,6 +97,10 @@ class LibrarianDocumentGUI extends JFrame{
 
         EditBook.setPreferredSize(new Dimension(290, 40));
         containerM.add(EditBook);
+
+        /**
+         * edit book button
+         */
         EditBook.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -96,6 +108,8 @@ class LibrarianDocumentGUI extends JFrame{
                 if (index != -1) {
                     menuWindow.dispose();
                     CurrentSession.editDocument = documents.get(index);
+
+                    //select correct document's type
                     if (documents.get(index).type == DocumentType.book) {
                         AddBookGUI book = new AddBookGUI(user_id);
                     } else if (documents.get(index).type == DocumentType.journal) {
@@ -110,9 +124,12 @@ class LibrarianDocumentGUI extends JFrame{
             }
         });
 
+        //has user enough prevs
         if(Database.isLibrarianPriv2(user_id) || Database.isLibrarianPriv3(user_id) || Database.isAdmin(user_id)) {
             AddBook.setPreferredSize(new Dimension(290, 40));
             containerM.add(AddBook);
+
+            //close window
             AddBook.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -127,6 +144,8 @@ class LibrarianDocumentGUI extends JFrame{
             });
             Create.setPreferredSize(new Dimension(290, 40));
             containerM.add(Create);
+
+            //creatings copies
             Create.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -146,6 +165,8 @@ class LibrarianDocumentGUI extends JFrame{
                     LibrarianDocumentGUI restart = new LibrarianDocumentGUI(user_id);
                 }
             });
+
+            //send outstanding request
             outstandingRequest.setPreferredSize(new Dimension(290, 40));
             containerM.add(outstandingRequest);
             outstandingRequest.addActionListener(new ActionListener() {
@@ -163,6 +184,7 @@ class LibrarianDocumentGUI extends JFrame{
             });
         }
 
+        //delete book
         if(Database.isLibrarianPriv3(user_id) || Database.isAdmin(user_id)){
             DeleteBook.setPreferredSize(new Dimension(290, 40));
             containerM.add(DeleteBook);
@@ -184,6 +206,7 @@ class LibrarianDocumentGUI extends JFrame{
             });
         }
 
+        //init filter
         jtfFilter.getDocument().addDocumentListener(new DocumentListener(){
             @Override
             public void insertUpdate(DocumentEvent e) {
@@ -217,6 +240,7 @@ class LibrarianDocumentGUI extends JFrame{
             }
         });
 
+        //get document queue
         Queue.setPreferredSize(new Dimension(290, 40));
         containerM.add(Queue);
         Queue.addActionListener(new ActionListener() {
@@ -229,6 +253,7 @@ class LibrarianDocumentGUI extends JFrame{
             }
         });
 
+        //close window
         menuWindow.setVisible(true);
     }
 }

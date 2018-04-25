@@ -6,11 +6,19 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+/**
+ * window to edit users
+ */
 public class EditUserSelectGUI extends JFrame {
     private JButton edit = new JButton("Edit");
 
+    /**
+     * window constructor
+     * @param user_id used to refresh window
+     */
     public EditUserSelectGUI(int user_id) {
         try {
+            //set window size
             JFrame tasks = new JFrame();
             tasks.setBounds(100, 100, 500, 400);
             tasks.setLocationRelativeTo(null);
@@ -22,6 +30,7 @@ public class EditUserSelectGUI extends JFrame {
             String[] columnNames = {"Name", "Login", "Debt", "Type", "Address"};
             ArrayList<ArrayList<String>> users = new ArrayList<>();
 
+            //find all user data
             try{
                 Statement statement = Database.connection.createStatement();
                 ResultSet rs = statement.executeQuery("select * from users order by id");
@@ -51,6 +60,7 @@ public class EditUserSelectGUI extends JFrame {
                 System.out.println("Error in deleteuserGUI " + e.toString());
             }
 
+            //add user info into table
             Object[][] usersAr = new Object[users.size()][5];
             for (int i = 0; i < users.size(); i++) {
                 for (int j = 0; j < 5; j++) {
@@ -58,17 +68,20 @@ public class EditUserSelectGUI extends JFrame {
                 }
             }
 
+            //set table size
             JTable table = new JTable(usersAr, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             table.setFillsViewportHeight(true);
             listScroller.setPreferredSize(new Dimension(100,100));
             containerTB.add(listScroller, BorderLayout.CENTER);
 
+            //edit button
             edit.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     int index = table.getSelectedRow();
                     if(index != -1){
+                        //edit user in database
                         CurrentSession.editUser = Database.getPatronByNumber(users.get(index).get(1));
                         EditUserGUI edit =  new EditUserGUI(user_id);
                         CurrentSession.editUser.ModifyUserDB(CurrentSession.editUser.name, CurrentSession.editUser.password, CurrentSession.editUser.phoneNumber,
@@ -81,6 +94,7 @@ public class EditUserSelectGUI extends JFrame {
                 }
             });
 
+            //set edit button size
             edit.setPreferredSize(new Dimension(250, 40));
             containerTB.add(edit, BorderLayout.SOUTH);
             tasks.setVisible(true);

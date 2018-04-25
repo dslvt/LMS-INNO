@@ -21,6 +21,10 @@ public class AddAVmaterialGUI extends JFrame {
     private Checkbox Reference = new Checkbox("Reference");
     private JButton add = new JButton("Accept");
 
+    /**
+     * init constuctor
+     * @param user_id to refresh window
+     */
     public AddAVmaterialGUI(int user_id){
         if(material != null) {
             Reference.setState(material.isReference);
@@ -56,9 +60,12 @@ public class AddAVmaterialGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(CurrentSession.editDocument != null){
+                    //modifying avmaterial
                     material.ModifyInDB(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
                             new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(),  textFieldLocation.getText(), CurrentSession.user.id);
                 }else {
+
+                    //creating new avmaterial and creating its in database
                     AVmaterial aVmaterial = new AVmaterial(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
                             new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(), true, textFieldLocation.getText());
                     aVmaterial.CreateDocumentInDB(CurrentSession.user.id);

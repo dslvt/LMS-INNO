@@ -11,9 +11,13 @@ import java.util.Vector;
 public class LibrarianRequestGUI extends JFrame{
     private JButton SendRequest = new JButton("Send request");
 
-
+    /**
+     * librarian request GUI
+     * used to send requests
+     */
     public LibrarianRequestGUI() {
         try {
+            //init window and set plane properties
             JFrame takeBook = new JFrame();
             takeBook.setBounds(100, 100, 250, 200);
             takeBook.setLocationRelativeTo(null);
@@ -23,6 +27,7 @@ public class LibrarianRequestGUI extends JFrame{
             Container containerTB = takeBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
+            //parsed all documents with users and insert in into table
             String[] columnNames = {"User", "Book"};
             ArrayList<Pair<Document, Patron>> requests = Database.getAllDocumentsWithUsers();
             Object[][] requestA = new Object[requests.size()][2];
@@ -31,12 +36,14 @@ public class LibrarianRequestGUI extends JFrame{
                 requestA[i][1] = requests.get(i).first.name;
             }
 
+            //init table and set table properties
             JTable table = new JTable(requestA, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             table.setFillsViewportHeight(true);
             listScroller.setPreferredSize(new Dimension(100,100));
             containerTB.add(listScroller, BorderLayout.CENTER);
 
+            //send selected request
             SendRequest.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -54,6 +61,8 @@ public class LibrarianRequestGUI extends JFrame{
                     }
                 }
             });
+
+            //close window
             SendRequest.setPreferredSize(new Dimension(250, 40));
             containerTB.add(SendRequest, BorderLayout.SOUTH);
             takeBook.setVisible(true);

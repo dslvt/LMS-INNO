@@ -12,6 +12,7 @@ public class AllUsersGUI extends JFrame{
     public AllUsersGUI() {
 
         try {
+            //init gui
             JFrame users = new JFrame();
             users.setBounds(100, 100, 250, 200);
             users.setLocationRelativeTo(null);
@@ -21,6 +22,7 @@ public class AllUsersGUI extends JFrame{
             Container containerTB = users.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
+            //find all patrons and parse it in table
             String[] columnNames = {"Name", "Login"};
             ArrayList<Patron> patrons = Database.getAllPatrons();
             Object[][] names = new Object[patrons.size()][2];
@@ -36,6 +38,9 @@ public class AllUsersGUI extends JFrame{
 
             Booking booking = new Booking();
 
+            /**
+             * finding user documents
+             */
             ShowInfo.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {

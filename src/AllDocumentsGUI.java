@@ -10,6 +10,7 @@ public class AllDocumentsGUI extends JFrame{
     public AllDocumentsGUI() {
 
         try {
+            //init gui
             JFrame users = new JFrame();
             users.setBounds(100, 100, 250, 200);
             users.setLocationRelativeTo(null);
@@ -19,6 +20,7 @@ public class AllDocumentsGUI extends JFrame{
             Container containerTB = users.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
+            //find all documents and parse in table
             String[] columnNames = {"Name", "Author", "Price"};
             ArrayList<Document> docs = Database.getAllDocuments();
             Object[][] names = new Object[docs.size()][3];

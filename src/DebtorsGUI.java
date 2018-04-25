@@ -10,8 +10,11 @@ public class DebtorsGUI extends JFrame{
     private JButton ShowInfo = new JButton("Show info");
 
     private Librarian lb = new Librarian();
-    public DebtorsGUI() {
 
+    /**
+     * init gui
+     */
+    public DebtorsGUI() {
         try {
             JFrame users = new JFrame();
             users.setBounds(100, 100, 250, 200);
@@ -22,6 +25,7 @@ public class DebtorsGUI extends JFrame{
             Container containerTB = users.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
+            //parse names and find debtors
             String[] columnNames = {"Name", "Login"};
             ArrayList<Patron> patrons = lb.getDebtors();
             Object[][] names = new Object[patrons.size()][2];
@@ -30,6 +34,7 @@ public class DebtorsGUI extends JFrame{
                 names[i][1] = patrons.get(i).phoneNumber;
             }
 
+            //init table and add elements in container
             JTable table = new JTable(names, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             listScroller.setPreferredSize(new Dimension(100,100));
@@ -37,6 +42,9 @@ public class DebtorsGUI extends JFrame{
 
             Booking booking = new Booking();
 
+            /**
+             * find all user docs and get it in plane dialog
+             */
             ShowInfo.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -57,6 +65,8 @@ public class DebtorsGUI extends JFrame{
                     }
                 }
             });
+
+            //close window
             ShowInfo.setPreferredSize(new Dimension(250, 40));
             containerTB.add(ShowInfo, BorderLayout.SOUTH);
             users.setVisible(true);

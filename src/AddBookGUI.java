@@ -77,14 +77,18 @@ public class AddBookGUI extends JFrame {
         containerSU.add(textFieldPublishYear);
         containerSU.add(Bestseller);
         containerSU.add(Reference);
+
+        //init listener
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(CurrentSession.editDocument!=null) {
+                    //modifying book in database
                     book.ModifyInDB(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
                             new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(), textFieldPublisher.getText(), textFieldEdition.getText(),
                             Integer.parseInt(textFieldPublishYear.getText()), Bestseller.getState(), textFieldLocation.getText(), CurrentSession.user.id);
                 }else {
+                    //if book doesnt exist, create it in db
                     Book book = new Book(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))), Integer.parseInt(textFieldPrice.getText()),
                             new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))), Reference.getState(), textFieldPublisher.getText(), textFieldEdition.getText(),
                             Integer.parseInt(textFieldPublishYear.getText()), Bestseller.getState(), textFieldLocation.getText(), true);

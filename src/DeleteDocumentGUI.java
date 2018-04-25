@@ -8,8 +8,12 @@ public class DeleteDocumentGUI  extends JFrame {
     private JButton deletingBook = new JButton("Delete Document");
     private JButton deletingCopy = new JButton("Delete copy");
 
+    /**
+     * init GUI
+     */
     public DeleteDocumentGUI() {
         try {
+            //creating gui elements
             JFrame deleteBook = new JFrame();
             deleteBook.setBounds(100, 100, 250, 300);
             deleteBook.setLocationRelativeTo(null);
@@ -19,10 +23,9 @@ public class DeleteDocumentGUI  extends JFrame {
             Container containerTB = deleteBook.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
+            //parse all documents
             ArrayList<Document> documents = Database.getAllDocuments();
-
             Object[][] books = new Object[documents.size()][];
-
             for (int i = 0; i < documents.size(); i++) {
                 books[i] = new Object[4];
                 books[i][0] = documents.get(i).name;
@@ -31,15 +34,17 @@ public class DeleteDocumentGUI  extends JFrame {
                 books[i][3] = documents.get(i).price;
             }
 
+            //insert parsed documents into table
             String[] columnNames = {"Name", "Authors", "Location", "Price"};
-
-
             JTable table = new JTable(books, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             table.setFillsViewportHeight(true);
             listScroller.setPreferredSize(new Dimension(250,180));
             containerTB.add(listScroller, BorderLayout.NORTH);
 
+            /**
+             * delete selected document
+             */
             deletingBook.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -58,6 +63,9 @@ public class DeleteDocumentGUI  extends JFrame {
                 }
             });
 
+            /**
+             * deleting copy of documents
+             */
             deletingCopy.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -75,6 +83,8 @@ public class DeleteDocumentGUI  extends JFrame {
                     }
                 }
             });
+
+            //close window
             deletingBook.setPreferredSize(new Dimension(250, 40));
             containerTB.add(deletingBook, BorderLayout.CENTER);
             deletingCopy.setPreferredSize(new Dimension(250,40));

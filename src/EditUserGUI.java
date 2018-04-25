@@ -3,21 +3,29 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+/**
+ * used to edit user info
+ */
 public class EditUserGUI extends JFrame{
+    //different fields and labels
     private JLabel labelNameSU = new JLabel("Name");
     private JTextField textFieldNameSU = new JTextField(CurrentSession.editUser.name, 5);
     private JLabel labelPhoneNumberSU = new JLabel("Phone Number");
     private JTextField textFieldPhoneNumberSU = new JTextField(CurrentSession.editUser.phoneNumber, 5);
     private JLabel labelPasswordSU = new JLabel("Password");
     private JPasswordField fieldPasswordSU = new JPasswordField(CurrentSession.editUser.password, 5);
-    private JLabel labelAdressSU = new JLabel("Adress");
+    private JLabel labelAdressSU = new JLabel("Address");
     private JTextField textFieldAdressSU = new JTextField(CurrentSession.editUser.password, 5);
     private JRadioButton radioStudent = new JRadioButton("Student");
     private JRadioButton radioFacultyMember = new JRadioButton("Faculty Member");
     private JButton submit = new JButton("Edit");
 
-
+    /**
+     * window's constructor
+     * @param user_id used to refresh window
+     */
     public EditUserGUI(int user_id){
+        //set size and add in constructor
         JFrame signUp = new JFrame("Edit User");
         signUp.setBounds(100, 100, 250, 300);
         signUp.setLocationRelativeTo(null);
@@ -46,9 +54,11 @@ public class EditUserGUI extends JFrame{
             radioStudent.doClick();
         }
 
+        //submit button, add it to database
         submit.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //save it to current session
                 CurrentSession.editUser.phoneNumber = textFieldPhoneNumberSU.getText();
                 CurrentSession.editUser.name = textFieldNameSU.getText();
                 CurrentSession.editUser.password = fieldPasswordSU.getText();

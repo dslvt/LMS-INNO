@@ -3,10 +3,16 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+/**
+ * used to create, delete and execute libtasks
+ */
 public class EventManager {
 
     private Statement statement;
 
+    /**
+     * constructor
+     */
     public EventManager() {
         try {
             statement = Database.connection.createStatement();
@@ -15,6 +21,11 @@ public class EventManager {
         }
     }
 
+    /**
+     * get all libtasks
+     * @param withZeros get elements that has null priority
+     * @return
+     */
     public ArrayList<LibTask> GetElements(boolean withZeros) {
         ArrayList<LibTask> libTasks = new ArrayList<LibTask>();
         try {
@@ -39,6 +50,11 @@ public class EventManager {
         return libTasks;
     }
 
+    /**
+     * creates libtask and insert it into database
+     * @param libTask that we need create
+     * @return global id in database
+     */
     public int CreateQuery(LibTask libTask) {
         int id = 0;
         try {
@@ -71,6 +87,11 @@ public class EventManager {
         return id;
     }
 
+    /**
+     * may we create task or not
+     * @param libTask that we cheak
+     * @return result
+     */
     public boolean isCanCreateTask(LibTask libTask) {
         boolean ans = false;
         try {
@@ -84,6 +105,11 @@ public class EventManager {
         return ans;
     }
 
+    /**
+     * when we want get book we need insert it into queue. This method find correct position
+     * @param libTask that we want insert
+     * @return position in queue
+     */
     private int getCorrectPosInQueue(LibTask libTask) {
         int ans = -1;
         try {
@@ -111,12 +137,6 @@ public class EventManager {
                         break;
                     }
                 }
-
-//                ans = libTasks.get(locPos).queue;
-//                if (ans < 0){
-//                    ans = 0;
-//                    locPos++;
-//                }
                 if(locPos == libTasks.size()){
                     ans = libTasks.get(libTasks.size() - 1).queue + 1;
                 }
@@ -130,6 +150,10 @@ public class EventManager {
         return ans;
     }
 
+    /**
+     * execute our query
+     * @param libTask that we want execute
+     */
     public void ExecuteQuery(LibTask libTask) {
         try {
             boolean isCanExecureQuery = false;
@@ -176,6 +200,9 @@ public class EventManager {
         }
     }
 
+    /**
+     * get all posible requests
+     */
     public void checkRequest(){
         try{
             java.util.Date currentDay = new java.util.Date();
@@ -207,6 +234,10 @@ public class EventManager {
         }
     }
 
+    /**
+     * sent requests to all need users
+     * @param libTaskUnicKey is key need to find libtask by key
+     */
     private void sentGetRequests(String libTaskUnicKey) {
         try {
             ResultSet rs = Database.SelectFromDB("select * from libtasks where unic_key = '" + libTaskUnicKey + "' and type = 'checkout' order by queue");
@@ -222,6 +253,11 @@ public class EventManager {
         }
     }
 
+    /**
+     * shifting order to left
+     * @param unic key
+     * @return how much shifted
+     */
     private int shiftOrderLeft(String unic) {
         ArrayList<Integer> ids = new ArrayList<>();
         int ans = -1;
@@ -241,6 +277,11 @@ public class EventManager {
         return ans;
     }
 
+    /**
+     * move our order
+     * @param a shift value
+     * @param unic key
+     */
     private void moveOrder(int a, String unic) {
         try {
             ResultSet rs = Database.SelectFromDB("select * from libtasks where unic_key = '" + unic + "' order by queue");
@@ -253,6 +294,10 @@ public class EventManager {
         }
     }
 
+    /**
+     * delete query from database
+     * @param libTask that used book
+     */
     public void DeleteQuery(LibTask libTask) {
         try {
             PreparedStatement ps = Database.connection.prepareStatement("delete from libtasks where id = ?");

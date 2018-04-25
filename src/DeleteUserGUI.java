@@ -7,11 +7,18 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+/**
+ * used to delete users
+ */
 public class DeleteUserGUI extends JFrame {
     private JButton delete = new JButton("Delete");
 
+    /**
+     * gui constructor
+     */
     public DeleteUserGUI() {
         try {
+            //init window and set size
             JFrame tasks = new JFrame();
             tasks.setBounds(100, 100, 500, 400);
             tasks.setLocationRelativeTo(null);
@@ -21,6 +28,7 @@ public class DeleteUserGUI extends JFrame {
             Container containerTB = tasks.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
+            //find all user info
             String[] columnNames = {"Name", "Login", "Debt", "Type", "Address"};
             ArrayList<ArrayList<String>> users = new ArrayList<>();
 
@@ -53,6 +61,7 @@ public class DeleteUserGUI extends JFrame {
                 System.out.println("Error in deleteuserGUI " + e.toString());
             }
 
+            //set user info into table
             Object[][] usersAr = new Object[users.size()][5];
             for (int i = 0; i < users.size(); i++) {
                 for (int j = 0; j < 5; j++) {
@@ -60,12 +69,14 @@ public class DeleteUserGUI extends JFrame {
                 }
             }
 
+            //set table size
             JTable table = new JTable(usersAr, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             table.setFillsViewportHeight(true);
             listScroller.setPreferredSize(new Dimension(100,100));
             containerTB.add(listScroller, BorderLayout.CENTER);
 
+            //delete button, remove user from system
             delete.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -81,6 +92,7 @@ public class DeleteUserGUI extends JFrame {
                 }
             });
 
+            //set delete button size
             delete.setPreferredSize(new Dimension(250, 40));
             containerTB.add(delete, BorderLayout.SOUTH);
             tasks.setVisible(true);

@@ -22,6 +22,10 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
+/**
+ * its first librarian gui
+ */
+
 class LibrarianGUI extends JFrame{
     private JButton Books = new JButton("Books");
     private JButton Users = new JButton("Users");
@@ -31,12 +35,20 @@ class LibrarianGUI extends JFrame{
     private JButton logOut = new JButton("Log out");
     private IntTextField intTextField;
 
+    /**
+     * constructor gui
+     * @param user_id uses to refresh window
+     */
     public LibrarianGUI(int user_id){
+
+        //init menu window and set bounds, titles
         JFrame menuWindow = new JFrame();
         menuWindow.setBounds(100, 100, 250, 250);
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
+
+        //listener to exit program
         menuWindow.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -44,6 +56,8 @@ class LibrarianGUI extends JFrame{
                 System.exit(0);
             }
         });
+
+        //add all info in container
         Container containerM = menuWindow.getContentPane();
         if(Database.isAdmin(user_id))
             containerM.setLayout(new GridLayout(6, 1, 2, 2));
@@ -53,6 +67,8 @@ class LibrarianGUI extends JFrame{
         containerM.add(Users);
         containerM.add(Tasks);
         containerM.add(Request);
+
+        //show special buttons if its admin
         if(Database.isAdmin(user_id)){
             Panel panel = new Panel(new GridLayout(1, 2, 2, 2));
             intTextField = new IntTextField(10, 3);
@@ -62,6 +78,7 @@ class LibrarianGUI extends JFrame{
         }
         containerM.add(logOut);
 
+        //books button
         Books.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
@@ -69,6 +86,7 @@ class LibrarianGUI extends JFrame{
             }
         });
 
+        //get all user button
         Users.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -76,6 +94,7 @@ class LibrarianGUI extends JFrame{
             }
         });
 
+        //get all tasks button
         Tasks.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -83,6 +102,7 @@ class LibrarianGUI extends JFrame{
             }
         });
 
+        //show all request button
         Request.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -90,6 +110,7 @@ class LibrarianGUI extends JFrame{
             }
         });
 
+        //show last logs button
         LastActions.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -104,6 +125,7 @@ class LibrarianGUI extends JFrame{
             }
         });
 
+        //exit from system button
         logOut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -117,10 +139,16 @@ class LibrarianGUI extends JFrame{
             }
         });
 
+        //close window
         menuWindow.setVisible(true);
     }
 }
+
+/**
+ * is used to set amount of logs
+ */
 class IntTextField extends JTextField {
+    //constructor
     public IntTextField(int defval, int size) {
         super("" + defval, size);
     }
@@ -145,6 +173,8 @@ class IntTextField extends JTextField {
             return 0;
         }
     }
+
+    //text field
     class IntTextDocument extends PlainDocument {
         public void insertString(int offs, String str, AttributeSet a)
                 throws BadLocationException {
@@ -157,6 +187,7 @@ class IntTextField extends JTextField {
                 Integer.parseInt(newString + "0");
                 super.insertString(offs, str, a);
             } catch (Exception e) {
+                System.out.println("Error in libGUI, inttextdocument: " + e.toString());
             }
         }
     }
