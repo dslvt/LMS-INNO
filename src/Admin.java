@@ -1,12 +1,27 @@
 import java.sql.PreparedStatement;
 
+/**
+ * Class for creating Admin of the system
+ */
+
 public class Admin extends User {
+
+    /**
+     * Constructor of current class Admin
+     * @param name Name of user
+     * @param phoneNumber Phone number which is used as login
+     * @param address Address of user
+     */
 
     public Admin(String name, String phoneNumber, String address) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
     }
+
+    /**
+     * Create user with type "admin" in Database
+     */
 
     @Override
     public void CreateUserDB() {
@@ -28,10 +43,18 @@ public class Admin extends User {
         }
     }
 
+    /**
+     * This method is not used, it is created because of inheritance
+     */
+
     @Override
     public void ModifyUserDB(String name, String password, String phoneNumber, String address, boolean isFacultyMember, int debt, String type, boolean isLibrarian, int idLibrarian) {
         System.out.println("Error: you cannot modify admin");
     }
+
+    /**
+     * This method is not used, it is created because of inheritance
+     */
 
     @Override
     public int DeleteUserDB(int idLibrarian) {

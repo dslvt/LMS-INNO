@@ -50,6 +50,7 @@ public class Article extends Document {
         }
     }
 
+
     @Override
     public boolean isCanBeTaken() {
         return false;
@@ -60,8 +61,14 @@ public class Article extends Document {
         return null;
     }
 
+    /**
+     *
+     * @param copies
+     * @param idLibrarian
+     */
+
     @Override
     public void deleteCopies(int copies, int idLibrarian) {
-
+        System.out.println("Error in deleteCopies: cannot delete copy of article");
     }
 }
