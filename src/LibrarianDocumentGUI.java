@@ -31,11 +31,11 @@ class LibrarianDocumentGUI extends JFrame{
     public LibrarianDocumentGUI(int user_id) {
         JFrame menuWindow = new JFrame();
         if(Database.isLibrarianPriv1(user_id))
-            menuWindow.setBounds(100, 100, 300, 410);
+            menuWindow.setBounds(100, 100, 300, 310);
         if(Database.isLibrarianPriv2(user_id))
-            menuWindow.setBounds(100, 100, 300, 450);
+            menuWindow.setBounds(100, 100, 300, 400);
         if(Database.isLibrarianPriv3(user_id) | Database.isAdmin(user_id))
-            menuWindow.setBounds(100, 100, 300, 490);
+            menuWindow.setBounds(100, 100, 300, 443);
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
