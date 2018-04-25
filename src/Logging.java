@@ -2,8 +2,16 @@ import java.sql.ResultSet;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+/**
+ * create and getlast logs
+ */
 public class Logging {
 
+    /**
+     * create log, use time
+     * @param text message
+     * @param id user
+     */
     public static void CreateLog(String text, int id){
         try{
             java.util.Date date = new java.util.Date();
@@ -15,6 +23,11 @@ public class Logging {
         }
     }
 
+    /**
+     * get last logs
+     * @param n how much
+     * @return array with logs
+     */
     public static ArrayList<String> getLast(int n){
         ArrayList<String> a = new ArrayList<>();
         try{

@@ -30,6 +30,10 @@ class AddArticleGUI extends JFrame {
 
     private JButton add = new JButton("Accept");
 
+    /**
+     * gui constructor
+     */
+
     public AddArticleGUI(){
         JFrame ArticleWindow = new JFrame("Book");
         ArticleWindow.setBounds(100, 100, 250, 450);
@@ -40,6 +44,7 @@ class AddArticleGUI extends JFrame {
         Container containerSU = ArticleWindow.getContentPane();
         containerSU.setLayout(new GridLayout(9, 2, 2, 2));
 
+        //adding all gui elements
         containerSU.add(labelName);
         containerSU.add(textFieldNameSU);
         containerSU.add(labelAuthor);
@@ -57,6 +62,7 @@ class AddArticleGUI extends JFrame {
         containerSU.add(Bestseller);
         containerSU.add(Reference);
 
+        //init listener
         add.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

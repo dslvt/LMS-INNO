@@ -13,7 +13,11 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+/**
+ * used to go in another gui
+ */
 class LibrarianUserOptionsGUI extends JFrame {
+    //init buttons and table things
     private JButton EditUser = new JButton("Edit User");
     private JButton DeleteUser = new JButton("Delete User");
     private JButton AddUser = new JButton("Add User");
@@ -28,7 +32,12 @@ class LibrarianUserOptionsGUI extends JFrame {
     private JButton upgrade = new JButton("Upgrade");
     private JComboBox selectForUpgrade;
 
+    /**
+     * window constructor
+     * @param user_id used to refresh window
+     */
     public LibrarianUserOptionsGUI(int user_id) {
+        //set window size
         JFrame menuWindow = new JFrame();
         if (Database.isLibrarianPriv1(user_id))
             menuWindow.setBounds(100, 100, 300, 336);
@@ -41,12 +50,16 @@ class LibrarianUserOptionsGUI extends JFrame {
         menuWindow.setLocationRelativeTo(null);
         menuWindow.setResizable(false);
         menuWindow.setTitle("Librarian");
+
+        //exit button
         menuWindow.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 menuWindow.dispose();
             }
         });
+
+        //get all info and set it into table
         Container containerM = menuWindow.getContentPane();
         containerM.setLayout(new FlowLayout());
         String[] selecting = {"All","Name", "Authors", "Location", "Price", "Type"};
@@ -94,12 +107,16 @@ class LibrarianUserOptionsGUI extends JFrame {
         } catch (Exception e) {
             System.out.println("Error in deleteuserGUI " + e.toString());
         }
+
+        //insert data into table
         Object[][] usersAr = new Object[users.size()][6];
         for (int i = 0; i < users.size(); i++) {
             for (int j = 0; j < 6; j++) {
                 usersAr[i][j] = users.get(i).get(j);
             }
         }
+
+        //init scroller, table size
         DefaultTableModel model = new DefaultTableModel(usersAr, columnNames);
         JTable table = new JTable(model);
         JScrollPane listScroller = new JScrollPane(table);
@@ -118,6 +135,8 @@ class LibrarianUserOptionsGUI extends JFrame {
         containerM.add(listScroller);
         EditUser.setPreferredSize(new Dimension(290, 40));
         containerM.add(EditUser);
+
+        //edit user button
         EditUser.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -134,6 +153,8 @@ class LibrarianUserOptionsGUI extends JFrame {
                 }
             }
         });
+
+        //add user button
         if(Database.isLibrarianPriv2(user_id) || Database.isLibrarianPriv3(user_id) || Database.isAdmin(user_id)) {
             AddUser.setPreferredSize(new Dimension(290, 40));
             containerM.add(AddUser);
@@ -150,6 +171,8 @@ class LibrarianUserOptionsGUI extends JFrame {
                 }
             });
         }
+
+        //delete user button
         if(Database.isLibrarianPriv3(user_id) || Database.isAdmin(user_id)){
             DeleteUser.setPreferredSize(new Dimension(290, 40));
             containerM.add(DeleteUser);
@@ -167,6 +190,8 @@ class LibrarianUserOptionsGUI extends JFrame {
                 }
             });
         }
+
+        //upged privilegies
         if(Database.isAdmin(user_id)) {
             String[] types = {"priv1", "priv2", "priv3"};
             selectForUpgrade = new JComboBox(types);
@@ -202,6 +227,7 @@ class LibrarianUserOptionsGUI extends JFrame {
         }
         ShowInfo.setPreferredSize(new Dimension(290, 40));
         containerM.add(ShowInfo);
+
         // I have changed AllUsers directly to ShowInfo
         ShowInfo.addActionListener(new ActionListener() {
             @Override
@@ -226,12 +252,16 @@ class LibrarianUserOptionsGUI extends JFrame {
         });
         Debtors.setPreferredSize(new Dimension(290, 40));
         containerM.add(Debtors);
+
+        //debtors button
         Debtors.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 DebtorsGUI debtors = new DebtorsGUI();
             }
         });
+
+        //search field
         jtfFilter.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void insertUpdate(DocumentEvent e) {

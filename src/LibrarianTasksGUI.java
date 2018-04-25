@@ -8,12 +8,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Vector;
 
+/**
+ * used to accept or decline some type of request(checkout, return document and register users)
+ */
 public class LibrarianTasksGUI extends JFrame{
     private JButton accept = new JButton("Accept");
     private JButton decline = new JButton("Decline");
 
+    /**
+     * window constructor
+     */
     public LibrarianTasksGUI() {
         try {
+            //init GUI
             JFrame tasks = new JFrame();
             tasks.setBounds(100, 100, 500, 400);
             tasks.setLocationRelativeTo(null);
@@ -23,8 +30,8 @@ public class LibrarianTasksGUI extends JFrame{
             Container containerTB = tasks.getContentPane();
             containerTB.setLayout(new BorderLayout());
 
+            //Creating table and insert into libtask info
             String[] columnNames = {"Document", "Document's Position", "Username", "Login", "Type"};
-
             EventManager eventManager = new EventManager();
             ArrayList<LibTask> libTasks = eventManager.GetElements(false);
             Object[][] tasksA = new Object[libTasks.size()][];
@@ -37,12 +44,14 @@ public class LibrarianTasksGUI extends JFrame{
                 tasksA[i][4] = libTasks.get(i).type;
             }
 
+            //set table properties
             JTable table = new JTable(tasksA, columnNames);
             JScrollPane listScroller = new JScrollPane(table);
             table.setFillsViewportHeight(true);
             listScroller.setPreferredSize(new Dimension(500,280));
             containerTB.add(listScroller, BorderLayout.NORTH);
 
+            //accept task and execute it (button)
             accept.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -57,6 +66,7 @@ public class LibrarianTasksGUI extends JFrame{
                 }
             });
 
+            //decline task and delete it from db (button)
             decline.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
@@ -70,6 +80,8 @@ public class LibrarianTasksGUI extends JFrame{
                     }
                 }
             });
+
+            //set button size
             accept.setPreferredSize(new Dimension(500, 40));
             containerTB.add(accept, BorderLayout.CENTER);
             containerTB.add(accept);

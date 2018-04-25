@@ -18,7 +18,7 @@ public class LastActionsGUI extends JFrame {
         Container containerM = menuWindow.getContentPane();
         containerM.setLayout(new FlowLayout());
         ArrayList<String> lastActions = Logging.getLast(number);
-        Object[][] obj = new Object[lastActions.size()][0];
+        Object[][] obj = new Object[lastActions.size()][1];
         for (int i=0; i< lastActions.size(); i++)
             obj[i][0] = lastActions.get(i);
         Object[] str = {"Actions"};

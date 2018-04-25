@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class AddJournalGUI extends JFrame {
+
+    //init all gui elements
     private JLabel labelName = new JLabel("Name");
     private JTextField textFieldNameSU = new JTextField("", 5);
 
@@ -52,11 +54,12 @@ public class AddJournalGUI extends JFrame {
         JournalWindow.setBounds(100, 100, 250, 450);
         JournalWindow.setLocationRelativeTo(null);
         JournalWindow.setResizable(false);
-        this.setTitle("Book");
+        this.setTitle("Journal");
         JournalWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         Container containerSU = JournalWindow.getContentPane();
         containerSU.setLayout(new GridLayout(10, 2, 2, 2));
 
+        //adding all gui elements in container
         containerSU.add(labelName);
         containerSU.add(textFieldNameSU);
         containerSU.add(labelAuthor);
@@ -79,15 +82,18 @@ public class AddJournalGUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(journal != null){
+                    //if journal already exist
                     journal.ModifyInDB(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))),
                             Integer.parseInt(textFieldPrice.getText()), new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))),
                             Reference.getState(), textFieldPublishYear.getText(), textFieldIssue.getText(), textFieldEditor.getText(),  textFieldLocation.getText(), CurrentSession.user.id);
                 }else {
+                    //creating journal and init it in database
                     Journal journal = new Journal(textFieldNameSU.getText(), new ArrayList(Arrays.asList(textFieldAuthor.getText().split(" "))),
                             Integer.parseInt(textFieldPrice.getText()), new ArrayList(Arrays.asList(textFieldKeywords.getText().split(" "))),
                             Reference.getState(), textFieldPublishYear.getText(), textFieldIssue.getText(), textFieldEditor.getText(), true, textFieldLocation.getText());
                 }
 
+                //refresh window and deleting our document in current session
                 journal.CreateDocumentInDB(CurrentSession.user.id);
                 CurrentSession.editDocument = null;
                 JournalWindow.setVisible(false);
