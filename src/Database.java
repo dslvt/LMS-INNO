@@ -13,14 +13,14 @@ public class Database {
 //    private static final String user = "admin";
 //    private static final String password = "FJ`;62LfOTVZoM2+;3Qo983_zq9iGix9S107pi6)|CzU2`rdVRZD7?5a65sM;|6'54FE\\w9t4Ph~=";
 
-//    private static final String url = "jdbc:mysql://sql11.freemysqlhosting.net:3306/sql11230608?useSSL=false";
-//    private static final String user = "sql11230608";
-//    private static final String password = "m7dRhGgCmP";
+            private static final String url = "jdbc:mysql://sql7.freemysqlhosting.net:3306/sql7234613?useSSL=false";
+            private static final String user = "sql7234613";
+            private static final String password = "hgnvQfb4Kk";
 
     //private static final String password = "333999333tima";
-    String user = "root";
-    String password = "enaca2225";
-    String url = "jdbc:mysql://localhost:3306/project_new?useSSL=false";
+//    String user = "root";
+//    String password = "enaca2225";
+//    String url = "jdbc:mysql://localhost:3306/project_new?useSSL=false";
 //    String password = "123123123Aa";
 //    String url = "jdbc:mysql://localhost:3306/db?useSSL=false";
 
@@ -546,7 +546,7 @@ public class Database {
             ResultSet rs = st.executeQuery(query);
             if(rs.next()) {
 
-                user = new Librarian(rs.getString("name"), rs.getString("phoneNumber"),
+                user = new Librarian(rs.getString("name"), rs.getString("password"), rs.getString("phoneNumber"),
                         rs.getString("address"), Librarian.getCorrectLibrarianType(rs.getString("type")));
                 user.id = id;
             }
@@ -912,7 +912,7 @@ public class Database {
             ResultSet rs = st.executeQuery("select * from users where phoneNumber=" + login);
             rs.next();
 
-            Librarian librarian = new Librarian(rs.getString("name"), rs.getString("phoneNumber"),
+            Librarian librarian = new Librarian(rs.getString("name"), rs.getString("password"), rs.getString("phoneNumber"),
                     rs.getString("address"), Librarian.getCorrectLibrarianType(rs.getString("type")));
 
             librarian.id = rs.getInt("id");
@@ -998,7 +998,9 @@ public class Database {
 
     public static void sendOutstandingRequest(Document document, Librarian librarian) {
         try {
+            String logText = "outstanding request on document "+ document.name +": ";
             if(librarian.type.equals(LibrarianType.Priv2)){
+                logText+="accepted";
                 ResultSet resultSet = Database.SelectFromDB("SELECT*FROM libtasks WHERE id_document = " + Integer.toString(document.id) + " and type = 'checkout'");
                 Integer id_user;
                 Integer id_document;
@@ -1007,6 +1009,7 @@ public class Database {
                     id_user = resultSet.getInt("id_user");
                     id_document = resultSet.getInt("id_document");
                     if (id_user != null && id_document != null) {
+                        Logging.CreateLog("removed from queue", librarian.id);
                         Database.ExecuteQuery("INSERT INTO request SET id_user = " + id_user + ", id_document = " + id_document + ", message = '" + RequestsText.removed_queue_en + "'");
                     } else {
                         mark = false;
@@ -1014,10 +1017,12 @@ public class Database {
                 }
                 if (mark) {
                     Database.ExecuteQuery("DELETE FROM libtasks WHERE id_document = " + Integer.toString(document.id) + " and type = 'checkout'");
+                    Logging.CreateLog("waiting list for document " + document.name + " deleted", librarian.id);
 
                     resultSet = Database.SelectFromDB("SELECT*FROM booking WHERE document_id = " + Integer.toString(document.id));
                     while (resultSet.next()) {
                         Database.ExecuteQuery("INSERT INTO request SET id_user = " + resultSet.getInt("user_id") + ", id_document = " + resultSet.getInt("document_id") + ", message = '" + RequestsText.return_book_en + "'");
+                        Logging.CreateLog("notified to return book", librarian.id);
                     }
                 }
 
@@ -1037,7 +1042,10 @@ public class Database {
                 for (int i = 0; i < documentIds.size(); i++) {
                     st.executeUpdate("UPDATE booking set returnTime = '" + timestamp + "', is_renew = '" + 1 + "' WHERE document_id = '" + documentIds.get(i) + "'");
                 }
+            }else{
+                logText+="request was denied.";
             }
+            Logging.CreateLog(logText, librarian.id);
 
         } catch (Exception e) {
             System.out.println("Error in sendOutstandingRequest: " + e.toString());
@@ -1049,14 +1057,14 @@ public class Database {
             try {
                 if (user instanceof Patron) {
                     if (Database.getUserDocuments((Patron) user).isEmpty()) {
-                        System.out.println("did patron");
+//                        System.out.println("did patron");
                         Database.ExecuteQuery("UPDATE users set isFacultyMember = 0, isLibrarian = 1, type = '" + type + "', isActive = 0 WHERE id = '" + user.id + "'");
                     }
                     else{
                         System.out.println("Error in upgradeToLibrarian: user has documents");
                     }
                 } else {
-                    System.out.println("did librarian");
+//                    System.out.println("did librarian");
                     Database.ExecuteQuery("UPDATE users set type = '" + type + "' WHERE id = '" + user.id + "'");
                 }
             } catch (Exception e) {
@@ -1067,6 +1075,62 @@ public class Database {
         {
             System.out.println("Error in upgradeToLibrarian: user doesn't have access");
         }
+    }
+
+    public static ArrayList<String> searchInDocuments(String goal, String colomn){
+        ArrayList <String> docs = new ArrayList<>();
+        try{
+            Statement st = connection.createStatement();
+            ResultSet rs = st.executeQuery("select * from books");
+
+            ArrayList<Pair<String, String>> names = new ArrayList<>();
+            while (rs.next()){
+                names.add(new Pair<>(rs.getString("title"), rs.getString(colomn)));
+            }
+
+            if(goal.contains("AND")){
+                String[] goals = goal.split(" AND ");
+                goals[0] = goals[0].substring(1, goals[0].length());
+                for (int i = 0; i < names.size(); i++) {
+                    boolean flag = true;
+                    for (int j = 0; j < goals.length; j++) {
+                        if (!names.get(i).second.contains(goals[j])) {
+                            flag = false;
+                        }
+                    }
+                    if(flag){
+                        docs.add(names.get(i).first);
+                    }
+
+                }
+            }else if(goal.contains("OR")){
+                String[] goals = goal.split(" OR ");
+                goals[0] = goals[0].substring(1, goals[0].length());
+                for (int i = 0; i < names.size(); i++) {
+                    boolean flal = false;
+                    for (int j = 0; j < goals.length; j++) {
+                        if(names.get(i).second.contains(goals[j])){
+                            flal=true;
+                        }
+                    }
+                    if(flal){
+                        docs.add(names.get(i).first);
+                    }
+                }
+            }else {
+                for (int i = 0; i < names.size(); i++) {
+                    if (names.get(i).second.contains(goal)) {
+                        docs.add(names.get(i).first);
+                    }
+                }
+            }
+
+
+        }catch (Exception e){
+            System.out.println("Error in searchInDocuments: " + e.toString());
+        }
+
+        return docs;
     }
 
 }

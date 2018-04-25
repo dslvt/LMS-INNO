@@ -15,7 +15,7 @@ public abstract class User {
     /**
      * add new user in database
      */
-    public abstract void CreateUserDB();
+    public abstract void CreateUserDB(int idLibrarian);
 
     public abstract void ModifyUserDB(String name, String password, String phoneNumber, String address, boolean isFacultyMember, int debt, String type, boolean isLibrarian, int idLibrarian);
 

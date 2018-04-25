@@ -54,7 +54,7 @@ class RegisterWindow extends JFrame implements ActionListener {
             public void actionPerformed(ActionEvent e) {
                 //nado ispravit'
                 Patron patron = new Patron(textFieldNameSU.getText(), fieldPasswordSU.getText(), textFieldPhoneNumberSU.getText(), textFieldAdressSU.getText(), radioFacultyMember.isSelected(), 0, Patron.getCorrectPatronType(choices[dropDownChoice.getSelectedIndex()]), false);
-                patron.CreateUserDB();
+                patron.CreateUserDB(CurrentSession.user.id);
                 ArrayList<Document> d = Database.getAllDocuments();
                 LibTask libTask = new LibTask(d.get(0), patron, "registration", false);
                 EventManager ev = new EventManager();

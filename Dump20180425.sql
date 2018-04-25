@@ -62,7 +62,7 @@ CREATE TABLE `booking` (
   KEY `user_id_idx` (`user_id`),
   CONSTRAINT `document_id` FOREIGN KEY (`document_id`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=1099 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1264 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -71,7 +71,6 @@ CREATE TABLE `booking` (
 
 LOCK TABLES `booking` WRITE;
 /*!40000 ALTER TABLE `booking` DISABLE KEYS */;
-INSERT INTO `booking` VALUES (1098,3561,1707,'2018-04-21 13:53:53',0,'2018-05-12 13:53:53');
 /*!40000 ALTER TABLE `booking` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -95,7 +94,7 @@ CREATE TABLE `books` (
   `reference` bit(1) NOT NULL,
   `isBestSeller` bit(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1164 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1502 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -104,7 +103,7 @@ CREATE TABLE `books` (
 
 LOCK TABLES `books` WRITE;
 /*!40000 ALTER TABLE `books` DISABLE KEYS */;
-INSERT INTO `books` VALUES (1163,'Nanme','[jfj]','34','2',33,34,'[dj]',0,'\0','\0');
+INSERT INTO `books` VALUES (1499,'Introduction to Algorithms','[Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest]','MIT Press','Third edition',2009,5000,'[Algorithms, Data Structures, Complexity, Computational Theory]',3,'\0','\0'),(1500,'Algorithms + Data Structures = Programs','[Niklaus Wirth]','Prentice Hall PTR','First edition',1978,5000,'[Algorithms, Data Structures, Search Algorithms, Pascal]',3,'\0','\0'),(1501,'The Art of Computer Programming','[Donald E. Knuth]','Addison Wesley Longman Publishing Co., Inc.','Third edition',1997,5000,'[Algorithms, Combinatorial Algorithms, Recursion]',3,'\0','\0');
 /*!40000 ALTER TABLE `books` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -130,7 +129,7 @@ CREATE TABLE `documents` (
   CONSTRAINT `id_av_materials` FOREIGN KEY (`id_av_materials`) REFERENCES `av_materials` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_books` FOREIGN KEY (`id_books`) REFERENCES `books` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_journals` FOREIGN KEY (`id_journals`) REFERENCES `journals` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3562 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4570 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -139,7 +138,7 @@ CREATE TABLE `documents` (
 
 LOCK TABLES `documents` WRITE;
 /*!40000 ALTER TABLE `documents` DISABLE KEYS */;
-INSERT INTO `documents` VALUES (3561,NULL,1163,NULL,'books','kd','');
+INSERT INTO `documents` VALUES (4561,NULL,1499,NULL,'books','lib',''),(4562,NULL,1499,NULL,'books','lib',''),(4563,NULL,1499,NULL,'books','lib',''),(4564,NULL,1500,NULL,'books','lib',''),(4565,NULL,1500,NULL,'books','lib',''),(4566,NULL,1500,NULL,'books','lib',''),(4567,NULL,1501,NULL,'books','lib',''),(4568,NULL,1501,NULL,'books','lib',''),(4569,NULL,1501,NULL,'books','lib','');
 /*!40000 ALTER TABLE `documents` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -223,7 +222,7 @@ CREATE TABLE `libtasks` (
   CONSTRAINT `document` FOREIGN KEY (`id_document`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `librarian` FOREIGN KEY (`id_librarian`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=281 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -245,11 +244,12 @@ DROP TABLE IF EXISTS `logging`;
 CREATE TABLE `logging` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `user_id` int(11) DEFAULT NULL,
-  `message` varchar(45) DEFAULT NULL,
+  `message` varchar(150) DEFAULT NULL,
+  `time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id_idx` (`user_id`),
   CONSTRAINT `user_id_log` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=1505 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -258,7 +258,7 @@ CREATE TABLE `logging` (
 
 LOCK TABLES `logging` WRITE;
 /*!40000 ALTER TABLE `logging` DISABLE KEYS */;
-INSERT INTO `logging` VALUES (1,1707,'checkout Nanme');
+INSERT INTO `logging` VALUES (1494,2905,'create lib1','2018-04-25 03:45:13'),(1495,2905,'create lib2','2018-04-25 03:45:13'),(1496,2905,'create lib3','2018-04-25 03:45:13'),(1497,2907,'addCopies book Introduction to Algorithms','2018-04-25 03:45:13'),(1498,2907,'addCopies book Algorithms + Data Structures = Programs','2018-04-25 03:45:13'),(1499,2907,'addCopies book The Art of Computer Programming','2018-04-25 03:45:14'),(1500,2907,'created patron Sergey Afonso','2018-04-25 03:45:14'),(1501,2907,'created patron Nadia Teixeira','2018-04-25 03:45:14'),(1502,2907,'created patron Elvira Espindola','2018-04-25 03:45:14'),(1503,2907,'created patron Andrey Velo','2018-04-25 03:45:14'),(1504,2907,'created patron Veronika Rama','2018-04-25 03:45:14');
 /*!40000 ALTER TABLE `logging` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,7 +280,7 @@ CREATE TABLE `request` (
   KEY `id_document_idx` (`id_document`),
   CONSTRAINT `id_document` FOREIGN KEY (`id_document`) REFERENCES `documents` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `id_user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -311,7 +311,7 @@ CREATE TABLE `users` (
   `type` varchar(45) DEFAULT NULL,
   `isActive` bit(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1712 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=2914 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -320,7 +320,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'All cash','1','1',0,'\0','1','','admin',NULL),(1704,'r','01','1',0,'\0','1','\0','student','\0'),(1705,'r','3','1',0,'\0','1','\0','student','\0'),(1706,'r','3','1',0,'\0','1','\0','student','\0'),(1707,'name','2','2',0,'\0','2','\0','student','\0'),(1708,'name','2','2',0,'\0','2','\0','student','\0'),(1709,'name','2','2',0,'\0','2','\0','student','\0'),(1710,'name','2','2',0,'\0','2','\0','student','\0'),(1711,'name','2','q',0,'\0','2','\0','student','');
+INSERT INTO `users` VALUES (2905,'admin','1','address',0,'\0',NULL,'','admin',NULL),(2906,'lib1','11','add',0,'\0','1','','priv1',NULL),(2907,'lib2','12','add',0,'\0','1','','priv2',NULL),(2908,'lib3','13','add',0,'\0','1','','priv3',NULL),(2909,'Sergey Afonso','30001','Via Margutta, 3',0,'','1','\0','professor',''),(2910,'Nadia Teixeira','30002','Via Sacra, 13',0,'','1','\0','professor',''),(2911,'Elvira Espindola','30003','Via del Corso, 22',0,'','1','\0','professor',''),(2912,'Andrey Velo','30004','Avenida Mazatlan 250',0,'\0','1','\0','student',''),(2913,'Veronika Rama','30005','Stret Atocha, 27',0,'\0','1','\0','visitingProf','');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -333,4 +333,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-04-21 13:59:28
+-- Dump completed on 2018-04-25 12:02:34

@@ -12,9 +12,7 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-        boolean isTesting = false;
-//        Database.DeleteAllFromDBAndCreateAdmin();
-
+        boolean isTesting = true;
 
         /**
          * if want test program set isTesting true
@@ -40,23 +38,38 @@ public class Main {
 //        tester.test8();
 //        tester.test9();
 //        tester.test10();
-
+//
 //        tester.init3();
 //        tester.findUsersAndBooks();
 //        tester.clearHistory();
-            tester.t1();
-            tester.t2();
-            tester.t3();
+//            tester.t1();
+//            tester.t2();
+//            tester.t3();
 //            tester.t4();
-            tester.t5();
-            tester.t6();
-            tester.t7();
-            tester.t8();
-            tester.t9();
-            tester.t10();
-            CurrentSession.setDate = 0L;
-            FirstWindow window = new FirstWindow();
-            window.setVisible(true);
+//            tester.t5();
+//            tester.t6();
+//            tester.t7();
+//            tester.t8();
+//            tester.t9();
+//            tester.t10();
+
+
+            tester.init4();
+            tester.t41();
+            tester.t42();
+            tester.t43();
+            tester.t44();
+            tester.t45();
+            tester.t46();
+            tester.t47();
+            tester.t48();
+            tester.t49();
+            tester.t410();
+            tester.t411();
+            tester.t412();
+            tester.t413();
+            tester.t414();
+
         }else{
             CurrentSession.setDate = 0L;
             FirstWindow window = new FirstWindow();

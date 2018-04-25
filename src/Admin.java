@@ -1,4 +1,7 @@
+import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 
 /**
  * Class for creating Admin of the system
@@ -24,20 +27,35 @@ public class Admin extends User {
      */
 
     @Override
-    public void CreateUserDB() {
+    public void CreateUserDB(int idLibrarian) {
         try {
-            PreparedStatement preparedStatement;
+            //isExist
+            Statement st = Database.connection.createStatement();
+            ResultSet rs = st.executeQuery("select * from users where type = 'admin'");
+            if(rs.next()){
+                System.out.println("Admin already exist");
+            }else {
+                PreparedStatement preparedStatement;
 
-            preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian, type) values(?, ?, ?, ?, ?, ?, ?, ?)");
-            preparedStatement.setString(1, this.name);
-            preparedStatement.setString(2, this.phoneNumber);
-            preparedStatement.setString(3, this.address);
-            preparedStatement.setInt(4, 0);
-            preparedStatement.setBoolean(5, false);
-            preparedStatement.setString(6, this.password);
-            preparedStatement.setBoolean(7, true);
-            preparedStatement.setString(8, "admin");
-            preparedStatement.executeUpdate();
+                preparedStatement = Database.connection.prepareStatement("insert into users(name, phoneNumber, address, debt, isFacultyMember, password, isLibrarian, type) values(?, ?, ?, ?, ?, ?, ?, ?)");
+                preparedStatement.setString(1, this.name);
+                preparedStatement.setString(2, this.phoneNumber);
+                preparedStatement.setString(3, this.address);
+                preparedStatement.setInt(4, 0);
+                preparedStatement.setBoolean(5, false);
+                preparedStatement.setString(6, this.password);
+                preparedStatement.setBoolean(7, true);
+                preparedStatement.setString(8, "admin");
+                preparedStatement.executeUpdate();
+
+                int globalID = 0;
+                Statement statement  = Database.connection.createStatement();
+                ResultSet res = statement.executeQuery("SELECT LAST_INSERT_ID();");
+                if (res.next()) {
+                    globalID = res.getInt(1);
+                }
+                this.id = globalID;
+            }
         } catch (Exception ex) {
             System.out.println("Error create admin: " + ex.toString());
         }

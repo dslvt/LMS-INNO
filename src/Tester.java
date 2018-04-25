@@ -46,7 +46,22 @@ public class Tester {
     private PatronType[] patronTypes = {PatronType.professor, PatronType.professor, PatronType.professor, PatronType.student, PatronType.visitingProf};
     private String[] title = {"Introduction to Algorithms", "Design Patterns: Elements of Reusable Object-Oriented Software", "Null References: The Billion Dollar Mistake"};
 
+    private String[] bnames = {"Introduction to Algorithms", "Algorithms + Data Structures = Programs", "The Art of Computer Programming"};
+    private String[][] bauthors = {{"Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest"}, {"Niklaus Wirth"}, {"Donald E. Knuth"}};
+    private String[] bpublisher = {"MIT Press", "Prentice Hall PTR", "Addison Wesley Longman Publishing Co., Inc."};
+    private Integer[] byear = {2009, 1978, 1997};
+    private String[] bedition = {"Third edition", "First edition", "Third edition"};
+    private Integer[] bprice = {5000, 5000, 5000};
+    private Boolean[] bIsBestseller = {false, false};
+    private String[][] bKeywords = {{"Algorithms", "Data Structures", "Complexity", "Computational Theory"},
+            {"Algorithms", "Data Structures", "Search Algorithms", "Pascal"},
+            {"Algorithms", "Combinatorial Algorithms", "Recursion"}};
+
+    private Admin admin;
     private Boolean[] isFaculty = {true, true, true, false, false};
+    private Librarian[] libs;
+    private Book[][] t4_books;
+    private Patron[] p4_patrons;
 
     public Tester(){
         try{
@@ -292,7 +307,7 @@ public class Tester {
         }
     }
 
-    public void tc1(){
+       public void tc1(){
         try {
             Statement statement = Database.connection.createStatement();
             String[] tables = {"av_materials",  "books", "journal_articles", "journals", "libtasks", "request", "users", "documents", "booking"};
@@ -326,15 +341,15 @@ public class Tester {
             av2Id = aVmateria2.id;
 
             Patron  patron1 = new Patron(names[0], "1", phoneNumbers[0], addresses[0], isFaculty[0], 0, PatronType.student, true);
-            patron1.CreateUserDB();
+            patron1.CreateUserDB(admin.id);
             user1ID = patron1.id;
 
             Patron patron2 = new Patron(names[1], "1", phoneNumbers[1], addresses[1], isFaculty[1], 0, PatronType.student, true);
-            patron2.CreateUserDB();
+            patron2.CreateUserDB(admin.id);
             user2ID = patron2.id;
 
             Patron patron3 = new Patron(names[2], "1", phoneNumbers[2], addresses[2], isFaculty[2], 0, PatronType.student, true);
-            patron3.CreateUserDB();
+            patron3.CreateUserDB(admin.id);
             user3ID = patron3.id;
 
             ResultSet rs1 = Database.SelectFromDB("select count(id) from documents");
@@ -673,23 +688,23 @@ public class Tester {
             av1Id = aVmaterial1.id;
 
             Patron  patron1 = new Patron(names[0], "1", phoneNumbers[0], addresses[0], isFaculty[0], 0, PatronType.professor, true);
-            patron1.CreateUserDB();
+            patron1.CreateUserDB(admin.id);
             user1ID = patron1.id;
 
             Patron patron2 = new Patron(names[1], "1", phoneNumbers[1], addresses[1], isFaculty[1], 0, PatronType.professor, true);
-            patron2.CreateUserDB();
+            patron2.CreateUserDB(admin.id);
             user2ID = patron2.id;
 
             Patron patron3 = new Patron(names[2], "1", phoneNumbers[2], addresses[2], isFaculty[2], 0, PatronType.professor, true);
-            patron3.CreateUserDB();
+            patron3.CreateUserDB(admin.id);
             user3ID = patron3.id;
 
             Patron patron4 = new Patron(names[3], "1", phoneNumbers[3], addresses[3], isFaculty[3], 0, PatronType.student, true);
-            patron4.CreateUserDB();
+            patron4.CreateUserDB(admin.id);
             user4ID = patron4.id;
 
             Patron patron5 = new Patron(names[4], "1", phoneNumbers[4], addresses[4], isFaculty[4], 0, PatronType.visitingProf, true);
-            patron5.CreateUserDB();
+            patron5.CreateUserDB(admin.id);
             user5ID = patron5.id;
 
             booksIds.clear();
@@ -734,6 +749,7 @@ public class Tester {
             System.out.println("Error in clearHistory: " + e.toString());
         }
     }
+
 
     public void t1(){
         try{
@@ -1093,6 +1109,436 @@ public class Tester {
             System.out.println("test10 passed");
         }catch (Exception e){
             System.out.println("Error in t10: "  + e.toString());
+        }
+    }
+
+    public void init4(){
+        try{
+            Statement statement = Database.connection.createStatement();
+            String[] tables = {"av_materials",  "books", "journal_articles", "journals", "libtasks", "request", "users", "documents", "booking", "logging"};
+            for (int i = 0; i < tables.length; i++) {
+                Database.DeleteAllInTable(tables[i]);
+            }
+
+            admin = new Admin("admin", "1", "address");
+            admin.CreateUserDB(0);
+
+        }catch (Exception e){
+            System.out.println("Error in init4: " + e.toString());
+        }
+    }
+
+    public void t41(){
+        try{
+            Admin admin2 = new Admin("admin", "1", "address");
+            admin2.CreateUserDB(0);
+
+            int amount_of_users = 0;
+            ResultSet rs = Database.SelectFromDB("select * from users");
+            String user_type = "";
+            while(rs.next()){
+                amount_of_users++;
+                user_type=rs.getString("type");
+            }
+
+            assert (amount_of_users == 1 && user_type.equals("admin"));
+            System.out.println("Test 1 passed");
+        }catch (Exception e){
+            System.out.println("Error in t41: " + e.toString());
+        }
+    }
+
+    public void t42(){
+        try{
+            libs = new Librarian[3];
+            //String name, String password, String phoneNumber, String address, boolean isFacultyMember, int debt, PatronType type, boolean isActive
+            libs[0] = new Librarian("lib1", "1", "11", "add", LibrarianType.Priv1);
+            libs[0].CreateUserDB(admin.id);
+            Database.upgradeToLibrarian(libs[0], "priv1", admin.id);
+            libs[1] = new Librarian("lib2", "1", "12", "add", LibrarianType.Priv2);
+            libs[1].CreateUserDB(admin.id);
+            Database.upgradeToLibrarian(libs[1], "priv2", admin.id);
+            libs[2] = new Librarian("lib3", "1", "13", "add", LibrarianType.Priv3);
+            libs[2].CreateUserDB(admin.id);
+            Database.upgradeToLibrarian(libs[2], "priv3", admin.id);
+
+            int amount_of_users = 0;
+            ResultSet rs = Database.SelectFromDB("select * from users");
+            String[] user_types = new String[4];
+            int counter = 0;
+            while(rs.next()){
+                user_types[counter] = rs.getString("type");
+                amount_of_users++;
+                counter++;
+            }
+
+            assert (amount_of_users == 4 && user_types[0].equals("admin") && user_types[1].equals("priv1") && user_types[2].equals("priv2")
+             && user_types[3].equals("priv3"));
+
+            System.out.println("Test 2 passed");
+        }catch (Exception e){
+            System.out.println("Error in t42: " + e.toString());
+        }
+    }
+
+    public void t43(){
+        try{
+            init4();
+            t42();
+            t4_books = new Book[3][3];
+            t4_books[0][0] = new Book(bnames[0], new ArrayList(Arrays.asList(bauthors[0])), bprice[0], new ArrayList(Arrays.asList(bKeywords[0])), false, bpublisher[0], bedition[0], byear[0], false, "lib", true);
+            t4_books[0][0].CreateDocumentInDB(libs[0].id);
+            ArrayList<Document> alb1 = t4_books[0][0].addCopies(2, libs[0].id);
+            if(alb1.size() > 0) {
+                t4_books[0][1] = (Book) alb1.get(0);
+                t4_books[0][2] = (Book) alb1.get(1);
+            }
+
+            t4_books[1][0] = new Book(bnames[0], new ArrayList(Arrays.asList(bauthors[0])), bprice[0], new ArrayList(Arrays.asList(bKeywords[0])), false, bpublisher[0], bedition[0], byear[0], false, "lib", true);
+            t4_books[1][0].CreateDocumentInDB(libs[0].id);
+            alb1 = t4_books[1][0].addCopies(2, libs[0].id);
+            if(alb1.size() > 0) {
+                t4_books[1][1] = (Book) alb1.get(0);
+                t4_books[1][2] = (Book) alb1.get(1);
+            }
+
+            t4_books[2][0] = new Book(bnames[0], new ArrayList(Arrays.asList(bauthors[0])), bprice[0], new ArrayList(Arrays.asList(bKeywords[0])), false, bpublisher[0], bedition[0], byear[0], false, "lib", true);
+            t4_books[2][0].CreateDocumentInDB(libs[0].id);
+            alb1 = t4_books[2][0].addCopies(2, libs[0].id);
+            if(alb1.size() > 0) {
+                t4_books[2][1] = (Book) alb1.get(0);
+                t4_books[2][2] = (Book) alb1.get(1);
+            }
+
+            ArrayList<Document> docs = Database.getAllDocuments();
+
+            assert (docs.size() == 0);
+
+            System.out.println("Test 3 passed");
+        }catch (Exception e){
+            System.out.println("Error in t43: " + e.toString());
+        }
+    }
+
+    public void t44(){
+        try{
+
+            init4();
+            t42();
+            t4_books = new Book[3][3];
+            t4_books[0][0] = new Book(bnames[0], new ArrayList(Arrays.asList(bauthors[0])), bprice[0], new ArrayList(Arrays.asList(bKeywords[0])), false, bpublisher[0], bedition[0], byear[0], false, "lib", true);
+            t4_books[0][0].CreateDocumentInDB(libs[1].id);
+            ArrayList<Document> alb1 = t4_books[0][0].addCopies(2, libs[1].id);
+            if(alb1.size() > 0) {
+                t4_books[0][1] = (Book) alb1.get(0);
+                t4_books[0][2] = (Book) alb1.get(1);
+            }
+
+            t4_books[1][0] = new Book(bnames[1], new ArrayList(Arrays.asList(bauthors[1])), bprice[1], new ArrayList(Arrays.asList(bKeywords[1])), false, bpublisher[1], bedition[1], byear[1], false, "lib", true);
+            t4_books[1][0].CreateDocumentInDB(libs[1].id);
+            alb1 = t4_books[1][0].addCopies(2, libs[1].id);
+            if(alb1.size() > 0) {
+                t4_books[1][1] = (Book) alb1.get(0);
+                t4_books[1][2] = (Book) alb1.get(1);
+            }
+
+            t4_books[2][0] = new Book(bnames[2], new ArrayList(Arrays.asList(bauthors[2])), bprice[2], new ArrayList(Arrays.asList(bKeywords[2])), false, bpublisher[2], bedition[2], byear[2], false, "lib", true);
+            t4_books[2][0].CreateDocumentInDB(libs[1].id);
+            alb1 = t4_books[2][0].addCopies(2, libs[1].id);
+            if(alb1.size() > 0) {
+                t4_books[2][1] = (Book) alb1.get(0);
+                t4_books[2][2] = (Book) alb1.get(1);
+            }
+
+            p4_patrons = new Patron[5];
+
+            p4_patrons[0] = new Patron(names[0], "1", phoneNumbers[0], addresses[0], isFaculty[0], 0, PatronType.professor, true);
+            p4_patrons[0].CreateUserDB(libs[1].id);
+            user1ID = p4_patrons[0].id;
+
+            p4_patrons[1] = new Patron(names[1], "1", phoneNumbers[1], addresses[1], isFaculty[1], 0, PatronType.professor, true);
+            p4_patrons[1].CreateUserDB(libs[1].id);
+            user2ID = p4_patrons[1].id;
+
+            p4_patrons[2] = new Patron(names[2], "1", phoneNumbers[2], addresses[2], isFaculty[2], 0, PatronType.professor, true);
+            p4_patrons[2].CreateUserDB(libs[1].id);
+            user3ID = p4_patrons[2].id;
+
+            p4_patrons[3] = new Patron(names[3], "1", phoneNumbers[3], addresses[3], isFaculty[3], 0, PatronType.student, true);
+            p4_patrons[3].CreateUserDB(libs[1].id);
+            user4ID = p4_patrons[3].id;
+
+            p4_patrons[4] = new Patron(names[4], "1", phoneNumbers[4], addresses[4], isFaculty[4], 0, PatronType.visitingProf, true);
+            p4_patrons[4].CreateUserDB(libs[1].id);
+            user5ID = p4_patrons[4].id;
+
+            ArrayList<Document> docs = Database.getAllDocuments();
+            ArrayList<Patron> patrons = Database.getAllPatrons();
+
+            assert (docs.size() == 9 && patrons.size() == 5);
+
+            System.out.println("Test 4 passed");
+        }catch (Exception e){
+            System.out.println("Error in t44: " + e.toString());
+        }
+    }
+
+    public void t45(){
+        try{
+            t44();
+            t4_books[0][2].deleteCopies(1, libs[2].id);
+            t4_books[0][2] = null;
+
+            assert (Database.getAmountOfCurrentDocument(t4_books[0][1]) == 2);
+
+            System.out.println("Test 5 passed");
+        }catch (Exception e){
+            System.out.println("Error in t45: " + e.toString());
+        }
+    }
+
+    public void t46(){
+        try{
+            t44();
+
+            LibTask[] libTasks = new LibTask[5];
+            libTasks[0] = new LibTask(t4_books[2][0], p4_patrons[0], "checkout", true);
+            libTasks[1] = new LibTask(t4_books[2][0], p4_patrons[1], "checkout", true);
+            libTasks[2] = new LibTask(t4_books[2][0], p4_patrons[2], "checkout", true);
+            libTasks[3] = new LibTask(t4_books[2][0], p4_patrons[3], "checkout", true);
+            libTasks[4] = new LibTask(t4_books[2][0], p4_patrons[4], "checkout", true);
+
+            EventManager em = new EventManager();
+
+            for (int i = 0; i < 5; i++) {
+               libTasks[i].id = em.CreateQuery(libTasks[i]);
+            }
+            for (int i = 0; i < 5; i++) {
+                em.ExecuteQuery(libTasks[i]);
+            }
+
+            Database.sendOutstandingRequest(t4_books[2][0], libs[0]);
+
+            ResultSet rs = Database.SelectFromDB("select * from request");
+            int amountOfRequest = 0;
+            while(rs.next()){
+                amountOfRequest++;
+            }
+
+            assert (amountOfRequest == 0);
+
+            System.out.println("Test 6 passed");
+        }catch (Exception e){
+            System.out.println("Error in t46: " + e.toString());
+        }
+    }
+
+    public void t47(){
+        try{
+            t44();
+
+            LibTask[] libTasks = new LibTask[5];
+            libTasks[0] = new LibTask(t4_books[2][0], p4_patrons[0], "checkout", true);
+            libTasks[1] = new LibTask(t4_books[2][0], p4_patrons[1], "checkout", true);
+            libTasks[2] = new LibTask(t4_books[2][0], p4_patrons[2], "checkout", true);
+            libTasks[3] = new LibTask(t4_books[2][0], p4_patrons[3], "checkout", true);
+            libTasks[4] = new LibTask(t4_books[2][0], p4_patrons[4], "checkout", true);
+
+            EventManager em = new EventManager();
+
+            for (int i = 0; i < 5; i++) {
+                libTasks[i].id = em.CreateQuery(libTasks[i]);
+            }
+            for (int i = 0; i < 5; i++) {
+                em.ExecuteQuery(libTasks[i]);
+            }
+
+            Database.sendOutstandingRequest(t4_books[2][0], libs[1]);
+
+            ResultSet rs = Database.SelectFromDB("select * from request");
+            int amountOfRequest = 0;
+            String[] messages = new String[5];
+            while(rs.next()){
+                messages[amountOfRequest] = rs.getString("message");
+                amountOfRequest++;
+            }
+
+            rs = Database.SelectFromDB("select * from libtasks");
+            int amountOfLibtasks = 0;
+            while (rs.next()){
+                amountOfLibtasks++;
+            }
+
+            assert (amountOfRequest == 5 && amountOfLibtasks == 0 && messages[0].equals(RequestsText.removed_queue_en) &&
+                messages[1].equals(RequestsText.removed_queue_en) && messages[2].equals(RequestsText.return_book_en) &&
+                messages[3].equals(RequestsText.return_book_en) && messages[4].equals(RequestsText.return_book_en));
+
+            System.out.println("Test 7 passed");
+        }catch (Exception e){
+            System.out.println("Error in t47: " + e.toString());
+        }
+    }
+
+    public void t48(){
+        try{
+            t46();
+            ArrayList<String> logs = Logging.getLast(100);
+            ArrayList<ArrayList<String>> rlogs = new ArrayList<>();
+            for (int i = logs.size()-1; i >= 0; i--) {
+                //new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", ")))
+                rlogs.add(new ArrayList<String>(Arrays.asList(logs.get(i).split("#"))));
+            }
+
+            boolean isAllHave = false;
+
+            if(rlogs.get(0).get(1).equals("create lib1") && !rlogs.get(0).get(2).equals("1970-01-01") && Integer.parseInt(rlogs.get(0).get(0)) == admin.id &&
+                    rlogs.get(1).get(1).equals("create lib2") && !rlogs.get(1).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(1).get(0)) == admin.id &&
+                    rlogs.get(2).get(1).equals("create lib3") && !rlogs.get(2).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(2).get(0)) == admin.id &&
+                    rlogs.get(3).get(1).equals("addCopies book Introduction to Algorithms") && !rlogs.get(3).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(3).get(0)) == libs[1].id &&
+                    rlogs.get(4).get(1).equals("addCopies book Algorithms + Data Structures = Programs") && !rlogs.get(4).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(4).get(0)) == libs[1].id &&
+                    rlogs.get(5).get(1).equals("addCopies book The Art of Computer Programming") && !rlogs.get(5).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(5).get(0)) == libs[1].id &&
+                    rlogs.get(6).get(1).equals("created patron Sergey Afonso") && !rlogs.get(6).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(6).get(0)) == libs[1].id &&
+                    rlogs.get(7).get(1).equals("created patron Nadia Teixeira") && !rlogs.get(7).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(7).get(0)) == libs[1].id &&
+                    rlogs.get(8).get(1).equals("created patron Elvira Espindola") && !rlogs.get(8).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(8).get(0)) == libs[1].id &&
+                    rlogs.get(9).get(1).equals("created patron Andrey Velo") && !rlogs.get(9).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(9).get(0)) == libs[1].id &&
+                    rlogs.get(10).get(1).equals("created patron Veronika Rama") && !rlogs.get(10).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(10).get(0)) == libs[1].id &&
+                    rlogs.get(11).get(1).equals("checkout The Art of Computer Programming") && !rlogs.get(11).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(11).get(0)) == p4_patrons[0].id &&
+                    rlogs.get(12).get(1).equals("checkout The Art of Computer Programming") && !rlogs.get(12).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(12).get(0)) == p4_patrons[1].id &&
+                    rlogs.get(13).get(1).equals("checkout The Art of Computer Programming") && !rlogs.get(13).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(13).get(0)) == p4_patrons[2].id &&
+                    rlogs.get(14).get(1).equals("checkout The Art of Computer Programming") && !rlogs.get(14).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(14).get(0)) == p4_patrons[3].id &&
+                    rlogs.get(15).get(1).equals("checkout The Art of Computer Programming") && !rlogs.get(15).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(15).get(0)) == p4_patrons[4].id &&
+                    rlogs.get(16).get(1).equals("outstanding request on document The Art of Computer Programming: request was denied.") && !rlogs.get(16).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(16).get(0)) == libs[0].id){
+                isAllHave = true;
+            }
+
+//            System.out.println(rlogs.toString());
+
+            assert(isAllHave);
+
+            System.out.println("Test 8 passed");
+        }catch (Exception e){
+            System.out.println("Error in t48: " + e.toString());
+        }
+    }
+
+    public void t49(){
+        try{
+            t47();
+            ArrayList<String> logs = Logging.getLast(100);
+            ArrayList<ArrayList<String>> rlogs = new ArrayList<>();
+            for (int i = logs.size()-1; i >= 0; i--) {
+                //new ArrayList<String>(Arrays.asList(rs.getString("keywords").split(", ")))
+                rlogs.add(new ArrayList<String>(Arrays.asList(logs.get(i).split("#"))));
+            }
+
+            boolean isAllHave = false;
+
+            if(rlogs.get(0).get(1).equals("create lib1") && !rlogs.get(0).get(2).equals("1970-01-01") && Integer.parseInt(rlogs.get(0).get(0)) == admin.id &&
+                    rlogs.get(1).get(1).equals("create lib2") && !rlogs.get(1).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(1).get(0)) == admin.id &&
+                    rlogs.get(2).get(1).equals("create lib3") && !rlogs.get(2).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(2).get(0)) == admin.id &&
+                    rlogs.get(3).get(1).equals("addCopies book Introduction to Algorithms") && !rlogs.get(3).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(3).get(0)) == libs[1].id &&
+                    rlogs.get(4).get(1).equals("addCopies book Algorithms + Data Structures = Programs") && !rlogs.get(4).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(4).get(0)) == libs[1].id &&
+                    rlogs.get(5).get(1).equals("addCopies book The Art of Computer Programming") && !rlogs.get(5).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(5).get(0)) == libs[1].id &&
+                    rlogs.get(6).get(1).equals("created patron Sergey Afonso") && !rlogs.get(6).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(6).get(0)) == libs[1].id &&
+                    rlogs.get(7).get(1).equals("created patron Nadia Teixeira") && !rlogs.get(7).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(7).get(0)) == libs[1].id &&
+                    rlogs.get(8).get(1).equals("created patron Elvira Espindola") && !rlogs.get(8).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(8).get(0)) == libs[1].id &&
+                    rlogs.get(9).get(1).equals("created patron Andrey Velo") && !rlogs.get(9).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(9).get(0)) == libs[1].id &&
+                    rlogs.get(10).get(1).equals("created patron Veronika Rama") && !rlogs.get(10).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(10).get(0)) == libs[1].id &&
+                    rlogs.get(11).get(1).equals("checkout The Art of Computer Programming") && !rlogs.get(11).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(11).get(0)) == p4_patrons[0].id &&
+                    rlogs.get(12).get(1).equals("checkout The Art of Computer Programming") && !rlogs.get(12).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(12).get(0)) == p4_patrons[1].id &&
+                    rlogs.get(13).get(1).equals("checkout The Art of Computer Programming") && !rlogs.get(13).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(13).get(0)) == p4_patrons[2].id &&
+                    rlogs.get(14).get(1).equals("checkout The Art of Computer Programming") && !rlogs.get(14).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(14).get(0)) == p4_patrons[3].id &&
+                    rlogs.get(15).get(1).equals("checkout The Art of Computer Programming") && !rlogs.get(15).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(15).get(0)) == p4_patrons[4].id &&
+                    rlogs.get(16).get(1).equals("removed from queue") && !rlogs.get(16).get(2).equals("1970-01-01") && Integer.parseInt(rlogs.get(16).get(0)) == libs[1].id &&
+                    rlogs.get(17).get(1).equals("removed from queue") && !rlogs.get(17).get(2).equals("1970-01-01") && Integer.parseInt(rlogs.get(17).get(0)) == libs[1].id &&
+                    rlogs.get(18).get(1).equals("waiting list for document The Art of Computer Programming deleted") && !rlogs.get(18).get(2).equals("1970-01-01") && Integer.parseInt(rlogs.get(19).get(0)) == libs[1].id &&
+                    rlogs.get(19).get(1).equals("notified to return book") && !rlogs.get(19).get(2).equals("1970-01-01") && Integer.parseInt(rlogs.get(19).get(0)) == libs[1].id &&
+                    rlogs.get(20).get(1).equals("notified to return book") && !rlogs.get(20).get(2).equals("1970-01-01") && Integer.parseInt(rlogs.get(20).get(0)) == libs[1].id &&
+                    rlogs.get(21).get(1).equals("notified to return book") && !rlogs.get(21).get(2).equals("1970-01-01") && Integer.parseInt(rlogs.get(21).get(0)) == libs[1].id &&
+                    rlogs.get(22).get(1).equals("outstanding request on document The Art of Computer Programming: accepted") && !rlogs.get(22).get(2).equals("1970-01-01")&& Integer.parseInt(rlogs.get(22).get(0)) == libs[1].id){
+                isAllHave = true;
+            }
+
+            assert(isAllHave);
+
+            System.out.println("Test 9 passed");
+        }catch (Exception e){
+            System.out.println("Error in t49: " + e.toString());
+        }
+    }
+
+    public void t410(){
+        try{
+            t44();
+
+            ArrayList<String> documents = Database.searchInDocuments("Introduction to Algorithms", "title");
+
+            assert(documents.get(0).equals("Introduction to Algorithms"));
+
+            System.out.println("Test 10 passed");
+        }catch (Exception e){
+            System.out.println("Error in t410: " + e.toString());
+        }
+    }
+
+    public void t411(){
+        try{
+            t44();
+
+            ArrayList<String> documents = Database.searchInDocuments("Algorithms", "title");
+
+            assert (documents.get(0).equals("Introduction to Algorithms") &&
+                documents.get(1).equals("Algorithms + Data Structures = Programs"));
+
+            System.out.println("Test 11 passed");
+        }catch (Exception e){
+            System.out.println("Error in t411: " + e.toString());
+        }
+    }
+
+    public void t412(){
+        try{
+            t44();
+
+            ArrayList<String> documents = Database.searchInDocuments("Algorithms", "keywords");
+
+            assert (documents.get(0).equals("Introduction to Algorithms") &&
+                    documents.get(1).equals("Algorithms + Data Structures = Programs") &&
+                    documents.get(2).equals("The Art of Computer Programming"));
+
+            System.out.println("Test 12 passed");
+        }catch (Exception e){
+            System.out.println("Error in t412: " + e.toString());
+        }
+    }
+
+    public void t413(){
+        try{
+            t44();
+
+            ArrayList<String> documents = Database.searchInDocuments(" Algorithms AND Programming", "title");
+
+            assert (documents.size() == 0);
+
+            System.out.println("Test 13 passed");
+        }catch (Exception e){
+            System.out.println("Error in t413: " + e.toString());
+        }
+    }
+
+    public void t414(){
+        try{
+            t44();
+
+            ArrayList<String> documents = Database.searchInDocuments(" Algorithms OR Programming", "title");
+
+            assert (documents.get(0).equals("Introduction to Algorithms") &&
+                    documents.get(1).equals("Algorithms + Data Structures = Programs") &&
+                    documents.get(2).equals("The Art of Computer Programming"));
+
+            System.out.println("Test 14 passed");
+        }catch (Exception e){
+            System.out.println("Error in t414: " + e.toString());
         }
     }
 }
