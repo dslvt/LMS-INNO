@@ -336,6 +336,14 @@ public class Database {
         return documents;
     }
 
+    /**
+     * Create exemplar of class AVmaterial using resultSet
+     * @param rs ResultSer for creating new AVmaterial
+     * @param id Global ID of AVmaterial which is saved in table with main information in Database
+     * @param location Location of new AVmaterial
+     * @return Created exemplar
+     */
+
     private static AVmaterial createAVMaterialByResultSet(ResultSet rs, int id, String location){
         AVmaterial aVmaterial = null;
         try {
@@ -351,6 +359,14 @@ public class Database {
 
         return aVmaterial;
     }
+
+    /**
+     * Create exemplar of class Book using resultSet
+     * @param rs ResultSer for creating new book
+     * @param id Global ID of book which is saved in table with main information in Database
+     * @param location Location of new book
+     * @return Created exemplar
+     */
 
     private static Book createBookByResultSet(ResultSet rs, int id, String location){
         Book book = null;
@@ -368,6 +384,14 @@ public class Database {
         return book;
     }
 
+    /**
+     * Create exemplar of class journal using resultSet
+     * @param rs ResultSer for creating new journal
+     * @param id Global ID of journal which is saved in table with main information in Database
+     * @param location Location of new journal
+     * @return Created exemplar
+     */
+
     private static Journal createJournalByResultSet(ResultSet rs, int id, String location){
         Journal journal = null;
         try {
@@ -382,6 +406,13 @@ public class Database {
 
         return journal;
     }
+
+    /**
+     * Return number of current document's copies in database
+     * @param document Document which number of copies is needed
+     * @return Number of copies
+     */
+
     public static int getAmountOfCurrentDocument(Document document){
         int ans = -1;
         try{
@@ -398,6 +429,12 @@ public class Database {
 
         return ans;
     }
+
+    /**
+     * Return number of current book's copies in database
+     * @param book Book which number of copies is needed
+     * @return Number of copies
+     */
 
     public static int getAmountOfCurrentBook(Book book){
         int ans = -1;
@@ -416,6 +453,12 @@ public class Database {
         return ans;
     }
 
+    /**
+     * Return number of current journal's copies in database
+     * @param journal Journal which number of copies is needed
+     * @return Number of copies
+     */
+
     public static int getAmountOfCurrentJournal(Journal journal){
         int ans = -1;
         try {
@@ -433,6 +476,12 @@ public class Database {
         return ans;
     }
 
+    /**
+     * Return number of current AVmaterial's copies in database
+     * @param aVmaterial AVmateriak which number of copies is needed
+     * @return Number of copies
+     */
+
     public static int getAmountOfCurrentAvmaterial(AVmaterial aVmaterial){
         int ansv = -1;
         try {
@@ -449,6 +498,12 @@ public class Database {
 
         return ansv;
     }
+
+    /**
+     * Return document using global id
+     * @param id Global id of document which is saved in table with main information in Database
+     * @return Exemplar of class Document
+     */
 
     public static Document getDocumentById(int id){
         String query = "select * from documents where id=" + Integer.toString(id);
@@ -495,6 +550,12 @@ public class Database {
         return document;
     }
 
+    /**
+     * Return local id of document
+     * @param documentId Global id of document which is saved in table with main information in Database
+     * @return Local id of document which is saved in table with all information in Database
+     */
+
     public static int getCorrectIdInLocalDatabase(int documentId){
         int id = -1;
 
@@ -519,6 +580,12 @@ public class Database {
         return id;
     }
 
+    /**
+     * Return exemplar of class Patron using id from database
+     * @param id Id of necessary patron from database
+     * @return Exemplar of class Patron
+     */
+
     public static Patron getPatronById(int id){
         String query = "select * from users where id="+Integer.toString(id);
         Patron user = null;
@@ -537,6 +604,12 @@ public class Database {
 
         return user;
     }
+
+    /**
+     * Return exemplar of class Librarian using id from database
+     * @param id Id of necessary librarian from database
+     * @return Exemplar of class Librarian
+     */
 
     public static Librarian getLibrarianById(int id){
         String query = "select * from users where id="+Integer.toString(id);
@@ -557,6 +630,12 @@ public class Database {
         return user;
     }
 
+    /**
+     * Check is librarian or not current user using id from database
+     * @param id Id of necessary user from database
+     * @return True for librarian
+     */
+
     public static boolean isLibrarian(int id){
         try {
             statement = connection.createStatement();
@@ -569,6 +648,12 @@ public class Database {
         }
         return false;
     }
+
+    /**
+     * Check is librarian with privileges #1 or not current user using id from database
+     * @param id Id of necessary user from database
+     * @return True for librarian with privileges #1
+     */
 
     public static boolean isLibrarianPriv1(int id){
         try{
@@ -588,6 +673,12 @@ public class Database {
         return false;
     }
 
+    /**
+     * Check is librarian with privileges #2 or not current user using id from database
+     * @param id Id of necessary user from database
+     * @return True for librarian with privileges #2
+     */
+
     public static boolean isLibrarianPriv2(int id){
         try{
             statement = connection.createStatement();
@@ -605,6 +696,12 @@ public class Database {
         return false;
     }
 
+    /**
+     * Check is librarian with privileges #3 or not current user using id from database
+     * @param id Id of necessary user from database
+     * @return True for librarian with privileges #3
+     */
+
     public static boolean isLibrarianPriv3(int id){
         try{
             statement = connection.createStatement();
@@ -620,6 +717,12 @@ public class Database {
         return false;
     }
 
+    /**
+     * Check is admin or not current user using id from database
+     * @param id Id of necessary user from database
+     * @return True for admin
+     */
+
     public static boolean isAdmin(int id){
         try{
             statement = connection.createStatement();
@@ -633,6 +736,10 @@ public class Database {
         }
         return false;
     }
+
+    /**
+     * Return array with all requests from users for checking out or returning documents
+     */
 
     public static ArrayList<LibTask> getAllLibTasks(){
         String query = "select * from libtasks order by id";
@@ -652,6 +759,12 @@ public class Database {
         return ans;
     }
 
+    /**
+     * Return request from user for checking out or returning documents using resultSet
+     * @param rs ResultSet
+     * @return Exemplar of class LibTasks
+     */
+
     public static LibTask getLibtaskByResultSet(ResultSet rs){
         LibTask libTask = null;
         try{
@@ -667,6 +780,12 @@ public class Database {
         return libTask;
     }
 
+    /**
+     * Check is request document or not
+     * @param document Document which is needed to check
+     * @return True for request document
+     */
+
     public static boolean isRequestDocument(Document document){
         try {
             resultSet = statement.executeQuery("SELECT Count(*) AS total FROM request WHERE id_document ="+document.id);
@@ -677,6 +796,10 @@ public class Database {
         }
         return false;
     }
+
+    /**
+     * Return array with all original documents in the system
+     */
 
     public static ArrayList<Pair<Document, Integer>> getAllDocumentsWithoutCopies(){
         ArrayList<Pair<Document, Integer>> documents = new ArrayList<>();
@@ -710,6 +833,10 @@ public class Database {
         return documents;
     }
 
+    /**
+     * Retun array with all requests from users
+     */
+
     public static ArrayList<UserRequest> getAllRequests(){
         ArrayList<UserRequest> requests = new ArrayList<>();
         try{
@@ -727,6 +854,10 @@ public class Database {
 
         return requests;
     }
+
+    /**
+     * Return array of all checked out documents with users who check out them
+     */
 
     public static ArrayList<Pair<Document, Patron>> getAllDocumentsWithUsers(){
         ArrayList<Pair<Document, Patron>> ans = new ArrayList<>();
@@ -746,6 +877,10 @@ public class Database {
         return ans;
     }
 
+    /**
+     * Return array with all patrons in the system
+     */
+
     public static ArrayList<Patron> getAllPatrons(){
         ArrayList<Patron> ans = new ArrayList<>();
         try {
@@ -762,6 +897,12 @@ public class Database {
         return ans;
     }
 
+    /**
+     * Return date of returning necessary document
+     * @param document Document which return date is needed
+     * @return Date of returning document
+     */
+
     public static String getDocumentReturnDate(Document document){
         String returnDate = "";
         try {
@@ -777,6 +918,11 @@ public class Database {
         return returnDate;
     }
 
+    /**
+     * Delete all information from necessary table in database
+     * @param tableName Name of table which is needed to clean
+     */
+
     public static void DeleteAllInTable(String tableName){
         try{
             ArrayList<Integer> ids = getAllTableIds(tableName);
@@ -788,6 +934,11 @@ public class Database {
             System.out.println("Error in db, deleteAllInTable: " + e.toString());
         }
     }
+
+    /**
+     * Return array with all ids from necessary table in database
+     * @param tableName Name of table which ids is needed
+     */
 
     public static ArrayList<Integer> getAllTableIds(String tableName){
         ArrayList<Integer> ans = new ArrayList<>();
@@ -807,6 +958,11 @@ public class Database {
         return ans;
     }
 
+    /**
+     * Method for executing SQL query
+     * @param query String with SQL query which is needed to execute
+     */
+
     public static void ExecuteQuery(String query){
         try{
             Statement st = connection.createStatement();
@@ -816,6 +972,12 @@ public class Database {
 
         }
     }
+
+    /**
+     * Select rows from database
+     * @param query String with SQL query
+     * @return ResultSet which from we can get information
+     */
 
     public static ResultSet SelectFromDB(String query){
         ResultSet rs = null;
@@ -827,6 +989,11 @@ public class Database {
         }
         return rs;
     }
+
+    /**
+     * Return id of necessary document
+     * @param document Document which id is needed
+     */
 
     public static int getFirstDocumentWithLocID(Document document){
         int ans = -1;
@@ -842,6 +1009,12 @@ public class Database {
         }
         return ans;
     }
+
+    /**
+     * Check availability of necessary document's queue
+     * @param document Document which queue is needed to check
+     * @return True for having a queue
+     */
 
     public static boolean hasQueue(Document document){
         boolean hasQueue = false;
@@ -860,6 +1033,11 @@ public class Database {
         return hasQueue;
     }
 
+    /**
+     * Return array with users which is in queue of necessary document
+     * @param document Document which queue is needed
+     */
+
     public static ArrayList<Patron> getDocumentQueue(Document document){
         ArrayList<Patron> patrons = new ArrayList<>();
         try{
@@ -872,6 +1050,12 @@ public class Database {
         }
         return patrons;
     }
+
+    /**
+     * Check possibility to renew necessary document
+     * @param patron User who want to renew document
+     * @param document Document which is renewed
+     */
 
     public static boolean isCanRenew(Patron patron, Document document){
         boolean isCanRenew = false;
@@ -896,15 +1080,18 @@ public class Database {
             if (!isRenew){
                 isCanRenew = true;
             }
-//            if(typeUser.equals("visitingProf")&& !Database.hasQueue(document)) {
-//                isCanRenew = true;
-//            }
 
         }catch (Exception e){
             System.out.println("Error in isCanRenew: "+ e.toString());
         }
         return isCanRenew;
     }
+
+    /**
+     * Return librarian using number from database
+     * @param login String with number from database which is used as login
+     * @return Exemplar of class Librarian
+     */
 
     public static Librarian getLibrarianByNumber(String login){
         try {
@@ -924,13 +1111,18 @@ public class Database {
         }
     }
 
+    /**
+     * Find document in database
+     * @param searchGoal String with necessary search goal
+     * @param colomn Name of column in database's table where we search
+     * @return Array with documents depending on search criteria
+     */
+
     public static ArrayList<Document> findDocuments(String searchGoal, String colomn){
         ArrayList <Document> docs = new ArrayList<>();
         try{
             Statement st = connection.createStatement();
             ResultSet rs = st.executeQuery("select * from books where " + colomn +" = '" + searchGoal + "';");
-//            ResultSet rs = st.executeQuery("IF COL_LENGTH('mydbtest.books', '"+colomn+"') IS NOT NULL " +
-//                    "BEGIN select * from books where " + colomn + " = '" + searchGoal + "'; END");
             while (rs.next()){
                 Statement nst = connection.createStatement();
                 ResultSet nrs = nst.executeQuery("select * from documents where id_books = " + Integer.toString(rs.getInt("id")));
@@ -969,6 +1161,13 @@ public class Database {
         return docs;
     }
 
+    /**
+     * Find patron in database
+     * @param searchGoal String with necessary search goal
+     * @param colomn Name of column in database's table where we search
+     * @return Array with patrons depending on search criteria
+     */
+
     public static Patron findPatronBy(String searchGoal, String colomn){
         Patron patron = null;
         try{
@@ -981,6 +1180,10 @@ public class Database {
         }
         return patron;
     }
+
+    /**
+     * Delete all information from database and create admin
+     */
 
     public static void DeleteAllFromDBAndCreateAdmin(){
         try{
@@ -995,6 +1198,12 @@ public class Database {
             System.out.println("Error in DeleteAllFromDBAndCreateLibrarian: " + e.toString());
         }
     }
+
+    /**
+     * Send outstanding request
+     * @param document Document on which librarian send outstanding request
+     * @param librarian Id of librarian who want to send request to check his privileges
+     */
 
     public static void sendOutstandingRequest(Document document, Librarian librarian) {
         try {
@@ -1052,19 +1261,24 @@ public class Database {
         }
     }
 
+    /**
+     * Upgrade user to librarian or make librarian with higher privileges
+     * @param user User which we want to upgrade
+     * @param type String with type with which we want new user
+     * @param idLibrarian Id librarian to check his privileges
+     */
+
     public static void upgradeToLibrarian(User user, String type, int idLibrarian) {
         if(Database.isAdmin(idLibrarian)) {
             try {
                 if (user instanceof Patron) {
                     if (Database.getUserDocuments((Patron) user).isEmpty()) {
-//                        System.out.println("did patron");
                         Database.ExecuteQuery("UPDATE users set isFacultyMember = 0, isLibrarian = 1, type = '" + type + "', isActive = 0 WHERE id = '" + user.id + "'");
                     }
                     else{
                         System.out.println("Error in upgradeToLibrarian: user has documents");
                     }
                 } else {
-//                    System.out.println("did librarian");
                     Database.ExecuteQuery("UPDATE users set type = '" + type + "' WHERE id = '" + user.id + "'");
                 }
             } catch (Exception e) {
@@ -1076,6 +1290,13 @@ public class Database {
             System.out.println("Error in upgradeToLibrarian: user doesn't have access");
         }
     }
+
+    /**
+     * Search document in database
+     * @param goal String with goal of searching
+     * @param colomn Name of table's column where we search
+     * @return Array with documents depending on searching criteria
+     */
 
     public static ArrayList<String> searchInDocuments(String goal, String colomn){
         ArrayList <String> docs = new ArrayList<>();

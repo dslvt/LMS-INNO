@@ -9,21 +9,6 @@ import java.util.ArrayList;
 public class AVmaterial extends Document {
 
     /**
-     * empty constructor with id
-     *
-     * @param id
-     */
-    public AVmaterial(int id) {
-        this.id = id;
-    }
-
-    /**
-     * empty constructor
-     */
-    public AVmaterial() {
-    }
-
-    /**
      * common constructor
      */
     public AVmaterial(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, boolean isActive, String location) {
@@ -88,6 +73,13 @@ public class AVmaterial extends Document {
         }
     }
 
+    /**
+     * Create copy of current AVmaterial in Database
+     * @param copies Number of copies which need to create
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     * @return Array of new copies of AVmaterial
+     */
+
     public ArrayList<Document> addCopies(int copies, int idLibrarian) {
         ArrayList<Document> newCopies = new ArrayList<>();
         if (Database.isLibrarianPriv2(idLibrarian)) {
@@ -129,6 +121,17 @@ public class AVmaterial extends Document {
         return newCopies;
     }
 
+    /**
+     * Modify information of current AVmaterial in Database
+     * @param name New name of AVmaterial
+     * @param authors New author of AVmaterial
+     * @param cost New cost of AVmaterial
+     * @param keywords New keywords of AVmaterial
+     * @param isReference Set reference or not reference
+     * @param location New location of AVmaterial
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     */
+
     public void ModifyInDB(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String location, int idLibrarian) {
         if (Database.isLibrarianPriv1(idLibrarian)) {
             PreparedStatement preparedStatement;
@@ -161,6 +164,11 @@ public class AVmaterial extends Document {
         }
     }
 
+    /**
+     * Delete current AVmaterial from Database
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     */
+
     @Override
     public void DeleteFromDB(int idLibrarian) {
         if (Database.isLibrarianPriv3(idLibrarian)) {
@@ -184,6 +192,13 @@ public class AVmaterial extends Document {
         }
 
     }
+
+    /**
+     * Delete copies of current AVmaterial from Database
+     * @param copies Number of copies which need to delete
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     */
+
     public void deleteCopies(int copies, int idLibrarian) {
         if (Database.isLibrarianPriv3(idLibrarian)) {
             Statement statement;
@@ -213,9 +228,12 @@ public class AVmaterial extends Document {
         }
     }
 
+    /**
+     * Check possibility of user to take current AVmaterial
+     */
+
     @Override
     public boolean isCanBeTaken() {
-
         return !isReference && Database.getAmountOfCurrentAvmaterial(this) > 0;
     }
 }

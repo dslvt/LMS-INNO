@@ -3,6 +3,10 @@ import java.sql.*;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Class for main functions of user in library system (check out, renew, return documents)
+ */
+
 public class Booking {
 
     Statement statement;
@@ -298,11 +302,13 @@ public class Booking {
     }
 
     public boolean takeCopy(Document document, User user) throws SQLException {
+        //Get string from database
         statement.executeQuery("SELECT * FROM booking WHERE user_id = '" + user.id + "'");
         ResultSet rec = statement.getResultSet();
-        int id = 0;
-        int localId = 0;
+        int id;
+        int localId;
 
+        //Check possibility of taking copy
         while (rec.next()) {
             id = rec.getInt("document_id");
             localId = Database.getCorrectIdInLocalDatabase(id);
