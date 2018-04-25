@@ -10,7 +10,7 @@ Download our database file
 In class database write your url, user and password.
 ![alt text](https://cdn.pbrd.co/images/Hawx15Z.png)
 
-If host its sql11.freemysqlhosting.net, then all works in our host, some test may work slowly.
+If host its sql7.freemysqlhosting.net(16 line), then all works in our host, some test may work slowly.
 
 # 3 step 
 
@@ -23,7 +23,7 @@ Import it to your project
 If you use IntelliJ IDEA, go to File -> Project Structure -> Libraries -> Click green plus -> find .jar file
 
 # 5 step(not necessary)
-If you want run third delivery tests, go to Run -> Edit Configurations -> Write to "VM options:" -ea
+If you want run 4 delivery tests, go to Run -> Edit Configurations -> Write to "VM options:" -ea
 
 ------------------
 
