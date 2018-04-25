@@ -1,3 +1,6 @@
+/**
+ * Extra class for using Pair in implementation
+ */
 public class Pair<FIRST, SECOND> implements Comparable<Pair<FIRST, SECOND>> {
 
     public final FIRST first;

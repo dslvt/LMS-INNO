@@ -6,6 +6,10 @@ public class LibTask {
     public int queue;
     public String unic_key;
 
+    /**
+     * Constructor to create request from users
+     */
+
     public LibTask(Document document, Patron user, String type, boolean isHasUnicKey){
         this.document = document;
         this.user = user;

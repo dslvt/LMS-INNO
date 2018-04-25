@@ -61,6 +61,19 @@ public class Patron extends User {
         }
     }
 
+    /**
+     * Modify patron in database
+     * @param name New name of patron
+     * @param password New password of patron
+     * @param phoneNumber New phone number of patron
+     * @param address New address of patron
+     * @param isFacultyMember Set is faculty member or not
+     * @param debt Set debt
+     * @param type Set type
+     * @param isLibrarian Set is Librarian or not
+     * @param idLibrarian Id librarian to check his privileges
+     */
+
     public void ModifyUserDB(String name, String password, String phoneNumber, String address, boolean isFacultyMember, int debt, String type, boolean isLibrarian, int idLibrarian) {
         if (Database.isLibrarianPriv1(idLibrarian)) {
             PreparedStatement preparedStatement;
@@ -83,6 +96,11 @@ public class Patron extends User {
         }
     }
 
+    /**
+     * Delete patron from database
+     * @param idLibrarian Id librarian to check his privileges
+     */
+
     public int DeleteUserDB(int idLibrarian){
         if(Database.isLibrarianPriv3(idLibrarian)) {
             if(Database.getUserDocuments(this).isEmpty()) {
@@ -102,6 +120,9 @@ public class Patron extends User {
         return -1;
     }
 
+    /**
+     * Return all request of current user
+     */
 
     public ArrayList<Request> getAllRequests() {
         ArrayList<Request> requests = new ArrayList<>();
@@ -121,6 +142,8 @@ public class Patron extends User {
         return requests;
     }
 
+
+
     public static PatronType getCorrectPatronType(String t) {
         PatronType patronType = null;
         if (t.equals("Students") || t.equals("Student") || t.equals("students") || t.equals("student")) {
@@ -139,6 +162,12 @@ public class Patron extends User {
 
         return patronType;
     }
+
+    /**
+     * Return string with type of patron
+     * @param pt Ptron from enumeration
+     * @return String with type
+     */
 
     public static String getParsedPatronType(PatronType pt) {
         String ans = "";
@@ -166,6 +195,10 @@ public class Patron extends User {
         return ans;
     }
 
+    /**
+     * Compare two different ttype of patrons depending on priority
+     */
+
     public static int isTypeBigger(PatronType a, PatronType b) {
         int at = parsePatronTypeToInt(a);
         int bt = parsePatronTypeToInt(b);
@@ -176,6 +209,12 @@ public class Patron extends User {
         else
             return -1;
     }
+
+    /**
+     * Return PatronType from string
+     * @param patronType String with type
+     * @return PatronType from enumeration
+     */
 
     private static int parsePatronTypeToInt(PatronType patronType) {
         int ans = 0;
