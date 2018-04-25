@@ -27,7 +27,10 @@ If you want run third delivery tests, go to Run -> Edit Configurations -> Write 
 
 ------------------
 
-For deleting all information from db, use static method `Database.DeleteAllFromDBAndCreateLibrarian();`
+To create admin, librarians with all privileges, patrons, and documents, please, write Tester.t14();
+Logins, phone numbers and other information in t44()(Patrons, 1253 line), and t42()(Librarian, 1155 line).
+Nevertheless, admin have pn = 1 and pass = 1;
+To enter to system, you need only phone number and password.
 
 ------------------
 If something dont work, please write me("@d_slvt")
