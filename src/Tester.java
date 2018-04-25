@@ -1120,7 +1120,7 @@ public class Tester {
                 Database.DeleteAllInTable(tables[i]);
             }
 
-            admin = new Admin("admin", "1", "address");
+            admin = new Admin("admin", "1", "address", "1");
             admin.CreateUserDB(0);
 
         }catch (Exception e){
@@ -1130,7 +1130,7 @@ public class Tester {
 
     public void t41(){
         try{
-            Admin admin2 = new Admin("admin", "1", "address");
+            Admin admin2 = new Admin("admin", "1", "address", "1");
             admin2.CreateUserDB(0);
 
             int amount_of_users = 0;

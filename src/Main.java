@@ -12,10 +12,11 @@ public class Main {
         db = new Database();
         sc = new Scanner(System.in);
 
-        boolean isTesting = true;
+        boolean isTesting = false;
 
         /**
          * if want test program set isTesting true
+         * if you want see gui set isTesting false
          */
         if(isTesting) {
             Tester tester = new Tester();

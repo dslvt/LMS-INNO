@@ -16,10 +16,11 @@ public class Admin extends User {
      * @param address Address of user
      */
 
-    public Admin(String name, String phoneNumber, String address) {
+    public Admin(String name, String phoneNumber, String address, String pass) {
         this.name = name;
         this.phoneNumber = phoneNumber;
         this.address = address;
+        this.password = pass;
     }
 
     /**

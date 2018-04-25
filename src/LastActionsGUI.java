@@ -25,7 +25,7 @@ public class LastActionsGUI extends JFrame {
         table = new JTable(obj, str);
         JScrollPane listScroller = new JScrollPane(table);
         table.setFillsViewportHeight(true);
-        listScroller.setPreferredSize(new Dimension(245, 245));
+        listScroller.setPreferredSize(new Dimension(240, 240));
         containerM.add(listScroller);
         menuWindow.setVisible(true);
     }
