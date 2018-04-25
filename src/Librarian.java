@@ -27,6 +27,11 @@ public class Librarian extends User {
 
     }
 
+    /**
+     * Create librarian in database
+     * @param idLibrarian Id librarian to check his privileges
+     */
+
     public void CreateUserDB(int idLibrarian) {
         try {
             if (Database.isAdmin(idLibrarian)) {
@@ -57,6 +62,19 @@ public class Librarian extends User {
         }
     }
 
+    /**
+     * Modify librarian in database
+     * @param name New name of librarian
+     * @param password New password of librarian
+     * @param phoneNumber New phone number of librarian
+     * @param address New address of librarian
+     * @param isFacultyMember Set is faculty member or not
+     * @param debt Set debt
+     * @param type Set type
+     * @param isLibrarian Set is Librarian or not
+     * @param idLibrarian Id librarian to check his privileges
+     */
+
     @Override
     public void ModifyUserDB(String name, String password, String phoneNumber, String address, boolean isFacultyMember, int debt, String type, boolean isLibrarian, int idLibrarian) {
         if (Database.isAdmin(idLibrarian)) {
@@ -81,6 +99,11 @@ public class Librarian extends User {
         }
     }
 
+    /**
+     * Delete librarian from database
+     * @param idLibrarian Id librarian to check his privileges
+     */
+
     @Override
     public int DeleteUserDB(int idLibrarian) {
         if (Database.isAdmin(idLibrarian)) {
@@ -98,6 +121,12 @@ public class Librarian extends User {
         return -1;
     }
 
+    /**
+     * Send request to user with message of returning document
+     * @param document Document which is needed to return
+     * @param patron Patron who must return document
+     */
+
     public void sendRequest(Document document, Patron patron) {
         try {
             Statement statement = Database.connection.createStatement();
@@ -107,6 +136,10 @@ public class Librarian extends User {
             System.out.println("Error in sendRequest: " + e.toString());
         }
     }
+
+    /**
+     * Return array with all patron who must pay debt
+     */
 
     public ArrayList<Patron> getDebtors() {
         ArrayList<Patron> debtors = new ArrayList<>();
@@ -123,6 +156,10 @@ public class Librarian extends User {
         }
         return debtors;
     }
+
+    /**
+     * Return array with all documents which are overdue
+     */
 
     public ArrayList<Document> getOverdueDocuments() {
         ArrayList<Document> overdueDocuments = new ArrayList<>();
@@ -152,25 +189,11 @@ public class Librarian extends User {
         return overdueDocuments;
     }
 
-    public ArrayList<LibTask> getQueue(Document document) {
-        ArrayList<LibTask> libTasks = new ArrayList<>();
-        try {
-            ResultSet resultSet = Database.SelectFromDB("SELECT*FROM libtasks WHERE id_document = " + document.id + " and queue > -1");
-            while (resultSet.next()) {
-                int doc_id = resultSet.getInt("id_document");
-                int user_id = resultSet.getInt("id_user");
-                String taskType = resultSet.getString("type");
-                int queue = resultSet.getInt("queue");
-                LibTask libTask = new LibTask(Database.getDocumentById(doc_id), Database.getPatronById(user_id), taskType, true);
-                libTask.id = resultSet.getInt("id");
-                libTask.queue = queue;
-                libTasks.add(libTask);
-            }
-        } catch (Exception e) {
-            System.out.println("Error in getQueue: " + e.toString());
-        }
-        return libTasks;
-    }
+    /**
+     * Return string with type of librarian
+     * @param pt LibrarianType from enumeration
+     * @return String with type
+     */
 
     public static String getParsedLibrarianType(LibrarianType pt) {
         String ans = "";
@@ -191,6 +214,12 @@ public class Librarian extends User {
 
         return ans;
     }
+
+    /**
+     * Return LibrarianType from string
+     * @param t String with type
+     * @return LibrarianType from enumeration
+     */
 
     public static LibrarianType getCorrectLibrarianType(String t) {
         LibrarianType librarianType = null;

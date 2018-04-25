@@ -27,17 +27,49 @@ public abstract class Document {
         this.location = location;
     }
 
+    /**
+     * Create document in database
+     * @param idLibrarian Id of librarian to check his privileges
+     */
+
     public void CreateDocumentInDB(int idLibrarian) {
     }
+
+    /**
+     * Delete document from database
+     * @param idLibrarian Id of librarian to check his privileges
+     */
 
     public void DeleteFromDB(int idLibrarian) {
     }
 
+    /**
+     * Check possibility to take document
+     */
+
     public abstract boolean isCanBeTaken();
+
+    /**
+     * Create copies of current document
+     * @param copies Number of copies which are needed to create
+     * @param idLibrarian Id of librarian to check his privileges
+     */
 
     public abstract ArrayList<Document> addCopies(int copies, int idLibrarian);
 
+    /**
+     * Delete copies of current document
+     * @param copies Number of copies which are needed to delete
+     * @param idLibrarian Id of librarian to check his privileges
+     */
+
     public abstract void deleteCopies(int copies, int idLibrarian);
+
+    /**
+     * Return string with type of document
+     * @param dt DocumentType from enumeration
+     * @return String with type
+     */
 
     public static String getParsedType(DocumentType dt){
         String ans = "";
@@ -57,6 +89,11 @@ public abstract class Document {
         }
         return ans;
     }
+
+    /**
+     * Return unique key which consist of type and local id
+     * @param doc Document which unique key is needed
+     */
 
     public static String getUnicKey(Document doc){
         String ans = "";

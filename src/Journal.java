@@ -81,6 +81,13 @@ public class Journal extends Document {
         }
     }
 
+    /**
+     * Create copy of current journal in Database
+     * @param copies Number of copies which need to create
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     * @return Array of new copies of journal
+     */
+
     public ArrayList<Document> addCopies(int copies, int idLibrarian) {
         ArrayList<Document> newCopies = new ArrayList<>();
         if (Database.isLibrarianPriv2(idLibrarian)) {
@@ -124,6 +131,17 @@ public class Journal extends Document {
         return newCopies;
     }
 
+    /**
+     * Modify information of current journal in Database
+     * @param name New name of journal
+     * @param authors New author of journal
+     * @param cost New cost of journal
+     * @param keywords New keywords of journal
+     * @param isReference Set reference or not reference
+     * @param location New location of journal
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     */
+
     public void ModifyInDB(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords,
                            boolean isReference, String publicationDate, String issue, String editor, String location, int idLibrarian) {
         if (Database.isLibrarianPriv1(idLibrarian)) {
@@ -160,6 +178,11 @@ public class Journal extends Document {
         }
     }
 
+    /**
+     * Delete current journal from Database
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     */
+
     @Override
     public void DeleteFromDB(int idLibrarian) {
         if (Database.isLibrarianPriv3(idLibrarian)) {
@@ -183,6 +206,12 @@ public class Journal extends Document {
             System.out.println("Error: User does not have access to delete Journal");
         }
     }
+
+    /**
+     * Delete copies of current journal from Database
+     * @param copies Number of copies which need to delete
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     */
 
     public void deleteCopies(int copies, int idLibrarian) {
         if (Database.isLibrarianPriv3(idLibrarian)) {
@@ -212,6 +241,10 @@ public class Journal extends Document {
             System.out.println("Error: User does not have access to delete copies of Journal");
         }
     }
+
+    /**
+     * Check possibility of user to take current journal
+     */
 
     @Override
     public boolean isCanBeTaken() {

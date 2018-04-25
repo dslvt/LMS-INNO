@@ -4,6 +4,9 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.sql.SQLException;
 
+/**
+ * Class for creating article for journal
+ */
 public class Article extends Document {
     public Journal journal;
 
@@ -50,11 +53,19 @@ public class Article extends Document {
         }
     }
 
+    /**
+     * Cannot be taken without journal
+     */
+
 
     @Override
     public boolean isCanBeTaken() {
         return false;
     }
+
+    /**
+     * Cannot crete copy of article
+     */
 
     @Override
     public ArrayList<Document> addCopies(int copies, int idLibrarian) {
@@ -62,9 +73,7 @@ public class Article extends Document {
     }
 
     /**
-     *
-     * @param copies
-     * @param idLibrarian
+     *Cannot delete copies of article
      */
 
     @Override

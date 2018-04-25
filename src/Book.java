@@ -88,6 +88,13 @@ public class Book extends Document {
         }
     }
 
+    /**
+     * Create copy of current book in Database
+     * @param copies Number of copies which need to create
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     * @return Array of new copies of book
+     */
+
     public ArrayList<Document> addCopies(int copies, int idLibrarian) {
         Logging.CreateLog("addCopies book " + this.name, idLibrarian);
 
@@ -131,6 +138,17 @@ public class Book extends Document {
         return newCopies;
     }
 
+    /**
+     * Modify information of current book in Database
+     * @param name New name of book
+     * @param authors New author of book
+     * @param cost New cost of book
+     * @param keywords New keywords of book
+     * @param isReference Set reference or not reference
+     * @param location New location of book
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     */
+
     public void ModifyInDB(String name, ArrayList<String> authors, int cost, ArrayList<String> keywords, boolean isReference, String publisher, String edition, int publishYear, boolean isBestseller, String location, int idLibrarian) {
         if (Database.isLibrarianPriv1(idLibrarian)) {
             PreparedStatement preparedStatement;
@@ -167,6 +185,11 @@ public class Book extends Document {
         }
     }
 
+    /**
+     * Delete current book from Database
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     */
+
     @Override
     public void DeleteFromDB(int idLibrarian) {
         if (Database.isLibrarianPriv3(idLibrarian)) {
@@ -189,6 +212,12 @@ public class Book extends Document {
             System.out.println("Error: User does not have access to delete Book");
         }
     }
+
+    /**
+     * Delete copies of current book from Database
+     * @param copies Number of copies which need to delete
+     * @param idLibrarian ID of librarian who want to create copy for checking privileges
+     */
 
     public void deleteCopies(int copies, int idLibrarian) {
         if (Database.isLibrarianPriv3(idLibrarian)) {
@@ -220,6 +249,9 @@ public class Book extends Document {
         }
     }
 
+    /**
+     * Check possibility of user to take current book
+     */
 
     @Override
     public boolean isCanBeTaken() {
